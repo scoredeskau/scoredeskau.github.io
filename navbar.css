@@ -346,6 +346,9 @@ h1, h2, h3, h4, h5, h6,
     top: 50%;
     transform: translateY(-50%);
     margin-right: var(--back-btn-offset);
+    
+    /* ADJUST THIS VALUE to change the gap/padding to the LEFT of the button */
+    margin-left: 16px; 
 }
 
 /* Update Section 7 toggle button press rule */
@@ -363,7 +366,8 @@ h1, h2, h3, h4, h5, h6,
 
 .navigation-container.is-collapsed-mode .header-titles { 
     min-width: 0; 
-    flex-shrink: 1; 
+    flex-shrink: 1;
+    padding-right: 4px;
 }
 
 .navigation-container.is-collapsed-mode .primary-title,
