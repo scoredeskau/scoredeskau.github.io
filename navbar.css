@@ -179,26 +179,26 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
-/* =============================================================
-   Chevron Rotation (Passes through the RIGHT side during toggle)
-   ============================================================= */
+/* -------------------------------------------------------------
+   Chevron Rotation - Hardcoded Clockwise Sweep Through Right
+   ------------------------------------------------------------- */
 
-/* Base SVG: Default orientation points DOWN (Collapsed state = 0deg) */
+/* Default State: Bar 3 HIDDEN / COLLAPSED -> Arrow points DOWN */
 .toggle-menu-button svg {
     width: 18px;
     height: 18px;
     transform: rotate(0deg);
     transition: transform var(--slide-duration) var(--ease-cinematic);
+    transform-origin: center center;
 }
 
-/* SHOWN / EXPANDED STATE: 
-   Rotates clockwise (0deg -> 90deg [RIGHT] -> 180deg [UP]) */
+/* Expanded State: Bar 3 SHOWN -> Arrow rotates Clockwise (+180deg) to point UP */
+/* Sweeps explicitly through +90deg (RIGHT / East) on the way up */
 .toggle-menu-button:not(.is-collapsed) svg {
-    transform: rotate(180deg);
+    transform: rotate(-180deg);
 }
 
-/* HIDDEN / COLLAPSED STATE: 
-   Rotates counter-clockwise back (180deg -> 90deg [RIGHT] -> 0deg [DOWN]) */
+/* Explicit Collapsed State override */
 .toggle-menu-button.is-collapsed svg { 
     transform: rotate(0deg); 
 }
