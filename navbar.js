@@ -363,8 +363,7 @@
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list {
             margin-left: 0;
-            /* Exact distance from left navbar border to title text start (8px + 36px + 8px = 52px) */
-            padding-left: calc(var(--back-btn-offset) + var(--back-btn-size) + var(--back-btn-offset));
+            padding-left: var(--back-btn-offset);
             padding-right: var(--tab-bubble-offset-v);
         }
 
