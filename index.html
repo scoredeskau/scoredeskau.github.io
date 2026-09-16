@@ -12,7 +12,6 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            /* Disable native Mobile Safari tap highlight overlay */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -21,7 +20,6 @@
             --court-accent-color: #0091D2;
             --navbar-height: 52px;
             
-            /* Dimensions */
             --back-btn-size: 36px;
             --tab-bubble-height: 44px;
             
@@ -29,7 +27,7 @@
             --tab-bubble-offset-v: calc((var(--navbar-height) - var(--tab-bubble-height)) / 2);
             
             --page-outer-spacing: 24px;
-            --navbar-pill-background: rgba(255, 255, 255, 0.08);
+            --navbar-pill-background: rgba(15, 23, 42, 0.75);
             --navbar-border-color: rgba(255, 255, 255, 0.2);
         }
 
@@ -45,7 +43,7 @@
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background-color 0.4s ease;
+            transition: background-color 0.3s ease;
             padding: calc((var(--page-outer-spacing) * 2) + var(--navbar-height)) var(--page-outer-spacing) var(--page-outer-spacing);
             font-family: "SF Pro Text", "SF Pro Icons", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
@@ -61,6 +59,9 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            /* Force GPU compositor layer */
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         .navbar {
@@ -68,8 +69,6 @@
             height: var(--navbar-height);
             padding: 0;
             background: var(--navbar-pill-background);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-radius: 9999px;
             border: 1px solid var(--navbar-border-color);
             overflow: hidden;
@@ -78,6 +77,15 @@
             justify-content: space-between;
             position: relative;
             isolation: isolate;
+        }
+
+        /* Backdrop filter applied conditionally for smoother mobile rendering */
+        @supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+            .navbar {
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
         }
 
         .branding-group {
@@ -101,12 +109,12 @@
             color: rgba(255, 255, 255, 0.92);
             flex-shrink: 0;
             cursor: pointer;
-            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
             user-select: none;
             -webkit-user-select: none;
+            will-change: transform;
         }
 
-        /* Hover style applies to true pointer devices */
         @media (hover: hover) {
             .icon-action-button:hover {
                 background: rgba(255, 255, 255, 0.18);
@@ -117,7 +125,6 @@
             }
         }
 
-        /* Active bounce state & visual flash highlight on tap/click for ALL icon buttons */
         .icon-action-button:active,
         .icon-action-button.is-pressed {
             transform: scale(0.92);
@@ -129,7 +136,7 @@
         .icon-action-button svg {
             width: 18px;
             height: 18px;
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .toggle-menu-button {
@@ -186,6 +193,8 @@
             -ms-overflow-style: none;
             min-width: 0;
             overflow-anchor: none;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-scroll-viewport::-webkit-scrollbar { display: none; }
@@ -233,7 +242,7 @@
             align-items: center;
             padding: 0 18px;
             border-radius: 9999px;
-            transition: color 0.25s ease;
+            transition: color 0.2s ease;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -250,7 +259,7 @@
             background: rgba(255, 255, 255, 0.14);
             border-radius: 9999px;
             pointer-events: none;
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), width 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 0;
             will-change: transform, width;
         }
@@ -261,7 +270,6 @@
 
         .stacked-tab-wrapper { display: none; }
 
-        /* Dynamic Mode Trigger (State 2: Bar 2 at top, Bar 3 below) */
         .navigation-container.is-collapsed-mode .toggle-menu-button {
             display: grid;
             position: absolute;
@@ -271,7 +279,6 @@
             margin-right: var(--back-btn-offset);
         }
 
-        /* Retain bounce state transform override when right button is absolutely positioned */
         .navigation-container.is-collapsed-mode .toggle-menu-button:active,
         .navigation-container.is-collapsed-mode .toggle-menu-button.is-pressed {
             transform: translateY(-50%) scale(0.92);
@@ -289,7 +296,7 @@
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
             display: grid;
             grid-template-rows: 1fr;
-            transition: grid-template-rows 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: grid-template-rows 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             width: 100%;
         }
 
@@ -304,10 +311,10 @@
             border-color: var(--navbar-border-color);
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
-                        border-color 0.35s cubic-bezier(0.25, 1, 0.5, 1),
-                        background-color 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+                        background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
@@ -362,7 +369,7 @@
                     </svg>
                 </div>
                 <div class="header-titles">
-                    <div class="primary-title">2026 RSYLTC 2026 RSYLTC Clay Court Championships 2026 RSYLTC Clay Court Championships</div>
+                    <div class="primary-title">2026 RSYLTC Clay Court Championships</div>
                     <div class="secondary-title">Tournament Management</div>
                 </div>
             </div>
@@ -433,41 +440,7 @@
         const updatedDesktopHighlight = document.getElementById('desktopActiveHighlight');
         const updatedMobileHighlight = document.getElementById('mobileActiveHighlight');
 
-        const scrollAnimations = new WeakMap();
-
-        function smoothScrollTo(element, targetX, duration = 350) {
-            if (scrollAnimations.has(element)) {
-                cancelAnimationFrame(scrollAnimations.get(element));
-            }
-
-            const startX = element.scrollLeft;
-            const distance = targetX - startX;
-            if (Math.abs(distance) < 1) {
-                element.scrollLeft = targetX;
-                return;
-            }
-
-            const startTime = performance.now();
-
-            function easeOutCubic(t) {
-                return 1 - Math.pow(1 - t, 3);
-            }
-
-            function step(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                element.scrollLeft = startX + (distance * easeOutCubic(progress));
-
-                if (progress < 1) {
-                    scrollAnimations.set(element, requestAnimationFrame(step));
-                } else {
-                    scrollAnimations.delete(element);
-                }
-            }
-
-            scrollAnimations.set(element, requestAnimationFrame(step));
-        }
+        let cachedTabsWidth = 0;
 
         function updateHighlightPosition(activeTabLink, highlightElement, viewportElement, isInstant = false) {
             if (!activeTabLink || !highlightElement || !viewportElement) return;
@@ -490,31 +463,34 @@
             const targetScrollLeft = Math.max(0, Math.min(maxScroll, (horizontalOffsetPx + (targetWidthPx / 2)) - (viewportWidth / 2)));
 
             if (isInstant) {
-                if (scrollAnimations.has(viewportElement)) {
-                    cancelAnimationFrame(scrollAnimations.get(viewportElement));
-                }
+                const prevBehavior = viewportElement.style.scrollBehavior;
+                viewportElement.style.scrollBehavior = 'auto';
                 viewportElement.scrollLeft = targetScrollLeft;
+                viewportElement.style.scrollBehavior = prevBehavior;
+                
                 void highlightElement.offsetHeight;
                 highlightElement.classList.remove('no-transition');
             } else {
-                smoothScrollTo(viewportElement, targetScrollLeft, 350);
+                viewportElement.scrollTo({
+                    left: targetScrollLeft,
+                    behavior: 'smooth'
+                });
             }
         }
 
-        function checkCollisionBreakpoints() {
-            const wasCollapsed = navContainer.classList.contains('is-collapsed-mode');
+        function checkCollisionBreakpoints(containerWidth) {
             navContainer.classList.remove('is-collapsed-mode');
 
-            const navbarWidth = combinedNavbar.clientWidth;
+            if (!cachedTabsWidth) {
+                cachedTabsWidth = desktopTabListElement.scrollWidth;
+            }
+
+            const navbarWidth = containerWidth || combinedNavbar.clientWidth;
             const brandingWidth = brandingGroup.offsetWidth;
-            const tabsNaturalWidth = desktopTabListElement.scrollWidth;
-            
-            const totalRequiredWidth = brandingWidth + tabsNaturalWidth + 8;
+            const totalRequiredWidth = brandingWidth + cachedTabsWidth + 8;
 
             if (navbarWidth < totalRequiredWidth) {
                 navContainer.classList.add('is-collapsed-mode');
-            } else {
-                navContainer.classList.remove('is-collapsed-mode');
             }
 
             const savedThemeKey = localStorage.getItem(STORAGE_KEY_ACTIVE_THEME) || NAVIGATION_ITEMS[0].themeKey;
@@ -551,7 +527,7 @@
             }
         });
 
-        /* Handle touch feedback for icon buttons on mobile */
+        /* Efficient touch listener handling for mobile */
         document.querySelectorAll('.icon-action-button').forEach(button => {
             let releaseTimer;
 
@@ -563,7 +539,7 @@
             const releasePressState = () => {
                 releaseTimer = setTimeout(() => {
                     button.classList.remove('is-pressed');
-                }, 100); // Brief delay before smooth fade-out
+                }, 80);
             };
 
             button.addEventListener('touchend', releasePressState, { passive: true });
@@ -580,16 +556,17 @@
             switchActiveTheme(selectedThemeKey, false);
         });
 
+        /* Optimized Observer reading direct entry bounds without forcing layout recalculations */
         let resizeFrameId = null;
-        const resizeObserver = new ResizeObserver(() => {
+        const resizeObserver = new ResizeObserver((entries) => {
             if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
             resizeFrameId = requestAnimationFrame(() => {
-                checkCollisionBreakpoints();
+                const width = entries[0]?.contentRect?.width;
+                checkCollisionBreakpoints(width);
             });
         });
 
         resizeObserver.observe(navContainer);
-
         checkCollisionBreakpoints();
     </script>
 </body>
