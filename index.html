@@ -101,12 +101,12 @@
             color: rgba(255, 255, 255, 0.92);
             flex-shrink: 0;
             cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* Hover style only applies to true pointer/mouse devices */
+        /* Hover style applies to true pointer devices */
         @media (hover: hover) {
             .icon-action-button:hover {
                 background: rgba(255, 255, 255, 0.18);
@@ -117,11 +117,13 @@
             }
         }
 
-        /* Active bounce state applies to both touch and click */
-        .icon-action-button:active {
+        /* Active bounce state & visual flash highlight on tap */
+        .icon-action-button:active,
+        .icon-action-button.is-pressed {
             transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.35);
+            transition: background 0.05s ease, border-color 0.05s ease, transform 0.15s ease;
         }
 
         .icon-action-button svg {
@@ -545,6 +547,25 @@
                 const activeMobileLink = mobileTabListElement.querySelector(`a[data-theme="${savedThemeKey}"]`);
                 updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
             }
+        });
+
+        /* Handle touch feedback for icon buttons on mobile */
+        document.querySelectorAll('.icon-action-button').forEach(button => {
+            let releaseTimer;
+
+            button.addEventListener('touchstart', () => {
+                clearTimeout(releaseTimer);
+                button.classList.add('is-pressed');
+            }, { passive: true });
+
+            const releasePressState = () => {
+                releaseTimer = setTimeout(() => {
+                    button.classList.remove('is-pressed');
+                }, 100); // Brief delay before smooth fade-out
+            };
+
+            button.addEventListener('touchend', releasePressState, { passive: true });
+            button.addEventListener('touchcancel', releasePressState, { passive: true });
         });
 
         document.addEventListener('click', event => {
