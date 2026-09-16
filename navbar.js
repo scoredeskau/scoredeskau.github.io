@@ -126,7 +126,6 @@
 
         if (isInstant) {
             viewportElement.scrollLeft = targetScrollLeft;
-            // Force layout recalculation frame
             void highlightElement.offsetHeight;
             highlightElement.classList.remove('no-transition');
         } else {
@@ -174,8 +173,11 @@
         updateHighlightPosition(activeMobileLink, mobileHighlight, mobileViewport, isInstant);
     }
 
-    // Delegated Event Handlers
+    // Toggle Menu Button with press feedback matching the left action button
     toggleMenuButton.addEventListener('click', () => {
+        toggleMenuButton.classList.add('is-pressed');
+        setTimeout(() => toggleMenuButton.classList.remove('is-pressed'), 120);
+
         const isHidden = lowerTabWrapper.classList.toggle('is-hidden');
         toggleMenuButton.classList.toggle('is-collapsed', isHidden);
         toggleMenuButton.setAttribute('aria-expanded', !isHidden);

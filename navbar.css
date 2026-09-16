@@ -298,6 +298,11 @@ h1, h2, h3, h4, h5, h6,
     margin-right: var(--back-btn-offset);
 }
 
+.navigation-container.is-collapsed-mode .toggle-menu-button:active,
+.navigation-container.is-collapsed-mode .toggle-menu-button.is-pressed {
+    transform: translateY(-50%) scale(0.92);
+}
+
 .navigation-container.is-collapsed-mode .branding-group {
     padding-right: calc(var(--back-btn-size) + (var(--back-btn-offset) * 2));
     width: 100%;
@@ -372,7 +377,7 @@ h1, h2, h3, h4, h5, h6,
 
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
     opacity: 0;
-    transform: translateY(-16px); /* Upward directional offset */
+    transform: translateY(-16px);
     filter: blur(3px);
     margin-top: 0px;
     pointer-events: none;
