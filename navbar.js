@@ -23,14 +23,11 @@
 
     /**
      * Exact 1:1 cubic-bezier solver for cubic-bezier(0.16, 1, 0.3, 1)
-     * Matches the CSS --ease-bubble curve precisely across time.
      */
     function easeBubble(t) {
         if (t <= 0) return 0;
         if (t >= 1) return 1;
 
-        // Newton-Raphson method to solve X axis for t, then evaluate Y
-        // Control points: P1 = (0.16, 1), P2 = (0.3, 1)
         let x = t;
         for (let i = 0; i < 8; i++) {
             const currentX = 3 * (1 - x) * (1 - x) * x * 0.16 + 3 * (1 - x) * x * x * 0.3 + x * x * x;
@@ -39,13 +36,11 @@
             x -= (currentX - t) / dx;
         }
 
-        // Compute Y for solved parameter x
         return 3 * (1 - x) * (1 - x) * x * 1 + 3 * (1 - x) * x * x * 1 + x * x * x;
     }
 
     /**
-     * Centers the active tab within its scrollable viewport.
-     * @param {'smooth' | 'auto'} behavior - Scrolling animation behavior.
+     * Interruptible smooth auto-scroll controller.
      */
     function centerActiveTab(behavior = 'smooth') {
         const container = document.getElementById('navContainer');
@@ -70,35 +65,38 @@
             const targetScrollLeft = Math.max(0, itemRelativeLeft - (viewportRect.width / 2) + (itemRect.width / 2));
 
             if (behavior === 'auto') {
-                if (viewport._scrollAnim) cancelAnimationFrame(viewport._scrollAnim);
+                if (viewport._scrollAnim) {
+                    cancelAnimationFrame(viewport._scrollAnim);
+                    viewport._scrollAnim = null;
+                }
                 viewport.scrollLeft = targetScrollLeft;
                 return;
             }
 
-            if (Math.abs(viewport.scrollLeft - targetScrollLeft) < 1) return;
-
+            // Immediately kill existing scroll loop on new click
             if (viewport._scrollAnim) {
                 cancelAnimationFrame(viewport._scrollAnim);
+                viewport._scrollAnim = null;
             }
-
-            const originalScrollBehavior = viewport.style.scrollBehavior;
-            viewport.style.scrollBehavior = 'auto';
 
             const startScrollLeft = viewport.scrollLeft;
             const distance = targetScrollLeft - startScrollLeft;
+            
+            if (Math.abs(distance) < 0.5) return;
+
             const startTime = performance.now();
-            const duration = 750; // Exact 0.75s sync with --slide-duration
+            const duration = 750; // Match --slide-duration
 
             function step(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                viewport.scrollLeft = startScrollLeft + (distance * easeBubble(progress));
+                const easedValue = easeBubble(progress);
+                viewport.scrollLeft = startScrollLeft + (distance * easedValue);
 
                 if (progress < 1) {
                     viewport._scrollAnim = requestAnimationFrame(step);
                 } else {
-                    viewport.style.scrollBehavior = originalScrollBehavior;
                     viewport._scrollAnim = null;
                 }
             }
@@ -165,7 +163,10 @@
         toggleBtn.classList.toggle('is-collapsed', isHidden);
     }
 
-    // Positions active pill highlights smooth across changes
+    /**
+     * Snapshots the highlight bubble's CURRENT visual pixel position mid-flight 
+     * before starting a new target transition, preventing animation desync.
+     */
     function updateHighlights(disableAnimation = false) {
         const container = document.getElementById('navContainer');
         if (!container) return;
@@ -179,19 +180,38 @@
             const listRect = list.getBoundingClientRect();
             const linkRect = activeLink.getBoundingClientRect();
 
-            const leftOffset = linkRect.left - listRect.left;
-            const width = linkRect.width;
-
-            if (disableAnimation) highlight.classList.add('no-transition');
-
-            highlight.style.transform = `translateX(${leftOffset}px)`;
-            highlight.style.width = `${width}px`;
-            highlight.classList.add('is-visible');
+            const targetLeft = linkRect.left - listRect.left;
+            const targetWidth = linkRect.width;
 
             if (disableAnimation) {
-                void highlight.offsetWidth; // Trigger layout reflow
+                highlight.classList.add('no-transition');
+                highlight.style.transform = `translateX(${targetLeft}px)`;
+                highlight.style.width = `${targetWidth}px`;
+                highlight.classList.add('is-visible');
+                void highlight.offsetWidth; // Reflow
                 highlight.classList.remove('no-transition');
+                return;
             }
+
+            // Interrupt existing CSS transition cleanly by freezing current rendered position
+            const computedStyle = window.getComputedStyle(highlight);
+            const matrix = new WebKitCSSMatrix(computedStyle.transform);
+            const currentLeft = matrix.m41 || targetLeft;
+            const currentWidth = highlight.offsetWidth || targetWidth;
+
+            // 1. Instantly freeze pill at current mid-animation coordinates
+            highlight.classList.add('no-transition');
+            highlight.style.transform = `translateX(${currentLeft}px)`;
+            highlight.style.width = `${currentWidth}px`;
+
+            // 2. Force reflow to flush frozen styles
+            void highlight.offsetWidth;
+
+            // 3. Re-enable CSS transitions to travel smoothly to new target
+            highlight.classList.remove('no-transition');
+            highlight.style.transform = `translateX(${targetLeft}px)`;
+            highlight.style.width = `${targetWidth}px`;
+            highlight.classList.add('is-visible');
         });
     }
 

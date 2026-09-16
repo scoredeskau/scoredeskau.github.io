@@ -250,7 +250,14 @@ h1, h2, h3, h4, h5, h6,
     overflow-x: auto;
     scrollbar-width: none;
     min-width: 0;
-    scroll-behavior: auto !important; /* Prevents CSS smooth scroll from fighting rAF loop */
+    
+    /* Disables native CSS smooth scroll so JS rAF handles position */
+    scroll-behavior: auto !important;
+
+    /* Prevents mobile touch gestures from blocking programmatic click events */
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: auto; /* Uses standard rendering during JS control */
+    touch-action: pan-x pan-y;
 }
 
 .tab-scroll-viewport::-webkit-scrollbar { 
@@ -298,6 +305,13 @@ h1, h2, h3, h4, h5, h6,
 .tab-link.is-active { 
     color: #FFFFFF; 
     opacity: 1; 
+}
+
+.tab-link {
+    cursor: pointer;
+    /* Forces instant tap recognition on mobile browsers without waiting for 300ms tap delay */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* -------------------------------------------------------------
