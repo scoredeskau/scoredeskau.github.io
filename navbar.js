@@ -33,7 +33,7 @@
 
     let activeTabIndex = getInitialTabIndex();
 
-    // 2. Inject Refined CSS Styles
+    // 2. Inject Refined CSS Styles with Safari Sizing Overrides
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         .no-transitions *,
@@ -87,13 +87,12 @@
         }
 
         .navigation-container {
-            position: sticky;
-            top: var(--page-outer-spacing);
+            position: relative;
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            gap: 6px;
             margin-bottom: var(--page-outer-spacing);
+            -webkit-transform: translateZ(0);
             transform: translateZ(0);
         }
 
@@ -326,27 +325,23 @@
         }
         
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
-            display: grid;
-            grid-template-rows: 1fr;
-            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: block;
             width: 100%;
-        }
-
-        .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
-            grid-template-rows: 0fr;
+            overflow: hidden;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar { 
             display: flex; 
-            min-height: 0;
             height: var(--navbar-height);
-            border-color: var(--navbar-border-color);
+            margin-top: 6px;
+            max-height: 60px;
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: max-height, margin-top, opacity;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
@@ -361,11 +356,12 @@
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
-            opacity: 0;
-            transform: translateY(-6px);
-            border-color: transparent;
-            background-color: transparent;
-            pointer-events: none;
+            max-height: 0px !important;
+            margin-top: 0px !important;
+            opacity: 0 !important;
+            transform: translateY(-6px) !important;
+            border-color: transparent !important;
+            pointer-events: none !important;
         }
     `;
     document.head.appendChild(styleElement);
@@ -573,6 +569,9 @@
             const activeMobileLink = mobileTabListElement.querySelector(`a[data-index="${activeTabIndex}"]`);
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
+
+        // Force Safari WebKit layout recalculation
+        void lowerTabWrapperElement.offsetHeight;
     });
 
     document.querySelectorAll('.icon-action-button').forEach(button => {
