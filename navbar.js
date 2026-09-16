@@ -1,49 +1,8 @@
 /**
- * Shared Navbar Component - High-Performance Edition (Hash Sync + Bar 3 State Memory)
+ * Shared Navbar Component - High-Performance Edition (Dynamic Auto-Collapse)
  */
 (function () {
     'use strict';
-
-        /**
-     * Dynamically calculates if tabs will collide with title text.
-     * Switches to collapsed mode strictly when physical overlap occurs.
-     */
-    function checkNavbarOverflow() {
-        const navContainer = document.querySelector('.navigation-container');
-        const navbar = document.querySelector('.navbar');
-        const branding = document.querySelector('.branding-group');
-        const tabViewport = document.querySelector('#combinedNavbar .tab-scroll-viewport');
-        
-        if (!navbar || !branding || !tabViewport) return;
-
-        // Temporarily uncollapse to measure natural desktop widths
-        const wasCollapsed = navContainer.classList.contains('is-collapsed-mode');
-        navContainer.classList.remove('is-collapsed-mode');
-
-        // Measure actual rendered pixel widths
-        const navbarWidth = navbar.getBoundingClientRect().width;
-        const brandingWidth = branding.getBoundingClientRect().width;
-        const tabsWidth = tabViewport.scrollWidth; // Full width of all tab items combined
-        
-        const safetyBuffer = 24; // Extra padding buffer in pixels
-
-        // If total required content exceeds available navbar width, collapse
-        const shouldCollapse = (brandingWidth + tabsWidth + safetyBuffer) > navbarWidth;
-
-        if (shouldCollapse) {
-            navContainer.classList.add('is-collapsed-mode');
-        } else {
-            // Restore user's manual collapse preference if set
-            const savedState = localStorage.getItem('bar3_collapsed');
-            if (savedState === 'true') {
-                navContainer.classList.add('is-collapsed-mode');
-            }
-        }
-    }
-
-    // Recalculate on window resize & initial load
-    window.addEventListener('resize', checkNavbarOverflow);
-    document.addEventListener('DOMContentLoaded', checkNavbarOverflow);
 
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
         { label: 'Live Scores', target: '#scores' }
@@ -62,16 +21,116 @@
             : NAVIGATION_ITEMS[0]?.target;
     }
 
+    /**
+     * Dynamically calculates available viewport space vs element natural widths.
+     * Triggers accordion collapse exclusively when natural content width exceeds available navbar space.
+     */
+    function updateResponsiveLayout() {
+        const navContainer = document.querySelector('.navigation-container');
+        const navbar = document.querySelector('#combinedNavbar');
+        const branding = document.querySelector('.branding-group');
+        const tabViewport = document.querySelector('#combinedNavbar .tab-scroll-viewport');
+        const lowerWrapper = document.getElementById('lowerTabWrapper');
+
+        if (!navContainer || !navbar || !branding || !tabViewport) return;
+
+        // 1. Temporarily strip collapse mode to measure natural unconstrained desktop widths
+        navContainer.classList.remove('is-collapsed-mode');
+
+        // 2. Measure actual element bounding boxes and content sizes
+        const navbarWidth = navbar.getBoundingClientRect().width;
+        const brandingWidth = branding.getBoundingClientRect().width;
+        const tabsWidth = tabViewport.scrollWidth;
+        
+        // Safety buffer: padding + toggle button width allowance when collapsed
+        const safetyBuffer = 32; 
+
+        // 3. Dynamic Threshold: Collapse IF total content exceeds available navbar width
+        const shouldCollapse = (brandingWidth + tabsWidth + safetyBuffer) > navbarWidth;
+
+        if (shouldCollapse) {
+            navContainer.classList.add('is-collapsed-mode');
+        } else {
+            navContainer.classList.remove('is-collapsed-mode');
+        }
+
+        // 4. Recalculate Accordion height (Bar 3)
+        if (lowerWrapper) {
+            const isHidden = lowerWrapper.classList.contains('is-hidden');
+            const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
+            const exactHeight = innerContent ? innerContent.offsetHeight : lowerWrapper.scrollHeight;
+            navContainer.style.setProperty('--bar3-h', isHidden ? '0px' : `${exactHeight}px`);
+        }
+
+        // 5. Sync active states & pill positioning
+        syncToggleState();
+        updateHighlights(true);
+    }
+
+    // Hardcodes toggle icon orientation directly to Bar 3 visibility
+    function syncToggleState() {
+        const navContainer = document.querySelector('.navigation-container');
+        const lowerWrapper = document.getElementById('lowerTabWrapper');
+        const toggleBtn = navContainer?.querySelector('.toggle-menu-button');
+
+        if (!toggleBtn || !lowerWrapper) return;
+        const isHidden = lowerWrapper.classList.contains('is-hidden');
+        toggleBtn.classList.toggle('is-collapsed', isHidden);
+    }
+
+    // Positions active pill highlights smooth across changes
+    function updateHighlights(disableAnimation = false) {
+        const container = document.getElementById('navContainer');
+        if (!container) return;
+
+        container.querySelectorAll('.tab-list').forEach(list => {
+            const activeLink = list.querySelector('.tab-link.is-active');
+            const highlight = list.querySelector('.active-tab-highlight');
+
+            if (!activeLink || !highlight) return;
+
+            const listRect = list.getBoundingClientRect();
+            const linkRect = activeLink.getBoundingClientRect();
+
+            const leftOffset = linkRect.left - listRect.left;
+            const width = linkRect.width;
+
+            if (disableAnimation) highlight.classList.add('no-transition');
+
+            highlight.style.transform = `translateX(${leftOffset}px)`;
+            highlight.style.width = `${width}px`;
+            highlight.classList.add('is-visible');
+
+            if (disableAnimation) {
+                void highlight.offsetWidth; // Trigger layout reflow
+                highlight.classList.remove('no-transition');
+            }
+        });
+    }
+
+    function setActiveTab(target, disableAnimation = false) {
+        const container = document.getElementById('navContainer');
+        const displayTitleHeading = document.getElementById('themeTitleHeading');
+        if (!container) return;
+
+        container.querySelectorAll('.tab-link').forEach(link => {
+            const isActive = link.getAttribute('data-target') === target;
+            link.classList.toggle('is-active', isActive);
+            if (isActive && displayTitleHeading) {
+                displayTitleHeading.textContent = link.textContent.trim();
+            }
+        });
+
+        updateHighlights(disableAnimation);
+    }
+
     function initNavbar() {
         const container = document.getElementById('navContainer');
         if (!container) return;
 
         const initialTarget = getActiveTargetFromHash();
-
-        // Retrieve stored Bar 3 collapsed state (defaulting to SHOWN/false if not set)
         const isBar3HiddenStored = localStorage.getItem(BAR3_STORAGE_KEY) === 'true';
 
-        // Construct Navbar DOM efficiently
         const linksHTML = NAVIGATION_ITEMS.map((item) => {
             const isActive = item.target === initialTarget;
             return `
@@ -114,89 +173,18 @@
 
         const lowerWrapper = document.getElementById('lowerTabWrapper');
         const toggleBtn = container.querySelector('.toggle-menu-button');
-        const displayTitleHeading = document.getElementById('themeTitleHeading');
 
-        // Hardcodes toggle icon state directly to Bar 3 visibility
-        const syncToggleState = () => {
-            if (!toggleBtn || !lowerWrapper) return;
-            const isHidden = lowerWrapper.classList.contains('is-hidden');
-            
-            // When isHidden is true -> adds 'is-collapsed' -> rotate(0deg) -> DOWN
-            // When isHidden is false -> removes 'is-collapsed' -> rotate(180deg) -> UP
-            toggleBtn.classList.toggle('is-collapsed', isHidden);
-        };
-
-        // Positioning function for active tab highlight pill
-        const updateHighlights = (disableAnimation = false) => {
-            container.querySelectorAll('.tab-list').forEach(list => {
-                const activeLink = list.querySelector('.tab-link.is-active');
-                const highlight = list.querySelector('.active-tab-highlight');
-
-                if (!activeLink || !highlight) return;
-
-                const listRect = list.getBoundingClientRect();
-                const linkRect = activeLink.getBoundingClientRect();
-
-                const leftOffset = linkRect.left - listRect.left;
-                const width = linkRect.width;
-
-                if (disableAnimation) highlight.classList.add('no-transition');
-
-                highlight.style.transform = `translateX(${leftOffset}px)`;
-                highlight.style.width = `${width}px`;
-                highlight.classList.add('is-visible');
-
-                if (disableAnimation) {
-                    void highlight.offsetWidth;
-                    highlight.classList.remove('no-transition');
-                }
-            });
-        };
-
-        // Helper to set state for target hash
-        const setActiveTab = (target, disableAnimation = false) => {
-            container.querySelectorAll('.tab-link').forEach(l => {
-                const isActive = l.getAttribute('data-target') === target;
-                l.classList.toggle('is-active', isActive);
-                if (isActive && displayTitleHeading) {
-                    displayTitleHeading.textContent = l.textContent.trim();
-                }
-            });
-
-            updateHighlights(disableAnimation);
-        };
-
-        // Responsive Collapse Handler
-        const checkResponsiveMode = () => {
-            const isCollapsed = window.innerWidth <= 768;
-            container.classList.toggle('is-collapsed-mode', isCollapsed);
-
-            if (isCollapsed && lowerWrapper) {
-                const isHidden = lowerWrapper.classList.contains('is-hidden');
-                // Explicitly set height on initial load so space matches post-toggle exactly
-                const exactHeight = lowerWrapper.firstElementChild ? lowerWrapper.firstElementChild.offsetHeight : lowerWrapper.scrollHeight;
-                container.style.setProperty('--bar3-h', isHidden ? '0px' : `${exactHeight}px`);
-            }
-
-            syncToggleState();
-            updateHighlights(true);
-        };
-
-        checkResponsiveMode();
-        window.addEventListener('resize', checkResponsiveMode, { passive: true });
-
-        // Toggle Accordion (Bar 3) with localStorage Persistence
+        // Toggle Accordion (Bar 3) with unified localStorage key
         if (toggleBtn && lowerWrapper) {
             toggleBtn.addEventListener('click', () => {
                 const isHidden = lowerWrapper.classList.toggle('is-hidden');
-                
-                // Keep icon rotation state strictly in sync
                 syncToggleState();
-
-                // Save current state to localStorage
                 localStorage.setItem(BAR3_STORAGE_KEY, isHidden);
 
-                container.style.setProperty('--bar3-h', isHidden ? '0px' : `${lowerWrapper.scrollHeight}px`);
+                const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
+                const targetHeight = innerContent ? innerContent.offsetHeight : lowerWrapper.scrollHeight;
+                container.style.setProperty('--bar3-h', isHidden ? '0px' : `${targetHeight}px`);
+
                 if (!isHidden) {
                     requestAnimationFrame(() => updateHighlights(true));
                 }
@@ -218,17 +206,18 @@
             setActiveTab(target);
         });
 
-        // Sync tabs on browser back / forward buttons
+        // Sync tabs on browser navigation (Back/Forward)
         window.addEventListener('popstate', () => {
-            const target = getActiveTargetFromHash();
-            setActiveTab(target);
+            setActiveTab(getActiveTargetFromHash());
         });
 
-        // Set initial state
-        setActiveTab(initialTarget, true);
-        syncToggleState();
+        // Layout recalculation listeners
+        window.addEventListener('resize', updateResponsiveLayout, { passive: true });
 
-        // Initialize pill positions immediately
+        // Initial render execution
+        setActiveTab(initialTarget, true);
+        updateResponsiveLayout();
+
         requestAnimationFrame(() => {
             updateHighlights(true);
             document.documentElement.classList.remove('no-transitions');

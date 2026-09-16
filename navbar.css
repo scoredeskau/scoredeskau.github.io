@@ -119,13 +119,12 @@ h1, h2, h3, h4, h5, h6,
 /* -------------------------------------------------------------
    4. Header & Branding Components
    ------------------------------------------------------------- */
-/* Ensure titles measure their full natural width without premature clipping */
 .branding-group {
     display: flex;
     align-items: center;
     padding-left: var(--back-btn-offset);
     flex-shrink: 0;
-    width: max-content; /* Guarantees accurate scrollWidth measurement */
+    width: max-content; /* Prevents title wrapping during calculation */
     z-index: 2;
     height: 100%;
 }
@@ -182,6 +181,7 @@ h1, h2, h3, h4, h5, h6,
 /* -------------------------------------------------------------
    4. Header & Chevron Hardcoded States
    ------------------------------------------------------------- */
+
 .toggle-menu-button { 
     display: none; 
     z-index: 10; 
@@ -220,8 +220,8 @@ h1, h2, h3, h4, h5, h6,
     white-space: nowrap;
     padding: 0 var(--back-btn-offset);
     overflow: hidden;
-    flex-shrink: 0;
-    min-width: max-content;
+    flex-shrink: 0; /* Ensures natural text width is preserved for measurements */
+    width: max-content;
 }
 
 .primary-title { 
@@ -374,6 +374,20 @@ h1, h2, h3, h4, h5, h6,
 
 .navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { 
     display: none; 
+}
+
+/* Ensure main bar retains header dimensions when toggled */
+.combined-header-navbar {
+    flex-shrink: 0;
+}
+
+/* Prevent inline navbar flex items from shrinking during width measurement */
+.navigation-container:not(.is-collapsed-mode) .branding-group {
+    flex-shrink: 0;
+}
+
+.navigation-container:not(.is-collapsed-mode) .tab-scroll-viewport {
+    flex-shrink: 0;
 }
 
 /* -------------------------------------------------------------
