@@ -22,6 +22,39 @@
     }
 
     /**
+     * Centers the active tab within its scrollable viewport.
+     * @param {'smooth' | 'auto'} behavior - Scrolling animation behavior.
+     */
+    function centerActiveTab(behavior = 'smooth') {
+        const container = document.getElementById('navContainer');
+        if (!container) return;
+
+        const viewports = container.querySelectorAll('.tab-scroll-viewport');
+
+        viewports.forEach(viewport => {
+            // Check if viewport is visible (e.g., skip hidden top nav when collapsed)
+            if (viewport.offsetWidth === 0 && viewport.offsetHeight === 0) return;
+
+            const activeLink = viewport.querySelector('.tab-link.is-active');
+            if (!activeLink) return;
+
+            const activeItem = activeLink.closest('.tab-item') || activeLink;
+
+            // Calculate center position: item left relative to viewport scroll content
+            const itemLeft = activeItem.offsetLeft;
+            const itemWidth = activeItem.offsetWidth;
+            const viewportWidth = viewport.clientWidth;
+
+            const targetScrollLeft = itemLeft - (viewportWidth / 2) + (itemWidth / 2);
+
+            viewport.scrollTo({
+                left: Math.max(0, targetScrollLeft),
+                behavior: behavior
+            });
+        });
+    }
+
+    /**
      * Dynamically calculates available viewport space vs element natural widths.
      * Triggers accordion collapse exclusively when natural content width exceeds available navbar space.
      */
@@ -62,9 +95,10 @@
             navContainer.style.setProperty('--bar3-h', isHidden ? '0px' : `${exactHeight}px`);
         }
 
-        // 5. Sync active states & pill positioning
+        // 5. Sync active states, pill positioning, and auto-scroll centering
         syncToggleState();
         updateHighlights(true);
+        centerActiveTab('auto'); // Instant centering on screen resize to stay locked on screen
     }
 
     // Hardcodes toggle icon orientation directly to Bar 3 visibility
@@ -122,6 +156,7 @@
         });
 
         updateHighlights(disableAnimation);
+        centerActiveTab(disableAnimation ? 'auto' : 'smooth');
     }
 
     function initNavbar() {
@@ -186,7 +221,10 @@
                 container.style.setProperty('--bar3-h', isHidden ? '0px' : `${targetHeight}px`);
 
                 if (!isHidden) {
-                    requestAnimationFrame(() => updateHighlights(true));
+                    requestAnimationFrame(() => {
+                        updateHighlights(true);
+                        centerActiveTab('auto');
+                    });
                 }
             });
         }
@@ -220,6 +258,7 @@
 
         requestAnimationFrame(() => {
             updateHighlights(true);
+            centerActiveTab('auto');
             document.documentElement.classList.remove('no-transitions');
         });
     }
