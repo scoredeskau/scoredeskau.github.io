@@ -321,12 +321,6 @@ h1, h2, h3, h4, h5, h6,
     -webkit-tap-highlight-color: transparent;
 }
 
-.tab-link {
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-}
-
 /* Active tab state: Forced solid white text and full opacity continuously */
 .tab-link.is-active,
 .tab-link.is-active:hover,
@@ -435,10 +429,6 @@ h1, h2, h3, h4, h5, h6,
     overflow: hidden; 
 }
 
-.navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { 
-    display: none; 
-}
-
 /* Ensure main bar retains header dimensions when toggled */
 .combined-header-navbar {
     flex-shrink: 0;
@@ -511,6 +501,7 @@ h1, h2, h3, h4, h5, h6,
 
 /* 3. Hide desktop tab bar in collapsed mode while preserving DOM measurements */
 .navigation-container.is-collapsed-mode #combinedNavbar .tab-scroll-viewport {
+    display: flex !important; /* Prevents display:none from zeroing scrollWidth */
     visibility: hidden !important;
     pointer-events: none !important;
     position: absolute !important;
