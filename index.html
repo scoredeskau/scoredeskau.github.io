@@ -107,7 +107,7 @@
             color: rgba(255, 255, 255, 0.92);
             flex-shrink: 0;
             cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
             -webkit-user-select: none;
             will-change: transform;
@@ -128,13 +128,13 @@
             transform: scale(0.92);
             background: rgba(255, 255, 255, 0.22);
             border-color: rgba(255, 255, 255, 0.35);
-            transition: background 0.05s ease, border-color 0.05s ease, transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: background 0.05s ease, border-color 0.05s ease, transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .icon-action-button svg {
             width: 18px;
             height: 18px;
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .toggle-menu-button {
@@ -248,7 +248,7 @@
             color: #fff;
         }
 
-        /* Continuous ease-out cubic-bezier timing matching the smooth JS scroll */
+        /* Ease-in-out curve removes initial snap by accelerating gently from zero initial velocity */
         .active-tab-highlight {
             position: absolute;
             top: var(--tab-bubble-offset-v);
@@ -257,7 +257,7 @@
             background: rgba(255, 255, 255, 0.14);
             border-radius: 9999px;
             pointer-events: none;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 0;
             will-change: transform, width;
         }
@@ -294,7 +294,7 @@
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
             display: grid;
             grid-template-rows: 1fr;
-            transition: grid-template-rows 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
         }
 
@@ -309,10 +309,10 @@
             border-color: var(--navbar-border-color);
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-                        border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-                        background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
@@ -441,9 +441,9 @@
         let cachedTabsWidth = 0;
         const activeScrollAnimations = new WeakMap();
 
-        /* Custom ease-out cubic-bezier function matching cubic-bezier(0.25, 1, 0.5, 1) */
-        function easeOutCubicBezier(t) {
-            const p1x = 0.25, p1y = 1.0, p2x = 0.5, p2y = 1.0;
+        /* Cubic Bezier evaluator for cubic-bezier(0.4, 0.0, 0.2, 1.0) - Standard Ease-In-Out */
+        function easeInOutCubicBezier(t) {
+            const p1x = 0.4, p1y = 0.0, p2x = 0.2, p2y = 1.0;
             let cx = 3.0 * p1x;
             let bx = 3.0 * (p2x - p1x) - cx;
             let ax = 1.0 - cx - bx;
@@ -459,7 +459,6 @@
                 return ((ay * time + by) * time + cy) * time;
             }
 
-            // Newton-Raphson iteration to solve X for T
             let sampleT = t;
             for (let i = 0; i < 5; i++) {
                 let x = sampleCurveX(sampleT) - t;
@@ -472,8 +471,7 @@
             return sampleCurveY(sampleT);
         }
 
-        /* Smooth scroll loop perfectly synchronized with highlight CSS animation */
-        function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 400) {
+        function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 450) {
             if (activeScrollAnimations.has(viewportElement)) {
                 cancelAnimationFrame(activeScrollAnimations.get(viewportElement));
             }
@@ -492,7 +490,7 @@
                 const elapsedTime = currentTime - startTime;
                 const progressRatio = Math.min(elapsedTime / duration, 1);
                 
-                const easedProgress = easeOutCubicBezier(progressRatio);
+                const easedProgress = easeInOutCubicBezier(progressRatio);
                 viewportElement.scrollLeft = startScrollLeft + (totalDistance * easedProgress);
 
                 if (progressRatio < 1) {
@@ -533,7 +531,7 @@
                 void highlightElement.offsetHeight;
                 highlightElement.classList.remove('no-transition');
             } else {
-                synchronizedSmoothScroll(viewportElement, targetScrollLeft, 400);
+                synchronizedSmoothScroll(viewportElement, targetScrollLeft, 450);
             }
         }
 
