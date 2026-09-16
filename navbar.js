@@ -259,6 +259,22 @@
             `;
         }).join('');
 
+        // Touch feedback listener exclusively for circular action buttons (.icon-action-button)
+        container.querySelectorAll('.icon-action-button').forEach(btn => {
+            btn.addEventListener('touchstart', () => {
+                btn.classList.add('is-pressed');
+            }, { passive: true });
+
+            const releasePress = () => {
+                setTimeout(() => {
+                    btn.classList.remove('is-pressed');
+                }, 120); // Hold highlight for a split second, then spring back
+            };
+
+            btn.addEventListener('touchend', releasePress, { passive: true });
+            btn.addEventListener('touchcancel', releasePress, { passive: true });
+        });
+
         container.innerHTML = `
             <header class="navbar combined-header-navbar" id="combinedNavbar">
                 <div class="branding-group">
