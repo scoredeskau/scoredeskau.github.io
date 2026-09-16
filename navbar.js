@@ -111,11 +111,9 @@
             highlightElement.classList.add('no-transition');
         }
 
-        // Measure layout properties
         const targetWidthPx = activeItem.offsetWidth;
         const horizontalOffsetPx = activeItem.offsetLeft;
 
-        // Mutate styles in batch
         highlightElement.style.width = `${targetWidthPx}px`;
         highlightElement.style.transform = `translateX(${horizontalOffsetPx}px)`;
         highlightElement.classList.add('is-visible');
@@ -183,7 +181,7 @@
         toggleMenuButton.setAttribute('aria-expanded', !isHidden);
 
         if (!isHidden) {
-            const activeMobileLink = mobileTabList.querySelector(`a[data-index="${activeTabIndex}"]`);
+            const activeMobileLink = mobileTabList.querySelector(`a[data-index="${index}"]` || mobileTabList.querySelector('.tab-link'));
             updateHighlightPosition(activeMobileLink, mobileHighlight, mobileViewport, true);
         }
     });

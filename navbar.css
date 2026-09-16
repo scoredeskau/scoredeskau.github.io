@@ -33,10 +33,14 @@
     --navbar-pill-background: rgba(15, 23, 42, 0.75);
     --navbar-border-color: rgba(255, 255, 255, 0.2);
     
-    /* Easing & Durations */
+    /* Global Easing & Timing Controls */
     --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
     --fade-duration: 1.2s;
     --slide-duration: 1.0s;
+
+    /* BAR 3 ANIMATION TIMINGS (Adjust these values directly) */
+    --bar3-fade-out-duration: 0.8s;
+    --bar3-fade-in-duration: 0.45s;
 }
 
 /* Themes */
@@ -335,12 +339,13 @@ h1, h2, h3, h4, h5, h6,
     display: grid;
     grid-template-rows: 1fr;
     width: 100%;
-    transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-top: 6px;
+    transition: grid-template-rows var(--bar3-fade-out-duration) var(--ease-cinematic);
     will-change: grid-template-rows;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
-    overflow: hidden;
+    overflow: visible;
     min-height: 0;
 }
 
@@ -348,15 +353,13 @@ h1, h2, h3, h4, h5, h6,
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     display: flex;
     height: var(--navbar-height);
-    margin-top: 6px;
     opacity: 1;
     transform: translateY(0);
     filter: blur(0px);
-    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                filter 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                margin-top 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform, filter, margin-top;
+    transition: opacity var(--bar3-fade-in-duration) var(--ease-cinematic),
+                transform var(--bar3-fade-in-duration) var(--ease-cinematic),
+                filter var(--bar3-fade-in-duration) var(--ease-cinematic);
+    will-change: opacity, transform, filter;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
@@ -372,17 +375,20 @@ h1, h2, h3, h4, h5, h6,
 /* BAR 3 HIDDEN (Fades Out Travelling Upwards into Bar 2) */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
     grid-template-rows: 0fr;
-    transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+    transition: grid-template-rows var(--bar3-fade-out-duration) var(--ease-cinematic);
+}
+
+.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar-inner {
+    overflow: hidden;
+    transition: overflow 0s linear var(--bar3-fade-out-duration);
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
     opacity: 0;
-    transform: translateY(-16px);
-    filter: blur(3px);
-    margin-top: 0px;
+    transform: translateY(-20px);
+    filter: blur(4px);
     pointer-events: none;
-    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                margin-top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity var(--bar3-fade-out-duration) var(--ease-cinematic),
+                transform var(--bar3-fade-out-duration) var(--ease-cinematic),
+                filter var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
