@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-transitions">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,29 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎾</text></svg>">
 
+    <!-- Anti-Flash Script: Reads saved theme from localStorage BEFORE CSS/DOM renders -->
+    <script>
+        (function() {
+            var STORAGE_KEY_ACTIVE_THEME = 'activeTournamentTheme';
+            var savedTheme = localStorage.getItem(STORAGE_KEY_ACTIVE_THEME);
+            var validThemes = ['theme-australian', 'theme-french', 'theme-wimbledon', 'theme-usopen', 'theme-streams', 'theme-settings'];
+            
+            if (savedTheme && validThemes.indexOf(savedTheme) !== -1) {
+                document.documentElement.className = 'no-transitions ' + savedTheme;
+            } else {
+                document.documentElement.className = 'no-transitions theme-australian';
+            }
+        })();
+    </script>
+
     <style>
+        /* Suppress all color/layout transitions during initial render */
+        .no-transitions *,
+        .no-transitions *::before,
+        .no-transitions *::after {
+            transition: none !important;
+        }
+
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -31,12 +53,12 @@
             --navbar-border-color: rgba(255, 255, 255, 0.2);
         }
 
-        body.theme-australian { --canvas-background-color: #000C3C; --court-accent-color: #0091D2; }
-        body.theme-french     { --canvas-background-color: #1A4D2E; --court-accent-color: #C2593F; }
-        body.theme-wimbledon  { --canvas-background-color: #3D2358; --court-accent-color: #21713C; }
-        body.theme-usopen     { --canvas-background-color: #355E3B; --court-accent-color: #1E8FD5; }
-        body.theme-streams    { --canvas-background-color: #0B3D66; --court-accent-color: #00B3FF; }
-        body.theme-settings   { --canvas-background-color: #2B1B3F; --court-accent-color: #B388FF; }
+        :root.theme-australian, body.theme-australian { --canvas-background-color: #000C3C; --court-accent-color: #0091D2; }
+        :root.theme-french, body.theme-french         { --canvas-background-color: #1A4D2E; --court-accent-color: #C2593F; }
+        :root.theme-wimbledon, body.theme-wimbledon   { --canvas-background-color: #3D2358; --court-accent-color: #21713C; }
+        :root.theme-usopen, body.theme-usopen         { --canvas-background-color: #355E3B; --court-accent-color: #1E8FD5; }
+        :root.theme-streams, body.theme-streams       { --canvas-background-color: #0B3D66; --court-accent-color: #00B3FF; }
+        :root.theme-settings, body.theme-settings     { --canvas-background-color: #2B1B3F; --court-accent-color: #B388FF; }
 
         body {
             background-color: var(--canvas-background-color);
@@ -248,7 +270,6 @@
             color: #fff;
         }
 
-        /* Ease-in-out curve removes initial snap by accelerating gently from zero initial velocity */
         .active-tab-highlight {
             position: absolute;
             top: var(--tab-bubble-offset-v);
@@ -356,7 +377,7 @@
         }
     </style>
 </head>
-<body class="theme-australian">
+<body>
 
     <div class="navigation-container" id="navContainer">
         <nav class="navbar combined-header-navbar" id="combinedNavbar">
@@ -411,6 +432,7 @@
         ];
 
         const STORAGE_KEY_ACTIVE_THEME = 'activeTournamentTheme';
+        const initialSavedThemeKey = localStorage.getItem(STORAGE_KEY_ACTIVE_THEME) || NAVIGATION_ITEMS[0].themeKey;
         
         const navContainer = document.getElementById('navContainer');
         const combinedNavbar = document.getElementById('combinedNavbar');
@@ -425,9 +447,10 @@
 
         function renderTabNavigationItems(targetContainerElement) {
             const highlightHtml = targetContainerElement.querySelector('.active-tab-highlight').outerHTML;
-            const itemsHtml = NAVIGATION_ITEMS.map(item => 
-                `<li class="tab-item"><a href="#" class="tab-link" data-theme="${item.themeKey}">${item.label}</a></li>`
-            ).join('');
+            const itemsHtml = NAVIGATION_ITEMS.map(item => {
+                const isActive = item.themeKey === initialSavedThemeKey;
+                return `<li class="tab-item"><a href="#" class="tab-link${isActive ? ' is-active' : ''}" data-theme="${item.themeKey}">${item.label}</a></li>`;
+            }).join('');
             
             targetContainerElement.innerHTML = highlightHtml + itemsHtml;
         }
@@ -441,7 +464,6 @@
         let cachedTabsWidth = 0;
         const activeScrollAnimations = new WeakMap();
 
-        /* Cubic Bezier evaluator for cubic-bezier(0.4, 0.0, 0.2, 1.0) - Standard Ease-In-Out */
         function easeInOutCubicBezier(t) {
             const p1x = 0.4, p1y = 0.0, p2x = 0.2, p2y = 1.0;
             let cx = 3.0 * p1x;
@@ -563,6 +585,8 @@
 
             themeTitleHeadingElement.textContent = currentNavigationItem.label;
             document.title = currentNavigationItem.label;
+            
+            document.documentElement.className = document.documentElement.className.replace(/\btheme-\S+/g, '') + ' ' + currentNavigationItem.themeKey;
             document.body.className = currentNavigationItem.themeKey;
 
             const activeDesktopLink = desktopTabListElement.querySelector(`a[data-theme="${currentNavigationItem.themeKey}"]`);
@@ -623,6 +647,13 @@
 
         resizeObserver.observe(navContainer);
         checkCollisionBreakpoints();
+
+        // Re-enable smooth transitions AFTER initial rendering completes
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                document.documentElement.classList.remove('no-transitions');
+            });
+        });
     </script>
 </body>
 </html>
