@@ -491,7 +491,7 @@ h1, h2, h3, h4, h5, h6,
 #lowerTabWrapper {
     height: var(--bar3-h, 0px);
     overflow: hidden; /* Clips content when height is 0px */
-    transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: height var(--bar3-fade-in-duration) var(--ease-cinematic);
 }
 
 /* 2. Completely remove Bar 3 from the DOM layout in Desktop mode */
@@ -555,6 +555,7 @@ h1, h2, h3, h4, h5, h6,
     opacity: 0;
     pointer-events: none;
     max-height: 0px;
+    /* Use fade-out duration when collapsing */
     transition: max-height var(--bar3-fade-out-duration) var(--ease-cinematic),
                 opacity var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
