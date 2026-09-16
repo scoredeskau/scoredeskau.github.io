@@ -101,7 +101,7 @@
             color: rgba(255, 255, 255, 0.92);
             flex-shrink: 0;
             cursor: pointer;
-            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
             user-select: none;
             -webkit-user-select: none;
         }
@@ -117,28 +117,24 @@
             }
         }
 
-        /* Active bounce state & visual flash highlight on tap */
+        /* Active bounce state & visual flash highlight on tap/click for ALL icon buttons */
         .icon-action-button:active,
         .icon-action-button.is-pressed {
-            transform: scale(0.95);
+            transform: scale(0.92);
             background: rgba(255, 255, 255, 0.22);
             border-color: rgba(255, 255, 255, 0.35);
-            transition: background 0.05s ease, border-color 0.05s ease, transform 0.15s ease;
+            transition: background 0.05s ease, border-color 0.05s ease, transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .icon-action-button svg {
             width: 18px;
             height: 18px;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .toggle-menu-button {
             display: none;
             z-index: 10;
-        }
-
-        .toggle-menu-button svg {
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: rotate(0deg);
         }
 
         .toggle-menu-button.is-collapsed svg {
@@ -273,6 +269,12 @@
             top: 50%;
             transform: translateY(-50%);
             margin-right: var(--back-btn-offset);
+        }
+
+        /* Retain bounce state transform override when right button is absolutely positioned */
+        .navigation-container.is-collapsed-mode .toggle-menu-button:active,
+        .navigation-container.is-collapsed-mode .toggle-menu-button.is-pressed {
+            transform: translateY(-50%) scale(0.92);
         }
 
         .navigation-container.is-collapsed-mode .branding-group {
