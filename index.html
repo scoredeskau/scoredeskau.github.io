@@ -106,13 +106,22 @@
             -webkit-user-select: none;
         }
 
-        .icon-action-button:hover {
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(255, 255, 255, 0.3);
+        /* Hover style only applies to true pointer/mouse devices */
+        @media (hover: hover) {
+            .icon-action-button:hover {
+                background: rgba(255, 255, 255, 0.18);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            .tab-link:hover {
+                color: #fff;
+            }
         }
 
+        /* Active bounce state applies to both touch and click */
         .icon-action-button:active {
             transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .icon-action-button svg {
@@ -231,7 +240,6 @@
             -webkit-user-select: none;
         }
 
-        .tab-link:hover,
         .tab-link.is-active {
             color: #fff;
         }
