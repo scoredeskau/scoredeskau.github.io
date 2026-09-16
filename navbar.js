@@ -358,13 +358,12 @@
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
             width: 100%;
             margin-left: 0;
-            padding: 0;
+            padding: 0 var(--tab-bubble-offset-v);
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list {
             margin-left: 0;
-            padding-left: var(--back-btn-offset);
-            padding-right: var(--tab-bubble-offset-v);
+            padding: 0;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
