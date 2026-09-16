@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" class="no-transitions">
+<head>
+    <meta charset="UTF-8">
+    <title>Tournament Settings</title>
+    <script src="anti-flash.js"></script>
+</head>
+<body>
+
+    <div class="navigation-container" id="navContainer"></div>
+
+    <main class="main-content">
+        <h1 class="active-tab-display" id="themeTitleHeading">General</h1>
+    </main>
+
+    <!-- Configure Page Specific Navbar Settings -->
+    <script>
+        window.PAGE_THEME = 'theme-settings'; // Locks whole page to settings theme
+        window.PAGE_PRIMARY_TITLE = 'Tournament Settings';
+        window.PAGE_SECONDARY_TITLE = 'Admin Controls';
+
+        window.PAGE_NAVIGATION_ITEMS = [
+            { label: 'General', target: '#general' },
+            { label: 'Players & Teams', target: '#players' },
+            { label: 'Schedule Rules', target: '#rules' },
+            { label: 'Export Data', target: '#export' }
+        ];
+    </script>
+    <script src="navbar.js"></script>
+</body>
+</html>
