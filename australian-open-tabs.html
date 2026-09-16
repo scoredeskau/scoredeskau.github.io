@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Dashboard</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎾</text></svg>">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --canvas-background-color: #000C3C;
+            --court-accent-color: #0091D2;
+            --navbar-height: 52px;
+            
+            /* Dimensions */
+            --back-btn-size: 36px;
+            --tab-bubble-height: 44px;
+            
+            --back-btn-offset: calc((var(--navbar-height) - var(--back-btn-size)) / 2);
+            --tab-bubble-offset-v: calc((var(--navbar-height) - var(--tab-bubble-height)) / 2);
+            
+            --page-outer-spacing: 24px;
+            --navbar-pill-background: rgba(255, 255, 255, 0.08);
+            --navbar-border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body.theme-australian { --canvas-background-color: #000C3C; --court-accent-color: #0091D2; }
+        body.theme-french     { --canvas-background-color: #1A4D2E; --court-accent-color: #C2593F; }
+        body.theme-wimbledon  { --canvas-background-color: #3D2358; --court-accent-color: #21713C; }
+        body.theme-usopen     { --canvas-background-color: #355E3B; --court-accent-color: #1E8FD5; }
+        body.theme-streams    { --canvas-background-color: #0B3D66; --court-accent-color: #00B3FF; }
+        body.theme-settings   { --canvas-background-color: #2B1B3F; --court-accent-color: #B388FF; }
+
+        body {
+            background-color: var(--canvas-background-color);
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease;
+            padding: calc((var(--page-outer-spacing) * 2) + var(--navbar-height)) var(--page-outer-spacing) var(--page-outer-spacing);
+            font-family: "SF Pro Text", "SF Pro Icons", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .navigation-container {
+            position: fixed;
+            top: var(--page-outer-spacing);
+            left: var(--page-outer-spacing);
+            right: var(--page-outer-spacing);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .navbar {
+            width: 100%;
+            height: var(--navbar-height);
+            padding: 0;
+            background: var(--navbar-pill-background);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 9999px;
+            border: 1px solid var(--navbar-border-color);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .branding-group {
+            display: flex;
+            align-items: center;
+            padding-left: var(--back-btn-offset);
+            flex-shrink: 1;
+            min-width: 0;
+            z-index: 2;
+            height: 100%;
+        }
+
+        .icon-action-button {
+            height: var(--back-btn-size);
+            width: var(--back-btn-size);
+            border-radius: 9999px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: rgba(255, 255, 255, 0.92);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+            user-select: none;
+        }
+
+        .icon-action-button:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .icon-action-button:active {
+            transform: scale(0.95);
+        }
+
+        .icon-action-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .toggle-menu-button {
+            display: none;
+            z-index: 10;
+        }
+
+        .toggle-menu-button svg {
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: rotate(0deg);
+        }
+
+        .toggle-menu-button.is-collapsed svg {
+            transform: rotate(180deg);
+        }
+
+        .header-titles {
+            height: var(--back-btn-size);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1px;
+            white-space: nowrap;
+            padding-left: var(--back-btn-offset);
+            padding-right: var(--back-btn-offset);
+            overflow: hidden;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+
+        .primary-title {
+            font-size: 14px;
+            line-height: 1.2;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .secondary-title {
+            font-size: 12px;
+            line-height: 1.2;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.75);
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .tab-scroll-viewport {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: auto;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            min-width: 0;
+            overflow-anchor: none;
+        }
+
+        .tab-scroll-viewport::-webkit-scrollbar { display: none; }
+
+        .tab-list {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            list-style: none;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .tab-list::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 100%;
+            flex-shrink: 0;
+            margin-right: calc(var(--tab-bubble-offset-v) - 4px);
+        }
+
+        .tab-item {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .tab-link {
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            white-space: nowrap;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            border-radius: 9999px;
+            transition: color 0.25s ease;
+        }
+
+        .tab-link:hover,
+        .tab-link.is-active {
+            color: #fff;
+        }
+
+        .active-tab-highlight {
+            position: absolute;
+            top: var(--tab-bubble-offset-v);
+            bottom: var(--tab-bubble-offset-v);
+            left: 0;
+            background: rgba(255, 255, 255, 0.14);
+            border-radius: 9999px;
+            pointer-events: none;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), width 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 0;
+            will-change: transform, width;
+        }
+
+        .active-tab-highlight.no-transition {
+            transition: none !important;
+        }
+
+        .stacked-tab-wrapper { display: none; }
+
+        /* Dynamic Mode Trigger (State 2: Bar 2 at top, Bar 3 below) */
+        .navigation-container.is-collapsed-mode .toggle-menu-button {
+            display: grid;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-right: var(--back-btn-offset);
+        }
+
+        .navigation-container.is-collapsed-mode .branding-group {
+            padding-right: calc(var(--back-btn-size) + var(--back-btn-offset));
+            width: 100%;
+        }
+
+        .navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { 
+            display: none; 
+        }
+        
+        .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100%;
+        }
+
+        .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
+            grid-template-rows: 0fr;
+        }
+
+        .navigation-container.is-collapsed-mode .stacked-tab-navbar { 
+            display: flex; 
+            min-height: 0;
+            height: var(--navbar-height);
+            border-color: var(--navbar-border-color);
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+                        background-color 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list {
+            margin-left: 0;
+        }
+
+        .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 100%;
+            flex-shrink: 0;
+            margin-left: calc(var(--tab-bubble-offset-v) - 4px);
+        }
+
+        .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
+            opacity: 0;
+            transform: translateY(-6px);
+            border-color: transparent;
+            background-color: transparent;
+            pointer-events: none;
+        }
+
+        .main-content {
+            min-height: 50vh;
+            display: grid;
+            place-items: center;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+
+        .active-tab-display {
+            font-size: clamp(28px, 4vw, 56px);
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+    </style>
+</head>
+<body class="theme-australian">
+
+    <div class="navigation-container" id="navContainer">
+        <nav class="navbar combined-header-navbar" id="combinedNavbar">
+            <div class="branding-group" id="brandingGroup">
+                <div class="icon-action-button back-button" aria-label="Go Back" role="button" tabindex="0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.5 5.5L8 12L14.5 18.5"/>
+                    </svg>
+                </div>
+                <div class="header-titles">
+                    <div class="primary-title">2026 RSYLTC Clay Court Championships</div>
+                    <div class="secondary-title">Tournament Management</div>
+                </div>
+            </div>
+
+            <div class="tab-scroll-viewport" id="desktopTabViewport">
+                <ul class="tab-list" id="desktopTabList">
+                    <div class="active-tab-highlight" id="desktopActiveHighlight"></div>
+                </ul>
+            </div>
+
+            <button class="icon-action-button toggle-menu-button" id="toggleMenuButton" aria-label="Toggle Tab Menu" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 15L12 9L6 15"/>
+                </svg>
+            </button>
+        </nav>
+
+        <div class="stacked-tab-wrapper" id="lowerTabWrapper">
+            <nav class="navbar stacked-tab-navbar">
+                <div class="tab-scroll-viewport" id="mobileTabViewport">
+                    <ul class="tab-list" id="mobileTabList">
+                        <div class="active-tab-highlight" id="mobileActiveHighlight"></div>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <h1 class="active-tab-display" id="themeTitleHeading">Live Scores</h1>
+    </main>
+
+    <script>
+        const NAVIGATION_ITEMS = [
+            { label: 'Live Scores', themeKey: 'theme-australian' },
+            { label: 'Schedule', themeKey: 'theme-french' },
+            { label: 'Announcements', themeKey: 'theme-wimbledon' },
+            { label: 'Results', themeKey: 'theme-usopen' },
+            { label: 'Streams', themeKey: 'theme-streams' },
+            { label: 'Settings', themeKey: 'theme-settings' }
+        ];
+
+        const STORAGE_KEY_ACTIVE_THEME = 'activeTournamentTheme';
+        
+        const navContainer = document.getElementById('navContainer');
+        const combinedNavbar = document.getElementById('combinedNavbar');
+        const brandingGroup = document.getElementById('brandingGroup');
+        const desktopTabListElement = document.getElementById('desktopTabList');
+        const mobileTabListElement = document.getElementById('mobileTabList');
+        const desktopViewportElement = document.getElementById('desktopTabViewport');
+        const mobileViewportElement = document.getElementById('mobileTabViewport');
+        const themeTitleHeadingElement = document.getElementById('themeTitleHeading');
+        const toggleMenuButtonElement = document.getElementById('toggleMenuButton');
+        const lowerTabWrapperElement = document.getElementById('lowerTabWrapper');
+
+        function renderTabNavigationItems(targetContainerElement) {
+            const highlightHtml = targetContainerElement.querySelector('.active-tab-highlight').outerHTML;
+            const itemsHtml = NAVIGATION_ITEMS.map(item => 
+                `<li class="tab-item"><a href="#" class="tab-link" data-theme="${item.themeKey}">${item.label}</a></li>`
+            ).join('');
+            
+            targetContainerElement.innerHTML = highlightHtml + itemsHtml;
+        }
+
+        renderTabNavigationItems(desktopTabListElement);
+        renderTabNavigationItems(mobileTabListElement);
+
+        const updatedDesktopHighlight = document.getElementById('desktopActiveHighlight');
+        const updatedMobileHighlight = document.getElementById('mobileActiveHighlight');
+
+        const scrollAnimations = new WeakMap();
+
+        function smoothScrollTo(element, targetX, duration = 350) {
+            if (scrollAnimations.has(element)) {
+                cancelAnimationFrame(scrollAnimations.get(element));
+            }
+
+            const startX = element.scrollLeft;
+            const distance = targetX - startX;
+            if (Math.abs(distance) < 1) {
+                element.scrollLeft = targetX;
+                return;
+            }
+
+            const startTime = performance.now();
+
+            function easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
+            }
+
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                element.scrollLeft = startX + (distance * easeOutCubic(progress));
+
+                if (progress < 1) {
+                    scrollAnimations.set(element, requestAnimationFrame(step));
+                } else {
+                    scrollAnimations.delete(element);
+                }
+            }
+
+            scrollAnimations.set(element, requestAnimationFrame(step));
+        }
+
+        function updateHighlightPosition(activeTabLink, highlightElement, viewportElement, isInstant = false) {
+            if (!activeTabLink || !highlightElement || !viewportElement) return;
+
+            const activeItem = activeTabLink.closest('.tab-item');
+            if (!activeItem) return;
+
+            if (isInstant) {
+                highlightElement.classList.add('no-transition');
+            }
+
+            const targetWidthPx = activeItem.offsetWidth;
+            const horizontalOffsetPx = activeItem.offsetLeft;
+
+            highlightElement.style.width = `${targetWidthPx}px`;
+            highlightElement.style.transform = `translateX(${horizontalOffsetPx}px)`;
+
+            const viewportWidth = viewportElement.clientWidth;
+            const maxScroll = Math.max(0, viewportElement.scrollWidth - viewportWidth);
+            const targetScrollLeft = Math.max(0, Math.min(maxScroll, (horizontalOffsetPx + (targetWidthPx / 2)) - (viewportWidth / 2)));
+
+            if (isInstant) {
+                if (scrollAnimations.has(viewportElement)) {
+                    cancelAnimationFrame(scrollAnimations.get(viewportElement));
+                }
+                viewportElement.scrollLeft = targetScrollLeft;
+                void highlightElement.offsetHeight;
+                highlightElement.classList.remove('no-transition');
+            } else {
+                smoothScrollTo(viewportElement, targetScrollLeft, 350);
+            }
+        }
+
+        function checkCollisionBreakpoints() {
+            const wasCollapsed = navContainer.classList.contains('is-collapsed-mode');
+            navContainer.classList.remove('is-collapsed-mode');
+
+            const navbarWidth = combinedNavbar.clientWidth;
+            const brandingWidth = brandingGroup.offsetWidth;
+            const tabsNaturalWidth = desktopTabListElement.scrollWidth;
+            
+            const totalRequiredWidth = brandingWidth + tabsNaturalWidth + 8;
+
+            if (navbarWidth < totalRequiredWidth) {
+                navContainer.classList.add('is-collapsed-mode');
+            } else {
+                navContainer.classList.remove('is-collapsed-mode');
+            }
+
+            const savedThemeKey = localStorage.getItem(STORAGE_KEY_ACTIVE_THEME) || NAVIGATION_ITEMS[0].themeKey;
+            switchActiveTheme(savedThemeKey, true);
+        }
+
+        function switchActiveTheme(selectedThemeKey, isInstant = false) {
+            const currentNavigationItem = NAVIGATION_ITEMS.find(item => item.themeKey === selectedThemeKey) || NAVIGATION_ITEMS[0];
+
+            document.querySelectorAll('.tab-link').forEach(linkElement => {
+                linkElement.classList.toggle('is-active', linkElement.dataset.theme === currentNavigationItem.themeKey);
+            });
+
+            themeTitleHeadingElement.textContent = currentNavigationItem.label;
+            document.title = currentNavigationItem.label;
+            document.body.className = currentNavigationItem.themeKey;
+
+            const activeDesktopLink = desktopTabListElement.querySelector(`a[data-theme="${currentNavigationItem.themeKey}"]`);
+            const activeMobileLink = mobileTabListElement.querySelector(`a[data-theme="${currentNavigationItem.themeKey}"]`);
+
+            updateHighlightPosition(activeDesktopLink, updatedDesktopHighlight, desktopViewportElement, isInstant);
+            updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, isInstant);
+        }
+
+        toggleMenuButtonElement.addEventListener('click', () => {
+            const isHidden = lowerTabWrapperElement.classList.toggle('is-hidden');
+            toggleMenuButtonElement.classList.toggle('is-collapsed', isHidden);
+            toggleMenuButtonElement.setAttribute('aria-expanded', !isHidden);
+
+            if (!isHidden) {
+                const savedThemeKey = localStorage.getItem(STORAGE_KEY_ACTIVE_THEME) || NAVIGATION_ITEMS[0].themeKey;
+                const activeMobileLink = mobileTabListElement.querySelector(`a[data-theme="${savedThemeKey}"]`);
+                updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
+            }
+        });
+
+        document.addEventListener('click', event => {
+            const clickedTabLink = event.target.closest('.tab-link');
+            if (!clickedTabLink) return;
+            
+            event.preventDefault();
+            const selectedThemeKey = clickedTabLink.dataset.theme;
+            localStorage.setItem(STORAGE_KEY_ACTIVE_THEME, selectedThemeKey);
+            switchActiveTheme(selectedThemeKey, false);
+        });
+
+        let resizeFrameId = null;
+        const resizeObserver = new ResizeObserver(() => {
+            if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
+            resizeFrameId = requestAnimationFrame(() => {
+                checkCollisionBreakpoints();
+            });
+        });
+
+        resizeObserver.observe(navContainer);
+
+        checkCollisionBreakpoints();
+    </script>
+</body>
+</html>
