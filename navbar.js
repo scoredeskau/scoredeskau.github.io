@@ -1,5 +1,5 @@
 /**
- * Shared Navbar Component
+ * Shared Navbar Component - Seamless Feathered Fade Edition
  */
 (function () {
     // 1. Page Configuration Variables & Defaults
@@ -33,7 +33,7 @@
 
     let activeTabIndex = getInitialTabIndex();
 
-    // 2. Inject Refined CSS Styles with Smooth Gliding AND Fading Animations
+    // 2. Inject Refined CSS Styles with Cinematic Slow Dissolve
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         .no-transitions *,
@@ -60,6 +60,11 @@
             --page-outer-spacing: 24px;
             --navbar-pill-background: rgba(15, 23, 42, 0.75);
             --navbar-border-color: rgba(255, 255, 255, 0.2);
+            
+            /* Enhanced Easing Curves & Durations */
+            --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+            --fade-duration: 1.2s;
+            --slide-duration: 1.0s;
         }
 
         :root.theme-australian, body.theme-australian { --canvas-background-color: #071527; --court-accent-color: #38BDF8; }
@@ -79,7 +84,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #FFFFFF;
-            transition: background-color 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: background-color var(--fade-duration) var(--ease-cinematic);
         }
 
         .active-tab-display,
@@ -142,7 +147,10 @@
             flex-shrink: 0;
             cursor: pointer;
             opacity: 1;
-            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: background 0.4s ease, 
+                        border-color 0.4s ease, 
+                        transform 0.4s var(--ease-cinematic), 
+                        opacity var(--fade-duration) var(--ease-cinematic);
             user-select: none;
             -webkit-user-select: none;
             will-change: transform, opacity;
@@ -169,7 +177,7 @@
         .icon-action-button svg {
             width: 18px;
             height: 18px;
-            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+            transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.6s var(--ease-cinematic);
         }
 
         .toggle-menu-button {
@@ -193,7 +201,7 @@
             overflow: hidden;
             flex-shrink: 0;
             min-width: max-content;
-            transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity var(--fade-duration) var(--ease-cinematic);
         }
 
         .primary-title {
@@ -264,7 +272,7 @@
             padding: 0 16px;
             border-radius: 9999px;
             opacity: 0.72;
-            transition: color 0.35s ease, opacity 0.35s ease;
+            transition: color 0.6s var(--ease-cinematic), opacity 0.6s var(--ease-cinematic);
             user-select: none;
             -webkit-user-select: none;
         }
@@ -274,7 +282,7 @@
             opacity: 1;
         }
 
-        /* Active Pill Highlight with Glide & Opacity Cross-Fade */
+        /* Active Pill Highlight */
         .active-tab-highlight {
             position: absolute;
             top: var(--tab-bubble-offset-v);
@@ -285,9 +293,9 @@
             border-radius: 9999px;
             pointer-events: none;
             opacity: 0;
-            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), 
-                        width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-                        opacity 0.45s ease;
+            transition: transform var(--slide-duration) var(--ease-cinematic), 
+                        width var(--slide-duration) var(--ease-cinematic),
+                        opacity var(--fade-duration) var(--ease-cinematic);
             z-index: 0;
             will-change: transform, width, opacity;
         }
@@ -338,12 +346,15 @@
             display: none; 
         }
         
-        /* Ultra-Smooth Gliding & Fading Container */
+        /* -------------------------------------------------------------
+           ULTRA-SMOOTH STACKED TAB CONTAINER TRANSITIONS
+           ------------------------------------------------------------- */
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
             display: grid;
             grid-template-rows: 1fr;
             width: 100%;
-            transition: grid-template-rows 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+            /* Height collapse happens gracefully AFTER or along with the slow fade */
+            transition: grid-template-rows 0.8s var(--ease-cinematic) 0.2s;
             will-change: grid-template-rows;
         }
 
@@ -355,18 +366,20 @@
             justify-content: flex-end;
         }
 
-        /* Expanded State with Soft Fade-In */
+        /* EXPANDED STATE (Fade In) */
         .navigation-container.is-collapsed-mode .stacked-tab-navbar { 
             display: flex; 
             height: var(--navbar-height);
             margin-top: 6px;
             opacity: 1;
             transform: translateY(0) scale(1);
+            filter: blur(0px);
             transform-origin: top center;
-            transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-                        transform 0.68s cubic-bezier(0.22, 1, 0.36, 1),
-                        margin-top 0.68s cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: opacity, transform, margin-top;
+            transition: opacity var(--fade-duration) var(--ease-cinematic),
+                        transform var(--slide-duration) var(--ease-cinematic),
+                        filter var(--fade-duration) var(--ease-cinematic),
+                        margin-top var(--slide-duration) var(--ease-cinematic);
+            will-change: opacity, transform, filter, margin-top;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
@@ -380,16 +393,24 @@
             padding: 0;
         }
 
-        /* Collapsed State: Fades out and glides away smoothly */
+        /* COLLAPSED STATE (Seamless Slow Fade Out) */
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
             grid-template-rows: 0fr;
+            /* Delays collapsing height so the fade completes naturally first */
+            transition: grid-template-rows 0.8s var(--ease-cinematic) 0.4s;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
             opacity: 0;
-            transform: translateY(-16px) scale(0.96);
+            transform: translateY(-12px) scale(0.97);
+            filter: blur(4px); /* Feathered blur effect for soft disappearance */
             margin-top: 0px;
             pointer-events: none;
+            /* Instant duration start on dissolve */
+            transition: opacity var(--fade-duration) var(--ease-cinematic),
+                        transform var(--fade-duration) var(--ease-cinematic),
+                        filter var(--fade-duration) var(--ease-cinematic),
+                        margin-top var(--fade-duration) var(--ease-cinematic);
         }
     `;
     document.head.appendChild(styleElement);
@@ -467,9 +488,9 @@
     let cachedTabsWidth = 0;
     const activeScrollAnimations = new WeakMap();
 
-    // Soft Deceleration Curve for JS Smooth Scroll
+    // Cinematic Soft Deceleration Curve for JS Smooth Scroll
     function softDecelerationEasing(t) {
-        const p1x = 0.22, p1y = 1.0, p2x = 0.36, p2y = 1.0;
+        const p1x = 0.16, p1y = 1.0, p2x = 0.3, p2y = 1.0;
         let cx = 3.0 * p1x, bx = 3.0 * (p2x - p1x) - cx, ax = 1.0 - cx - bx;
         let cy = 3.0 * p1y, by = 3.0 * (p2y - p1y) - cy, ay = 1.0 - cy - by;
 
@@ -488,7 +509,7 @@
         return sampleCurveY(sampleT);
     }
 
-    function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 600) {
+    function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 1000) {
         if (activeScrollAnimations.has(viewportElement)) {
             cancelAnimationFrame(activeScrollAnimations.get(viewportElement));
         }
@@ -549,7 +570,7 @@
             void highlightElement.offsetHeight;
             highlightElement.classList.remove('no-transition');
         } else {
-            synchronizedSmoothScroll(viewportElement, targetScrollLeft, 600);
+            synchronizedSmoothScroll(viewportElement, targetScrollLeft, 1000);
         }
     }
 
