@@ -163,58 +163,55 @@
         toggleBtn.classList.toggle('is-collapsed', isHidden);
     }
 
-    /**
-     * Snapshots the highlight bubble's CURRENT visual pixel position mid-flight 
-     * before starting a new target transition, preventing animation desync.
-     */
-    function updateHighlights(disableAnimation = false) {
-        const container = document.getElementById('navContainer');
-        if (!container) return;
+        function updateHighlights(disableAnimation = false) {
+            const container = document.getElementById('navContainer');
+            if (!container) return;
 
-        container.querySelectorAll('.tab-list').forEach(list => {
-            const activeLink = list.querySelector('.tab-link.is-active');
-            const highlight = list.querySelector('.active-tab-highlight');
+            container.querySelectorAll('.tab-list').forEach(list => {
+                const activeLink = list.querySelector('.tab-link.is-active');
+                const highlight = list.querySelector('.active-tab-highlight');
 
-            if (!activeLink || !highlight) return;
+                if (!activeLink || !highlight) return;
 
-            const listRect = list.getBoundingClientRect();
-            const linkRect = activeLink.getBoundingClientRect();
+                const listRect = list.getBoundingClientRect();
+                const linkRect = activeLink.getBoundingClientRect();
 
-            const targetLeft = linkRect.left - listRect.left;
-            const targetWidth = linkRect.width;
+                const targetLeft = linkRect.left - listRect.left;
+                const targetWidth = linkRect.width;
 
-            if (disableAnimation) {
+                if (disableAnimation) {
+                    highlight.style.transition = 'none';
+                    highlight.style.transform = `translateX(${targetLeft}px)`;
+                    highlight.style.width = `${targetWidth}px`;
+                    highlight.classList.add('is-visible');
+                    
+                    // Force browser layout flush while transitions are strictly inline disabled
+                    void highlight.offsetWidth; 
+                    highlight.style.transition = '';
+                    return;
+                }
+
+                // Interrupt existing CSS transition cleanly by freezing current rendered position
+                const computedStyle = window.getComputedStyle(highlight);
+                const matrix = new WebKitCSSMatrix(computedStyle.transform);
+                const currentLeft = Number.isNaN(matrix.m41) ? targetLeft : matrix.m41;
+                const currentWidth = highlight.offsetWidth || targetWidth;
+
+                // 1. Instantly freeze pill at current mid-animation coordinates
                 highlight.classList.add('no-transition');
+                highlight.style.transform = `translateX(${currentLeft}px)`;
+                highlight.style.width = `${currentWidth}px`;
+
+                // 2. Force reflow to flush frozen styles
+                void highlight.offsetWidth;
+
+                // 3. Re-enable CSS transitions to travel smoothly to new target
+                highlight.classList.remove('no-transition');
                 highlight.style.transform = `translateX(${targetLeft}px)`;
                 highlight.style.width = `${targetWidth}px`;
                 highlight.classList.add('is-visible');
-                void highlight.offsetWidth; // Reflow
-                highlight.classList.remove('no-transition');
-                return;
-            }
-
-            // Interrupt existing CSS transition cleanly by freezing current rendered position
-            // Inside updateHighlights() in navbar.js:
-            const computedStyle = window.getComputedStyle(highlight);
-            const matrix = new WebKitCSSMatrix(computedStyle.transform);
-            const currentLeft = Number.isNaN(matrix.m41) ? targetLeft : matrix.m41;
-            const currentWidth = highlight.offsetWidth || targetWidth;
-
-            // 1. Instantly freeze pill at current mid-animation coordinates
-            highlight.classList.add('no-transition');
-            highlight.style.transform = `translateX(${currentLeft}px)`;
-            highlight.style.width = `${currentWidth}px`;
-
-            // 2. Force reflow to flush frozen styles
-            void highlight.offsetWidth;
-
-            // 3. Re-enable CSS transitions to travel smoothly to new target
-            highlight.classList.remove('no-transition');
-            highlight.style.transform = `translateX(${targetLeft}px)`;
-            highlight.style.width = `${targetWidth}px`;
-            highlight.classList.add('is-visible');
-        });
-    }
+            });
+        }
 
     function setActiveTab(target, disableAnimation = false) {
         const container = document.getElementById('navContainer');
@@ -326,15 +323,18 @@
         // Layout recalculation listeners
         window.addEventListener('resize', updateResponsiveLayout, { passive: true });
 
+        // Replace the end of initNavbar() in navbar.js with this:
+
         // Initial render execution
         setActiveTab(initialTarget, true);
         updateResponsiveLayout();
 
+        // Force synchronous layout paint before stripping anti-flash class
+        updateHighlights(true);
+        centerActiveTab('auto');
+
+        // Double rAF ensures the compositor has committed the initial transform frame to display
         requestAnimationFrame(() => {
-            updateHighlights(true);
-            centerActiveTab('auto');
-            
-            // Ensure styles and layout flush before enabling transitions
             requestAnimationFrame(() => {
                 document.documentElement.classList.remove('no-transitions');
             });
