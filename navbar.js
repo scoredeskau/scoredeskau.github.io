@@ -1,5 +1,5 @@
 /**
- * Shared Navbar Component - High-Performance Edition
+ * Shared Navbar Component - High-Performance Edition (URL Hash Sync)
  */
 (function () {
     'use strict';
@@ -13,16 +13,28 @@
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
+    function getActiveTargetFromHash() {
+        const hash = window.location.hash;
+        return NAVIGATION_ITEMS.some(item => item.target === hash)
+            ? hash
+            : NAVIGATION_ITEMS[0]?.target;
+    }
+
     function initNavbar() {
         const container = document.getElementById('navContainer');
         if (!container) return;
 
+        const initialTarget = getActiveTargetFromHash();
+
         // Construct Navbar DOM efficiently
-        const linksHTML = NAVIGATION_ITEMS.map((item, index) => `
-            <li class="tab-item">
-                <a href="${item.target}" class="tab-link ${index === 0 ? 'is-active' : ''}" data-target="${item.target}">${item.label}</a>
-            </li>
-        `).join('');
+        const linksHTML = NAVIGATION_ITEMS.map((item) => {
+            const isActive = item.target === initialTarget;
+            return `
+                <li class="tab-item">
+                    <a href="${item.target}" class="tab-link ${isActive ? 'is-active' : ''}" data-target="${item.target}">${item.label}</a>
+                </li>
+            `;
+        }).join('');
 
         container.innerHTML = `
             <header class="navbar combined-header-navbar" id="combinedNavbar">
@@ -80,11 +92,23 @@
                 highlight.classList.add('is-visible');
 
                 if (disableAnimation) {
-                    // Force reflow and re-enable transition
                     void highlight.offsetWidth;
                     highlight.classList.remove('no-transition');
                 }
             });
+        };
+
+        // Helper to set state for target hash
+        const setActiveTab = (target, disableAnimation = false) => {
+            container.querySelectorAll('.tab-link').forEach(l => {
+                const isActive = l.getAttribute('data-target') === target;
+                l.classList.toggle('is-active', isActive);
+                if (isActive && displayTitleHeading) {
+                    displayTitleHeading.textContent = l.textContent.trim();
+                }
+            });
+
+            updateHighlights(disableAnimation);
         };
 
         // Responsive Collapse Handler
@@ -117,18 +141,22 @@
             e.preventDefault();
             const target = link.getAttribute('data-target');
 
-            // Update active states
-            container.querySelectorAll('.tab-link').forEach(l => {
-                l.classList.toggle('is-active', l.getAttribute('data-target') === target);
-            });
-
-            if (displayTitleHeading) {
-                displayTitleHeading.textContent = link.textContent.trim();
+            // Push hash to URL history without triggering a full scroll jump
+            if (window.location.hash !== target) {
+                history.pushState(null, '', target);
             }
 
-            // Animate highlight pill to the newly active tab
-            updateHighlights();
+            setActiveTab(target);
         });
+
+        // Sync tabs on browser back / forward buttons
+        window.addEventListener('popstate', () => {
+            const target = getActiveTargetFromHash();
+            setActiveTab(target);
+        });
+
+        // Set initial state
+        setActiveTab(initialTarget, true);
 
         // Initialize pill positions immediately
         requestAnimationFrame(() => {
