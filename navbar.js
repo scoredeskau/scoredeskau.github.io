@@ -75,10 +75,13 @@
         const toggleBtn = container.querySelector('.toggle-menu-button');
         const displayTitleHeading = document.getElementById('themeTitleHeading');
 
-        // Always sync the arrow orientation strictly to the wrapper's visibility
+        // Hardcodes toggle icon state directly to Bar 3 visibility
         const syncToggleState = () => {
             if (!toggleBtn || !lowerWrapper) return;
             const isHidden = lowerWrapper.classList.contains('is-hidden');
+            
+            // When isHidden is true -> adds 'is-collapsed' -> rotate(0deg) -> DOWN
+            // When isHidden is false -> removes 'is-collapsed' -> rotate(180deg) -> UP
             toggleBtn.classList.toggle('is-collapsed', isHidden);
         };
 
