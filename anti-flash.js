@@ -9,3 +9,8 @@
         document.documentElement.className = 'no-transitions theme-australian';
     }
 })();
+
+(function () {
+    const pageTheme = window.PAGE_THEME || 'theme-australian';
+    document.documentElement.classList.add('no-transitions', pageTheme);
+})();

@@ -14,11 +14,9 @@
 
     const PAGE_THEME = window.PAGE_THEME || 'theme-australian';
 
-    // Apply single page theme to <html> and <body> immediately
     document.documentElement.className = document.documentElement.className.replace(/\btheme-\S+/g, '') + ' ' + PAGE_THEME;
     document.body.className = PAGE_THEME;
 
-    // Determine initial active tab based on URL hash or fallback to 0
     function getInitialTabIndex() {
         const currentHash = window.location.hash;
         if (currentHash) {
@@ -52,9 +50,8 @@
         }
 
         :root {
-            /* Lighter Blue Accents */
             --canvas-background-color: #0B192C;
-            --court-accent-color: #38BDF8; /* Bright Lighter Blue */
+            --court-accent-color: #38BDF8;
             --navbar-height: 52px;
             --back-btn-size: 36px;
             --tab-bubble-height: 44px;
@@ -63,6 +60,7 @@
             --page-outer-spacing: 24px;
             --navbar-pill-background: rgba(15, 23, 42, 0.75);
             --navbar-border-color: rgba(255, 255, 255, 0.2);
+            --nav-total-offset: calc(var(--page-outer-spacing) + var(--navbar-height) + var(--page-outer-spacing));
         }
 
         :root.theme-australian, body.theme-australian { --canvas-background-color: #071527; --court-accent-color: #38BDF8; }
@@ -77,15 +75,17 @@
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background-color 0.3s ease;
-            padding: calc((var(--page-outer-spacing) * 2) + var(--navbar-height)) var(--page-outer-spacing) var(--page-outer-spacing);
+            transition: background-color 0.3s ease, padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-top: var(--nav-total-offset);
+            padding-left: var(--page-outer-spacing);
+            padding-right: var(--page-outer-spacing);
+            padding-bottom: var(--page-outer-spacing);
             font-family: "SF Pro Text", "SF Pro Icons", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            color: #FFFFFF; /* High contrast white text */
+            color: #FFFFFF;
         }
 
-        /* Front & Centre Heading Text Fix */
         .active-tab-display,
         h1, h2, h3, h4, h5, h6, .main-content {
             color: #FFFFFF !important;
@@ -220,7 +220,6 @@
             white-space: nowrap;
         }
 
-        /* Adjusted viewport & list padding for symmetrical right alignment */
         .tab-scroll-viewport {
             position: relative;
             display: flex;
@@ -410,7 +409,13 @@
         </div>
     `;
 
-    // 4. Component Logic
+    // 4. Dynamic Body Offset Updater
+    function updateContentOffset() {
+        const navHeight = navContainer.getBoundingClientRect().height;
+        const totalPadding = navHeight + 48; // nav height + top spacing (24px) + bottom gap (24px)
+        document.documentElement.style.setProperty('--nav-total-offset', `${totalPadding}px`);
+    }
+
     const combinedNavbar = document.getElementById('combinedNavbar');
     const brandingGroup = document.getElementById('brandingGroup');
     const desktopTabListElement = document.getElementById('desktopTabList');
@@ -540,13 +545,13 @@
         }
 
         switchActiveTab(activeTabIndex, true);
+        updateContentOffset();
     }
 
     function switchActiveTab(index, isInstant = false) {
         activeTabIndex = index;
         const currentItem = NAVIGATION_ITEMS[index] || NAVIGATION_ITEMS[0];
 
-        // Store active state for persistence across reloads
         sessionStorage.setItem(`active_tab_${window.location.pathname}`, index);
         if (currentItem.target && window.location.hash !== currentItem.target) {
             history.replaceState(null, '', currentItem.target);
@@ -567,7 +572,7 @@
         updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, isInstant);
     }
 
-    // Toggle Mobile Stack
+    // Toggle Mobile Stack & Dynamic Height Recalculation
     toggleMenuButtonElement.addEventListener('click', () => {
         const isHidden = lowerTabWrapperElement.classList.toggle('is-hidden');
         toggleMenuButtonElement.classList.toggle('is-collapsed', isHidden);
@@ -577,9 +582,12 @@
             const activeMobileLink = mobileTabListElement.querySelector(`a[data-index="${activeTabIndex}"]`);
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
+
+        // Recalculate dynamic content shift smoothly
+        setTimeout(updateContentOffset, 50);
+        setTimeout(updateContentOffset, 300);
     });
 
-    // Touch Active States
     document.querySelectorAll('.icon-action-button').forEach(button => {
         let releaseTimer;
 
@@ -598,7 +606,6 @@
         button.addEventListener('touchcancel', releasePressState, { passive: true });
     });
 
-    // Delegate Click Handler
     document.addEventListener('click', event => {
         const clickedTabLink = event.target.closest('.tab-link');
         if (!clickedTabLink) return;
@@ -609,7 +616,6 @@
         }
     });
 
-    // Handle Hash Changes from browser back/forward buttons
     window.addEventListener('hashchange', () => {
         const newIndex = getInitialTabIndex();
         if (newIndex !== activeTabIndex) {
@@ -617,7 +623,6 @@
         }
     });
 
-    // Resize Observer
     let resizeFrameId = null;
     const resizeObserver = new ResizeObserver((entries) => {
         if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
@@ -633,6 +638,7 @@
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             document.documentElement.classList.remove('no-transitions');
+            updateContentOffset();
         });
     });
 })();
