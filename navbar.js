@@ -22,14 +22,29 @@
     }
 
     /**
-     * Easing function matching CSS cubic-bezier(0.16, 1, 0.3, 1)
+     * Exact 1:1 cubic-bezier solver for cubic-bezier(0.16, 1, 0.3, 1)
+     * Matches the CSS --ease-bubble curve precisely across time.
      */
     function easeBubble(t) {
-        return 1 - Math.pow(1 - t, 4);
+        if (t <= 0) return 0;
+        if (t >= 1) return 1;
+
+        // Newton-Raphson method to solve X axis for t, then evaluate Y
+        // Control points: P1 = (0.16, 1), P2 = (0.3, 1)
+        let x = t;
+        for (let i = 0; i < 8; i++) {
+            const currentX = 3 * (1 - x) * (1 - x) * x * 0.16 + 3 * (1 - x) * x * x * 0.3 + x * x * x;
+            const dx = 3 * (1 - x) * (1 - x) * 0.16 + 6 * (1 - x) * x * (0.3 - 0.16) + 3 * x * x * (1 - 0.3);
+            if (Math.abs(currentX - t) < 1e-5 || dx === 0) break;
+            x -= (currentX - t) / dx;
+        }
+
+        // Compute Y for solved parameter x
+        return 3 * (1 - x) * (1 - x) * x * 1 + 3 * (1 - x) * x * x * 1 + x * x * x;
     }
 
     /**
-     * Centers the active tab within its scrollable viewport cleanly.
+     * Centers the active tab within its scrollable viewport.
      * @param {'smooth' | 'auto'} behavior - Scrolling animation behavior.
      */
     function centerActiveTab(behavior = 'smooth') {
@@ -46,7 +61,6 @@
 
             const activeItem = activeLink.closest('.tab-item') || activeLink;
 
-            // 1. Precise sub-pixel measurement relative to the viewport
             const viewportRect = viewport.getBoundingClientRect();
             const itemRect = activeItem.getBoundingClientRect();
 
@@ -61,22 +75,19 @@
                 return;
             }
 
-            // Don't animate if already virtually centered
             if (Math.abs(viewport.scrollLeft - targetScrollLeft) < 1) return;
 
-            // 2. Prevent overlapping animation frames on rapid clicks
             if (viewport._scrollAnim) {
                 cancelAnimationFrame(viewport._scrollAnim);
             }
 
-            // 3. Temporarily disable CSS scroll behavior so JS loop doesn't fight native scroll engine
             const originalScrollBehavior = viewport.style.scrollBehavior;
             viewport.style.scrollBehavior = 'auto';
 
             const startScrollLeft = viewport.scrollLeft;
             const distance = targetScrollLeft - startScrollLeft;
             const startTime = performance.now();
-            const duration = 750; // 0.75s to match --slide-duration
+            const duration = 750; // Exact 0.75s sync with --slide-duration
 
             function step(currentTime) {
                 const elapsed = currentTime - startTime;
