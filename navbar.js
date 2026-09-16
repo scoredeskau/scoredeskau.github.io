@@ -33,7 +33,7 @@
 
     let activeTabIndex = getInitialTabIndex();
 
-    // 2. Inject Refined CSS Styles with Smooth Fade & Layout Transitions
+    // 2. Inject Refined CSS Styles with Smooth Gliding AND Fading Animations
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         .no-transitions *,
@@ -79,6 +79,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #FFFFFF;
+            transition: background-color 0.68s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .active-tab-display,
@@ -140,10 +141,11 @@
             color: rgba(255, 255, 255, 0.95);
             flex-shrink: 0;
             cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
             user-select: none;
             -webkit-user-select: none;
-            will-change: transform;
+            will-change: transform, opacity;
         }
 
         @media (hover: hover) {
@@ -153,6 +155,7 @@
             }
             .tab-link:hover {
                 color: #FFFFFF;
+                opacity: 1;
             }
         }
 
@@ -166,7 +169,7 @@
         .icon-action-button svg {
             width: 18px;
             height: 18px;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
         }
 
         .toggle-menu-button {
@@ -190,6 +193,7 @@
             overflow: hidden;
             flex-shrink: 0;
             min-width: max-content;
+            transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .primary-title {
@@ -259,15 +263,18 @@
             align-items: center;
             padding: 0 16px;
             border-radius: 9999px;
-            transition: color 0.2s ease;
+            opacity: 0.72;
+            transition: color 0.35s ease, opacity 0.35s ease;
             user-select: none;
             -webkit-user-select: none;
         }
 
         .tab-link.is-active {
             color: #FFFFFF;
+            opacity: 1;
         }
 
+        /* Active Pill Highlight with Glide & Opacity Cross-Fade */
         .active-tab-highlight {
             position: absolute;
             top: var(--tab-bubble-offset-v);
@@ -277,9 +284,16 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 9999px;
             pointer-events: none;
-            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), 
+                        width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity 0.45s ease;
             z-index: 0;
-            will-change: transform, width;
+            will-change: transform, width, opacity;
+        }
+
+        .active-tab-highlight.is-visible {
+            opacity: 1;
         }
 
         .active-tab-highlight.no-transition {
@@ -324,24 +338,35 @@
             display: none; 
         }
         
+        /* Ultra-Smooth Gliding & Fading Container */
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
-            display: block;
+            display: grid;
+            grid-template-rows: 1fr;
             width: 100%;
-            overflow: hidden;
+            transition: grid-template-rows 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: grid-template-rows;
         }
 
+        .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
+            overflow: hidden;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        /* Expanded State with Soft Fade-In */
         .navigation-container.is-collapsed-mode .stacked-tab-navbar { 
             display: flex; 
             height: var(--navbar-height);
             margin-top: 6px;
-            max-height: 60px;
             opacity: 1;
-            transform: translateY(0);
-            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.25s ease-out, 
-                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: max-height, margin-top, opacity, transform;
+            transform: translateY(0) scale(1);
+            transform-origin: top center;
+            transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+                        margin-top 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform, margin-top;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
@@ -355,17 +380,16 @@
             padding: 0;
         }
 
-        /* Hidden State: Graceful Cross-Fade Out + Layout Collapse */
+        /* Collapsed State: Fades out and glides away smoothly */
+        .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
+            grid-template-rows: 0fr;
+        }
+
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
-            max-height: 0px;
-            margin-top: 0px;
             opacity: 0;
-            transform: translateY(-8px);
+            transform: translateY(-16px) scale(0.96);
+            margin-top: 0px;
             pointer-events: none;
-            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.18s ease-in, 
-                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     `;
     document.head.appendChild(styleElement);
@@ -402,13 +426,15 @@
         </nav>
 
         <div class="stacked-tab-wrapper" id="lowerTabWrapper">
-            <nav class="navbar stacked-tab-navbar">
-                <div class="tab-scroll-viewport" id="mobileTabViewport">
-                    <ul class="tab-list" id="mobileTabList">
-                        <div class="active-tab-highlight" id="mobileActiveHighlight"></div>
-                    </ul>
-                </div>
-            </nav>
+            <div class="stacked-tab-navbar-inner">
+                <nav class="navbar stacked-tab-navbar">
+                    <div class="tab-scroll-viewport" id="mobileTabViewport">
+                        <ul class="tab-list" id="mobileTabList">
+                            <div class="active-tab-highlight" id="mobileActiveHighlight"></div>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </div>
     `;
 
@@ -441,8 +467,9 @@
     let cachedTabsWidth = 0;
     const activeScrollAnimations = new WeakMap();
 
-    function easeInOutCubicBezier(t) {
-        const p1x = 0.4, p1y = 0.0, p2x = 0.2, p2y = 1.0;
+    // Soft Deceleration Curve for JS Smooth Scroll
+    function softDecelerationEasing(t) {
+        const p1x = 0.22, p1y = 1.0, p2x = 0.36, p2y = 1.0;
         let cx = 3.0 * p1x, bx = 3.0 * (p2x - p1x) - cx, ax = 1.0 - cx - bx;
         let cy = 3.0 * p1y, by = 3.0 * (p2y - p1y) - cy, ay = 1.0 - cy - by;
 
@@ -461,7 +488,7 @@
         return sampleCurveY(sampleT);
     }
 
-    function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 450) {
+    function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 600) {
         if (activeScrollAnimations.has(viewportElement)) {
             cancelAnimationFrame(activeScrollAnimations.get(viewportElement));
         }
@@ -480,7 +507,7 @@
             const elapsedTime = currentTime - startTime;
             const progressRatio = Math.min(elapsedTime / duration, 1);
             
-            const easedProgress = easeInOutCubicBezier(progressRatio);
+            const easedProgress = softDecelerationEasing(progressRatio);
             viewportElement.scrollLeft = startScrollLeft + (totalDistance * easedProgress);
 
             if (progressRatio < 1) {
@@ -508,6 +535,7 @@
 
         highlightElement.style.width = `${targetWidthPx}px`;
         highlightElement.style.transform = `translateX(${horizontalOffsetPx}px)`;
+        highlightElement.classList.add('is-visible');
 
         const viewportWidth = viewportElement.clientWidth;
         const maxScroll = Math.max(0, viewportElement.scrollWidth - viewportWidth);
@@ -521,7 +549,7 @@
             void highlightElement.offsetHeight;
             highlightElement.classList.remove('no-transition');
         } else {
-            synchronizedSmoothScroll(viewportElement, targetScrollLeft, 450);
+            synchronizedSmoothScroll(viewportElement, targetScrollLeft, 600);
         }
     }
 
@@ -573,9 +601,6 @@
             const activeMobileLink = mobileTabListElement.querySelector(`a[data-index="${activeTabIndex}"]`);
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
-
-        // Force Safari WebKit layout recalculation
-        void lowerTabWrapperElement.offsetHeight;
     });
 
     document.querySelectorAll('.icon-action-button').forEach(button => {
