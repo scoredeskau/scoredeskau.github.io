@@ -145,6 +145,23 @@
             navContainer.classList.add('is-collapsed-mode');
         }
 
+        // If we're in collapsed-mode due to resize, ensure Bar 3
+        // has a correct height variable and a deterministic visibility state.
+        if (navContainer.classList.contains('is-collapsed-mode')) {
+            const stackedTabNavbar = lowerTabWrapper?.querySelector('.stacked-tab-navbar');
+            const h = stackedTabNavbar
+                ? (stackedTabNavbar.scrollHeight || stackedTabNavbar.offsetHeight || 0)
+                : (lowerTabWrapper?.scrollHeight || 0);
+            lowerTabWrapper?.style.setProperty('--bar3-h', `${Math.max(1, h)}px`);
+
+            // Default to closed on resize; user interactions will change it later.
+            // This prevents the “late” reveal when width crosses breakpoint.
+            if (lowerTabWrapper && !lowerTabWrapper.classList.contains('is-hidden')) {
+                lowerTabWrapper.classList.add('is-hidden');
+                lowerTabWrapper.style.maxHeight = '0px';
+            }
+        }
+
         switchActiveTab(activeTabIndex, true);
     }
 
