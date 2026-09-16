@@ -179,15 +179,26 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
-/* SHOWN / EXPANDED STATE -> ARROW FACING UP (180deg) */
+/* =============================================================
+   Chevron Rotation (Passes through the RIGHT side during toggle)
+   ============================================================= */
+
+/* Base SVG: Default orientation points DOWN (Collapsed state = 0deg) */
 .toggle-menu-button svg {
     width: 18px;
     height: 18px;
-    transform: rotate(180deg);
-    transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
+    transform: rotate(0deg);
+    transition: transform var(--slide-duration) var(--ease-cinematic);
 }
 
-/* HIDDEN / COLLAPSED STATE -> ARROW FACING DOWN (0deg) */
+/* SHOWN / EXPANDED STATE: 
+   Rotates clockwise (0deg -> 90deg [RIGHT] -> 180deg [UP]) */
+.toggle-menu-button:not(.is-collapsed) svg {
+    transform: rotate(180deg);
+}
+
+/* HIDDEN / COLLAPSED STATE: 
+   Rotates counter-clockwise back (180deg -> 90deg [RIGHT] -> 0deg [DOWN]) */
 .toggle-menu-button.is-collapsed svg { 
     transform: rotate(0deg); 
 }
