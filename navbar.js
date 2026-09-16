@@ -89,6 +89,9 @@
     const toggleMenuButton = document.getElementById('toggleMenuButton');
     const lowerTabWrapper = document.getElementById('lowerTabWrapper');
 
+    // Keep a last measured height so CSS max-height has stable endpoints.
+    let bar3MeasuredHeight = 0;
+
     function buildTabsHtml() {
         return NAVIGATION_ITEMS.map((item, index) => 
             `<li class="tab-item"><a href="${item.target || '#'}" class="tab-link${index === activeTabIndex ? ' is-active' : ''}" data-index="${index}">${item.label}</a></li>`
@@ -176,7 +179,44 @@
         toggleMenuButton.classList.add('is-pressed');
         setTimeout(() => toggleMenuButton.classList.remove('is-pressed'), 120);
 
+        const willHide = !lowerTabWrapper.classList.contains('is-hidden');
+
+        // Measure the content height when expanding.
+        const stackedTabNavbar = lowerTabWrapper.querySelector('.stacked-tab-navbar');
+        const measured = stackedTabNavbar ? (stackedTabNavbar.scrollHeight || stackedTabNavbar.offsetHeight) : (lowerTabWrapper.scrollHeight || 0);
+        const targetHeight = (measured > 0 ? measured : (bar3MeasuredHeight || 0));
+        bar3MeasuredHeight = Math.max(1, targetHeight);
+
+        // Animate Bar 3 height so the content underneath scrolls smoothly.
+        // Fade is controlled solely via `.is-hidden` + CSS transitions.
+        lowerTabWrapper.classList.remove('bar3-fade-in', 'bar3-fade-out');
+
+        // Ensure layout reads happen before we set the target.
+        // Keep bar3MeasuredHeight in sync for later fallbacks.
+        if (measured > 0) bar3MeasuredHeight = measured;
+
+        // Force reflow so transition applies.
+        // eslint-disable-next-line no-unused-expressions
+        void lowerTabWrapper.offsetHeight;
+
         const isHidden = lowerTabWrapper.classList.toggle('is-hidden');
+
+        // Drive height animation via a CSS variable.
+        lowerTabWrapper.style.setProperty('--bar3-h', `${bar3MeasuredHeight}px`);
+
+        // If hiding, delay the actual height collapse until after fade-out,
+        // so fade-out remains visible.
+        if (isHidden) {
+            const fadeOutMs = 500; // matches --bar3-fade-out-duration
+            lowerTabWrapper.style.maxHeight = `var(--bar3-h)`;
+            window.setTimeout(() => {
+                lowerTabWrapper.style.maxHeight = '0px';
+            }, fadeOutMs);
+        } else {
+            // Ensure we expand back to measured height.
+            lowerTabWrapper.style.maxHeight = `var(--bar3-h)`;
+        }
+
         toggleMenuButton.classList.toggle('is-collapsed', isHidden);
         toggleMenuButton.setAttribute('aria-expanded', !isHidden);
 
@@ -222,6 +262,22 @@
 
     resizeObserver.observe(navContainer);
     checkCollisionBreakpoints();
+
+    // Initialize Bar 3 state deterministically on refresh.
+    // This prevents the first toggle from behaving differently than later toggles,
+    // and avoids Bar 3 temporarily overlaying main content during initial render.
+    (function initBar3() {
+        if (!lowerTabWrapper) return;
+        const stackedTabNavbar = lowerTabWrapper.querySelector('.stacked-tab-navbar');
+        const h = stackedTabNavbar
+            ? (stackedTabNavbar.scrollHeight || stackedTabNavbar.offsetHeight || 0)
+            : (lowerTabWrapper.scrollHeight || 0);
+        lowerTabWrapper.style.setProperty('--bar3-h', `${Math.max(1, h)}px`);
+
+        // Start closed; JS will toggle as user interacts.
+        lowerTabWrapper.classList.add('is-hidden');
+        lowerTabWrapper.style.maxHeight = '0px';
+    })();
 
     // Enable Smooth Transitions Post Initial Paint
     requestAnimationFrame(() => {
