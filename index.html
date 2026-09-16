@@ -59,7 +59,6 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            /* Force GPU compositor layer */
             transform: translateZ(0);
             will-change: transform;
         }
@@ -79,7 +78,6 @@
             isolation: isolate;
         }
 
-        /* Backdrop filter applied conditionally for smoother mobile rendering */
         @supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
             .navbar {
                 background: rgba(255, 255, 255, 0.08);
@@ -193,7 +191,6 @@
             -ms-overflow-style: none;
             min-width: 0;
             overflow-anchor: none;
-            scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -251,6 +248,7 @@
             color: #fff;
         }
 
+        /* Continuous ease-out cubic-bezier timing matching the smooth JS scroll */
         .active-tab-highlight {
             position: absolute;
             top: var(--tab-bubble-offset-v);
@@ -259,7 +257,7 @@
             background: rgba(255, 255, 255, 0.14);
             border-radius: 9999px;
             pointer-events: none;
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 0;
             will-change: transform, width;
         }
@@ -441,6 +439,71 @@
         const updatedMobileHighlight = document.getElementById('mobileActiveHighlight');
 
         let cachedTabsWidth = 0;
+        const activeScrollAnimations = new WeakMap();
+
+        /* Custom ease-out cubic-bezier function matching cubic-bezier(0.25, 1, 0.5, 1) */
+        function easeOutCubicBezier(t) {
+            const p1x = 0.25, p1y = 1.0, p2x = 0.5, p2y = 1.0;
+            let cx = 3.0 * p1x;
+            let bx = 3.0 * (p2x - p1x) - cx;
+            let ax = 1.0 - cx - bx;
+            
+            let cy = 3.0 * p1y;
+            let by = 3.0 * (p2y - p1y) - cy;
+            let ay = 1.0 - cy - by;
+
+            function sampleCurveX(time) {
+                return ((ax * time + bx) * time + cx) * time;
+            }
+            function sampleCurveY(time) {
+                return ((ay * time + by) * time + cy) * time;
+            }
+
+            // Newton-Raphson iteration to solve X for T
+            let sampleT = t;
+            for (let i = 0; i < 5; i++) {
+                let x = sampleCurveX(sampleT) - t;
+                if (Math.abs(x) < 1e-3) break;
+                let dX = (3.0 * ax * sampleT + 2.0 * bx) * sampleT + cx;
+                if (Math.abs(dX) < 1e-3) break;
+                sampleT -= x / dX;
+            }
+
+            return sampleCurveY(sampleT);
+        }
+
+        /* Smooth scroll loop perfectly synchronized with highlight CSS animation */
+        function synchronizedSmoothScroll(viewportElement, targetScrollLeft, duration = 400) {
+            if (activeScrollAnimations.has(viewportElement)) {
+                cancelAnimationFrame(activeScrollAnimations.get(viewportElement));
+            }
+
+            const startScrollLeft = viewportElement.scrollLeft;
+            const totalDistance = targetScrollLeft - startScrollLeft;
+
+            if (Math.abs(totalDistance) < 1) {
+                viewportElement.scrollLeft = targetScrollLeft;
+                return;
+            }
+
+            const startTime = performance.now();
+
+            function scrollFrame(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progressRatio = Math.min(elapsedTime / duration, 1);
+                
+                const easedProgress = easeOutCubicBezier(progressRatio);
+                viewportElement.scrollLeft = startScrollLeft + (totalDistance * easedProgress);
+
+                if (progressRatio < 1) {
+                    activeScrollAnimations.set(viewportElement, requestAnimationFrame(scrollFrame));
+                } else {
+                    activeScrollAnimations.delete(viewportElement);
+                }
+            }
+
+            activeScrollAnimations.set(viewportElement, requestAnimationFrame(scrollFrame));
+        }
 
         function updateHighlightPosition(activeTabLink, highlightElement, viewportElement, isInstant = false) {
             if (!activeTabLink || !highlightElement || !viewportElement) return;
@@ -463,18 +526,14 @@
             const targetScrollLeft = Math.max(0, Math.min(maxScroll, (horizontalOffsetPx + (targetWidthPx / 2)) - (viewportWidth / 2)));
 
             if (isInstant) {
-                const prevBehavior = viewportElement.style.scrollBehavior;
-                viewportElement.style.scrollBehavior = 'auto';
+                if (activeScrollAnimations.has(viewportElement)) {
+                    cancelAnimationFrame(activeScrollAnimations.get(viewportElement));
+                }
                 viewportElement.scrollLeft = targetScrollLeft;
-                viewportElement.style.scrollBehavior = prevBehavior;
-                
                 void highlightElement.offsetHeight;
                 highlightElement.classList.remove('no-transition');
             } else {
-                viewportElement.scrollTo({
-                    left: targetScrollLeft,
-                    behavior: 'smooth'
-                });
+                synchronizedSmoothScroll(viewportElement, targetScrollLeft, 400);
             }
         }
 
@@ -527,7 +586,6 @@
             }
         });
 
-        /* Efficient touch listener handling for mobile */
         document.querySelectorAll('.icon-action-button').forEach(button => {
             let releaseTimer;
 
@@ -556,7 +614,6 @@
             switchActiveTheme(selectedThemeKey, false);
         });
 
-        /* Optimized Observer reading direct entry bounds without forcing layout recalculations */
         let resizeFrameId = null;
         const resizeObserver = new ResizeObserver((entries) => {
             if (resizeFrameId) cancelAnimationFrame(resizeFrameId);
