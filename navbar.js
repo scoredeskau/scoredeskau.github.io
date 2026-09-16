@@ -14,6 +14,19 @@
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
+    // Add near the top of navbar_2.js
+    const MatrixClass = window.DOMMatrix || window.WebKitCSSMatrix || window.MSCSSMatrix;
+
+    function getParsedMatrix(element) {
+        const transform = window.getComputedStyle(element).transform;
+        
+        if (!transform || transform === 'none') {
+            return new MatrixClass();
+        }
+        
+        return new MatrixClass(transform);
+    }
+
     function getActiveTargetFromHash() {
         const hash = window.location.hash;
         return NAVIGATION_ITEMS.some(item => item.target === hash)
@@ -192,9 +205,11 @@
                 }
 
                 // Interrupt existing CSS transition cleanly by freezing current rendered position
-                const computedStyle = window.getComputedStyle(highlight);
-                const matrix = new WebKitCSSMatrix(computedStyle.transform);
-                const currentLeft = Number.isNaN(matrix.m41) ? targetLeft : matrix.m41;
+                // NEW / FIX CODE
+                // FIXED:
+                const matrix = getParsedMatrix(highlight);
+                const translateX = matrix.m41 ?? matrix.e;
+                const currentLeft = (typeof translateX === 'number' && !Number.isNaN(translateX)) ? translateX : targetLeft;
                 const currentWidth = highlight.offsetWidth || targetWidth;
 
                 // 1. Instantly freeze pill at current mid-animation coordinates
@@ -259,23 +274,7 @@
             `;
         }).join('');
 
-        // Touch feedback listener exclusively for circular action buttons (.icon-action-button)
-        container.querySelectorAll('.icon-action-button').forEach(btn => {
-            btn.addEventListener('touchstart', () => {
-                btn.classList.add('is-pressed');
-            }, { passive: true });
-
-            const releasePress = () => {
-                setTimeout(() => {
-                    btn.classList.remove('is-pressed');
-                }, 120); // Hold highlight for a split second, then spring back
-            };
-
-            btn.addEventListener('touchend', releasePress, { passive: true });
-            btn.addEventListener('touchcancel', releasePress, { passive: true });
-        });
-
-        container.innerHTML = `
+       container.innerHTML = `
             <header class="navbar combined-header-navbar" id="combinedNavbar">
                 <div class="branding-group">
                     <button class="icon-action-button" aria-label="Go Back">${BACK_SVG}</button>
@@ -305,6 +304,29 @@
                 </div>
             </div>
         `;
+
+        // 2. Attach pointer events AFTER elements exist in DOM
+        container.querySelectorAll('.icon-action-button').forEach(btn => {
+            let pressStartTime = 0;
+
+            btn.addEventListener('pointerdown', () => {
+                pressStartTime = Date.now();
+                btn.classList.add('is-pressed');
+            });
+
+            const handleRelease = () => {
+                const elapsed = Date.now() - pressStartTime;
+                const remainingTime = Math.max(0, 100 - elapsed);
+
+                setTimeout(() => {
+                    btn.classList.remove('is-pressed');
+                    btn.blur();
+                }, remainingTime);
+            };
+
+            btn.addEventListener('pointerup', handleRelease);
+            btn.addEventListener('pointercancel', handleRelease);
+        });
 
         const lowerWrapper = document.getElementById('lowerTabWrapper');
         const toggleBtn = container.querySelector('.toggle-menu-button');
@@ -348,11 +370,6 @@
         window.addEventListener('popstate', () => {
             setActiveTab(getActiveTargetFromHash());
         });
-
-        // Layout recalculation listeners
-        window.addEventListener('resize', updateResponsiveLayout, { passive: true });
-
-        // Replace the end of initNavbar() in navbar.js with this:
 
         // Initial render execution
         setActiveTab(initialTarget, true);
