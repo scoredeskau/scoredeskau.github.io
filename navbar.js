@@ -83,6 +83,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #FFFFFF;
+            transition: padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .active-tab-display,
@@ -588,7 +589,19 @@
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
 
-        updateContentOffset();
+        // Animate content offset smoothly during transition
+        const startTime = performance.now();
+        const duration = 300; // Matches CSS transition duration
+
+        function stepOffsetAnimation(now) {
+            updateContentOffset();
+            if (now - startTime < duration) {
+                requestAnimationFrame(stepOffsetAnimation);
+            } else {
+                updateContentOffset();
+            }
+        }
+        requestAnimationFrame(stepOffsetAnimation);
     });
 
     document.querySelectorAll('.icon-action-button').forEach(button => {
