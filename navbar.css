@@ -250,6 +250,7 @@ h1, h2, h3, h4, h5, h6,
     overflow-x: auto;
     scrollbar-width: none;
     min-width: 0;
+    scroll-behavior: auto !important; /* Prevents CSS smooth scroll from fighting rAF loop */
 }
 
 .tab-scroll-viewport::-webkit-scrollbar { 

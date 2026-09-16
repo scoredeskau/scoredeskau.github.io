@@ -22,7 +22,14 @@
     }
 
     /**
-     * Centers the active tab within its scrollable viewport.
+     * Easing function matching CSS cubic-bezier(0.16, 1, 0.3, 1)
+     */
+    function easeBubble(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+
+    /**
+     * Centers the active tab within its scrollable viewport cleanly.
      * @param {'smooth' | 'auto'} behavior - Scrolling animation behavior.
      */
     function centerActiveTab(behavior = 'smooth') {
@@ -32,7 +39,6 @@
         const viewports = container.querySelectorAll('.tab-scroll-viewport');
 
         viewports.forEach(viewport => {
-            // Check if viewport is visible (e.g., skip hidden top nav when collapsed)
             if (viewport.offsetWidth === 0 && viewport.offsetHeight === 0) return;
 
             const activeLink = viewport.querySelector('.tab-link.is-active');
@@ -40,17 +46,53 @@
 
             const activeItem = activeLink.closest('.tab-item') || activeLink;
 
-            // Calculate center position: item left relative to viewport scroll content
-            const itemLeft = activeItem.offsetLeft;
-            const itemWidth = activeItem.offsetWidth;
-            const viewportWidth = viewport.clientWidth;
+            // 1. Precise sub-pixel measurement relative to the viewport
+            const viewportRect = viewport.getBoundingClientRect();
+            const itemRect = activeItem.getBoundingClientRect();
 
-            const targetScrollLeft = itemLeft - (viewportWidth / 2) + (itemWidth / 2);
+            const currentScrollLeft = viewport.scrollLeft;
+            const itemRelativeLeft = itemRect.left - viewportRect.left + currentScrollLeft;
+            
+            const targetScrollLeft = Math.max(0, itemRelativeLeft - (viewportRect.width / 2) + (itemRect.width / 2));
 
-            viewport.scrollTo({
-                left: Math.max(0, targetScrollLeft),
-                behavior: behavior
-            });
+            if (behavior === 'auto') {
+                if (viewport._scrollAnim) cancelAnimationFrame(viewport._scrollAnim);
+                viewport.scrollLeft = targetScrollLeft;
+                return;
+            }
+
+            // Don't animate if already virtually centered
+            if (Math.abs(viewport.scrollLeft - targetScrollLeft) < 1) return;
+
+            // 2. Prevent overlapping animation frames on rapid clicks
+            if (viewport._scrollAnim) {
+                cancelAnimationFrame(viewport._scrollAnim);
+            }
+
+            // 3. Temporarily disable CSS scroll behavior so JS loop doesn't fight native scroll engine
+            const originalScrollBehavior = viewport.style.scrollBehavior;
+            viewport.style.scrollBehavior = 'auto';
+
+            const startScrollLeft = viewport.scrollLeft;
+            const distance = targetScrollLeft - startScrollLeft;
+            const startTime = performance.now();
+            const duration = 750; // 0.75s to match --slide-duration
+
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                viewport.scrollLeft = startScrollLeft + (distance * easeBubble(progress));
+
+                if (progress < 1) {
+                    viewport._scrollAnim = requestAnimationFrame(step);
+                } else {
+                    viewport.style.scrollBehavior = originalScrollBehavior;
+                    viewport._scrollAnim = null;
+                }
+            }
+
+            viewport._scrollAnim = requestAnimationFrame(step);
         });
     }
 
