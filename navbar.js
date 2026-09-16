@@ -75,7 +75,6 @@
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background-color 0.3s ease, padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding-top: var(--nav-total-offset);
             padding-left: var(--page-outer-spacing);
             padding-right: var(--page-outer-spacing);
@@ -131,8 +130,8 @@
             display: flex;
             align-items: center;
             padding-left: var(--back-btn-offset);
-            flex-shrink: 1;
-            min-width: 0;
+            flex-shrink: 0;
+            min-width: max-content;
             z-index: 2;
             height: 100%;
         }
@@ -196,8 +195,8 @@
             padding-left: var(--back-btn-offset);
             padding-right: var(--back-btn-offset);
             overflow: hidden;
-            flex-shrink: 1;
-            min-width: 0;
+            flex-shrink: 0;
+            min-width: max-content;
         }
 
         .primary-title {
@@ -205,8 +204,6 @@
             line-height: 1.2;
             font-weight: 600;
             color: #FFFFFF;
-            text-overflow: ellipsis;
-            overflow: hidden;
             white-space: nowrap;
         }
 
@@ -215,8 +212,6 @@
             line-height: 1.2;
             font-weight: 400;
             color: rgba(255, 255, 255, 0.80);
-            text-overflow: ellipsis;
-            overflow: hidden;
             white-space: nowrap;
         }
 
@@ -232,7 +227,7 @@
             min-width: 0;
             overflow-anchor: none;
             -webkit-overflow-scrolling: touch;
-            padding: 0 var(--tab-bubble-offset-v); /* Single padding container */
+            padding: 0;
         }
 
         .tab-scroll-viewport::-webkit-scrollbar { display: none; }
@@ -245,7 +240,7 @@
             list-style: none;
             height: 100%;
             margin: 0;
-            padding: 0; /* Clear double padding */
+            padding: 0 var(--tab-bubble-offset-v);
             margin-left: auto;
             flex-shrink: 0;
         }
@@ -315,8 +310,21 @@
         }
 
         .navigation-container.is-collapsed-mode .branding-group {
-            padding-right: calc(var(--back-btn-size) + var(--back-btn-offset));
+            padding-right: calc(var(--back-btn-size) + (var(--back-btn-offset) * 2));
             width: 100%;
+            min-width: 0;
+            flex-shrink: 1;
+        }
+
+        .navigation-container.is-collapsed-mode .header-titles {
+            min-width: 0;
+            flex-shrink: 1;
+        }
+
+        .navigation-container.is-collapsed-mode .primary-title,
+        .navigation-container.is-collapsed-mode .secondary-title {
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { 
@@ -409,10 +417,10 @@
         </div>
     `;
 
-    // 4. Dynamic Body Offset Updater
+    // 4. Instant Content Position Snapping
     function updateContentOffset() {
         const navHeight = navContainer.getBoundingClientRect().height;
-        const totalPadding = navHeight + 48; // nav height + top spacing (24px) + bottom gap (24px)
+        const totalPadding = navHeight + 48; // Top padding (24px) + height + bottom gap (24px)
         document.documentElement.style.setProperty('--nav-total-offset', `${totalPadding}px`);
     }
 
@@ -530,21 +538,21 @@
     }
 
     function checkCollisionBreakpoints(containerWidth) {
+        // Clear collapsed state to accurately measure natural content widths
         navContainer.classList.remove('is-collapsed-mode');
-        
-        // Recalculate true un-collapsed width
         cachedTabsWidth = desktopTabListElement.scrollWidth;
 
         const navbarWidth = containerWidth || combinedNavbar.clientWidth;
-        const brandingWidth = brandingGroup.offsetWidth;
-        const totalRequiredWidth = brandingWidth + cachedTabsWidth;
+        const brandingWidth = brandingGroup.scrollWidth;
+        // Total threshold calculation guarantees clipping never occurs before collapsing
+        const totalRequiredWidth = brandingWidth + cachedTabsWidth + 12;
 
         if (navbarWidth < totalRequiredWidth) {
             navContainer.classList.add('is-collapsed-mode');
         }
 
         switchActiveTab(activeTabIndex, true);
-        updateContentOffset();
+        updateContentOffset(); // Snap position immediately
     }
 
     function switchActiveTab(index, isInstant = false) {
@@ -571,7 +579,7 @@
         updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, isInstant);
     }
 
-    // Toggle Mobile Stack & Dynamic Height Recalculation
+    // Toggle Mobile Stack & Dynamic Instant Height Snap
     toggleMenuButtonElement.addEventListener('click', () => {
         const isHidden = lowerTabWrapperElement.classList.toggle('is-hidden');
         toggleMenuButtonElement.classList.toggle('is-collapsed', isHidden);
@@ -582,9 +590,8 @@
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
 
-        // Recalculate dynamic content shift smoothly
-        setTimeout(updateContentOffset, 50);
-        setTimeout(updateContentOffset, 300);
+        // Instant position snap
+        updateContentOffset();
     });
 
     document.querySelectorAll('.icon-action-button').forEach(button => {
