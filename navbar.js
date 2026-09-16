@@ -55,7 +55,7 @@
                         ${linksHTML}
                     </ul>
                 </nav>
-                <button class="icon-action-button toggle-menu-button ${isBar3HiddenStored ? 'is-collapsed' : ''}" aria-label="Toggle Navigation">${TOGGLE_SVG}</button>
+                <button class="icon-action-button toggle-menu-button" aria-label="Toggle Navigation">${TOGGLE_SVG}</button>
             </header>
             <div class="stacked-tab-wrapper ${isBar3HiddenStored ? 'is-hidden' : ''}" id="lowerTabWrapper">
                 <div class="stacked-tab-navbar-inner">
@@ -74,6 +74,13 @@
         const lowerWrapper = document.getElementById('lowerTabWrapper');
         const toggleBtn = container.querySelector('.toggle-menu-button');
         const displayTitleHeading = document.getElementById('themeTitleHeading');
+
+        // Always sync the arrow orientation strictly to the wrapper's visibility
+        const syncToggleState = () => {
+            if (!toggleBtn || !lowerWrapper) return;
+            const isHidden = lowerWrapper.classList.contains('is-hidden');
+            toggleBtn.classList.toggle('is-collapsed', isHidden);
+        };
 
         // Positioning function for active tab highlight pill
         const updateHighlights = (disableAnimation = false) => {
@@ -125,6 +132,7 @@
                 container.style.setProperty('--bar3-h', isHidden ? '0px' : `${lowerWrapper.scrollHeight}px`);
             }
 
+            syncToggleState();
             updateHighlights(true);
         };
 
@@ -135,8 +143,10 @@
         if (toggleBtn && lowerWrapper) {
             toggleBtn.addEventListener('click', () => {
                 const isHidden = lowerWrapper.classList.toggle('is-hidden');
-                toggleBtn.classList.toggle('is-collapsed', isHidden);
                 
+                // Keep icon rotation state strictly in sync
+                syncToggleState();
+
                 // Save current state to localStorage
                 localStorage.setItem(BAR3_STORAGE_KEY, isHidden);
 
@@ -170,6 +180,7 @@
 
         // Set initial state
         setActiveTab(initialTarget, true);
+        syncToggleState();
 
         // Initialize pill positions immediately
         requestAnimationFrame(() => {
