@@ -174,9 +174,17 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
-/* Rotates counter-clockwise when collapsed */
+/* Arrow points UP when Bar 3 is shown/expanded */
+.toggle-menu-button svg {
+    width: 18px;
+    height: 18px;
+    transform: rotate(180deg);
+    transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
+}
+
+/* Arrow rotates DOWN when Bar 3 is hidden/collapsed */
 .toggle-menu-button.is-collapsed svg { 
-    transform: rotate(-180deg); 
+    transform: rotate(0deg); 
 }
 
 .header-titles {
