@@ -443,40 +443,86 @@ h1, h2, h3, h4, h5, h6,
     flex-shrink: 0;
 }
 
-
-
 /* -------------------------------------------------------------
    8. Bar 3 Accordion Grid & Directional Fade Animations
    ------------------------------------------------------------- */
+
+/* Outer Bar 3 Wrapper Container - NO CLIPPING MASK */
+#lowerTabWrapper,
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
     display: block;
     width: 100%;
     margin-top: 0px;
-    opacity: 1;
-    overflow: hidden;
-    max-height: var(--bar3-h, fit-content);
-    transition: max-height var(--bar3-fade-in-duration) var(--ease-cinematic);
-    will-change: max-height;
+    
+    /* Prevents horizontal cropping or hard cut-off edges */
+    overflow: visible !important; 
+    
+    height: var(--bar3-h, 0px);
+    transition: height var(--bar3-fade-in-duration) var(--ease-cinematic);
+    will-change: height;
+    z-index: 1;
 }
 
-.navigation-container.is-collapsed-mode + .main-content {
-    transition: transform var(--bar3-fade-out-duration) var(--ease-cinematic);
+/* Hidden State - Collapses container height while Bar 3 travels upward */
+.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
+    pointer-events: none;
+    height: 0px !important;
+    transition: height var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
+/* Desktop Mode Overrides */
+.navigation-container:not(.is-collapsed-mode) #lowerTabWrapper {
+    display: none !important;
+}
+
+.navigation-container:not(.is-collapsed-mode) .toggle-menu-button {
+    display: none !important;
+}
+
+.navigation-container.is-collapsed-mode #combinedNavbar .tab-scroll-viewport {
+    display: flex !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    opacity: 0 !important;
+    right: 0;
+}
+
+/* Inner Bar 3 Spacing */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
     padding-top: 8px;
     background: transparent;
 }
 
-.navigation-container.is-collapsed-mode .stacked-tab-wrapper {
-    z-index: 1;
-}
-
+/* Inner Bar 3 Pill - Expanded Resting State */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
+    display: flex;
+    height: var(--navbar-height);
+    border-radius: 9999px;
+    overflow: hidden; /* Clips internal tab scrolling to pill shape */
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+    transition: opacity var(--bar3-fade-in-duration) var(--ease-cinematic),
+                transform var(--bar3-fade-in-duration) var(--ease-cinematic),
+                filter var(--bar3-fade-in-duration) var(--ease-cinematic);
+    will-change: opacity, transform, filter;
     position: relative;
     z-index: 1;
 }
 
+/* Inner Bar 3 Pill - Hidden State
+   - Moves up by 100% of its height + 8px gap to perfectly match Bar 1's position */
+.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
+    opacity: 0;
+    transform: translateY(calc(-100% - 8px));
+    filter: blur(6px);
+    transition: opacity var(--bar3-fade-out-duration) var(--ease-cinematic),
+                transform var(--bar3-fade-out-duration) var(--ease-cinematic),
+                filter var(--bar3-fade-out-duration) var(--ease-cinematic);
+}
+
+/* Ensure Bar 1 sits above Bar 3 so Bar 3 slides underneath seamlessly */
 .navigation-container.is-collapsed-mode #combinedNavbar {
     position: relative;
     z-index: 3;
@@ -487,57 +533,6 @@ h1, h2, h3, h4, h5, h6,
     z-index: 1000;
 }
 
-/* 1. Smooth height collapse and strict content clipping */
-#lowerTabWrapper {
-    height: var(--bar3-h, 0px);
-    overflow: hidden; /* Clips content when height is 0px */
-    transition: height var(--bar3-fade-in-duration) var(--ease-cinematic);
-}
-
-/* 2. Completely remove Bar 3 from the DOM layout in Desktop mode */
-.navigation-container:not(.is-collapsed-mode) #lowerTabWrapper {
-    display: none !important;
-}
-
-/* 3. Hide desktop tab bar in collapsed mode while preserving DOM measurements */
-.navigation-container.is-collapsed-mode #combinedNavbar .tab-scroll-viewport {
-    display: flex !important; /* Prevents display:none from zeroing scrollWidth */
-    visibility: hidden !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    opacity: 0 !important;
-    right: 0;
-}
-
-/* 4. Hide the toggle button in Desktop mode */
-.navigation-container:not(.is-collapsed-mode) .toggle-menu-button {
-    display: none !important;
-}
-
-.navigation-container.is-collapsed-mode .stacked-tab-navbar {
-    display: flex;
-    height: var(--navbar-height);
-    border-radius: 9999px;
-    overflow: hidden; /* Clips scrolling items to the pill curve */
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0px);
-    transition: opacity var(--bar3-fade-in-duration) var(--ease-cinematic),
-                transform var(--bar3-fade-in-duration) var(--ease-cinematic),
-                filter var(--bar3-fade-in-duration) var(--ease-cinematic);
-    will-change: opacity, transform, filter;
-}
-
-.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
-    opacity: 0;
-    transform: translateY(-16px);
-    filter: blur(3px);
-    transition: opacity var(--bar3-fade-out-duration) var(--ease-cinematic),
-                transform var(--bar3-fade-out-duration) var(--ease-cinematic),
-                filter var(--bar3-fade-out-duration) var(--ease-cinematic);
-}
-
-/* Ensure the internal scroll container respects the parent pill clipping */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
     width: 100%; 
     height: 100%;
@@ -549,13 +544,4 @@ h1, h2, h3, h4, h5, h6,
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list { 
     margin-left: 0; 
     padding: 0; 
-}
-
-.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
-    opacity: 0;
-    pointer-events: none;
-    max-height: 0px;
-    /* Use fade-out duration when collapsing */
-    transition: max-height var(--bar3-fade-out-duration) var(--ease-cinematic),
-                opacity var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
