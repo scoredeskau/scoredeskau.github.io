@@ -194,9 +194,10 @@
             }
 
             // Interrupt existing CSS transition cleanly by freezing current rendered position
+            // Inside updateHighlights() in navbar.js:
             const computedStyle = window.getComputedStyle(highlight);
             const matrix = new WebKitCSSMatrix(computedStyle.transform);
-            const currentLeft = matrix.m41 || targetLeft;
+            const currentLeft = Number.isNaN(matrix.m41) ? targetLeft : matrix.m41;
             const currentWidth = highlight.offsetWidth || targetWidth;
 
             // 1. Instantly freeze pill at current mid-animation coordinates
@@ -332,7 +333,11 @@
         requestAnimationFrame(() => {
             updateHighlights(true);
             centerActiveTab('auto');
-            document.documentElement.classList.remove('no-transitions');
+            
+            // Ensure styles and layout flush before enabling transitions
+            requestAnimationFrame(() => {
+                document.documentElement.classList.remove('no-transitions');
+            });
         });
     }
 
