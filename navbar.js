@@ -118,10 +118,6 @@
         });
     }
 
-    /**
-     * Dynamically calculates available viewport space vs element natural widths.
-     * Triggers accordion collapse exclusively when natural content width exceeds available navbar space.
-     */
     function updateResponsiveLayout() {
         const navContainer = document.querySelector('.navigation-container');
         const navbar = document.querySelector('#combinedNavbar');
@@ -131,27 +127,24 @@
 
         if (!navContainer || !navbar || !branding || !tabViewport) return;
 
-        // 1. Temporarily strip collapse mode to measure natural unconstrained desktop widths
-        navContainer.classList.remove('is-collapsed-mode');
-
-        // 2. Measure actual element bounding boxes and content sizes
+        // Read current element dimensions without mutating DOM layout first
         const navbarWidth = navbar.getBoundingClientRect().width;
         const brandingWidth = branding.getBoundingClientRect().width;
-        const tabsWidth = tabViewport.scrollWidth;
+        
+        // Query tabList from navContainer to ensure scrollWidth is measurable
+        const tabList = navContainer.querySelector('.tab-list');
+        const tabsWidth = tabList ? tabList.scrollWidth : 0;
         
         // Safety buffer: padding + toggle button width allowance when collapsed
         const safetyBuffer = 32; 
 
-        // 3. Dynamic Threshold: Collapse IF total content exceeds available navbar width
+        // Dynamic Threshold: Collapse IF total content exceeds available navbar width
         const shouldCollapse = (brandingWidth + tabsWidth + safetyBuffer) > navbarWidth;
+        
+        // Toggle class in a single batch operation
+        navContainer.classList.toggle('is-collapsed-mode', shouldCollapse);
 
-        if (shouldCollapse) {
-            navContainer.classList.add('is-collapsed-mode');
-        } else {
-            navContainer.classList.remove('is-collapsed-mode');
-        }
-
-        // 4. Recalculate Accordion height (Bar 3)
+        // Recalculate Accordion height (Bar 3)
         if (lowerWrapper) {
             const isHidden = lowerWrapper.classList.contains('is-hidden');
             const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
@@ -159,10 +152,10 @@
             navContainer.style.setProperty('--bar3-h', isHidden ? '0px' : `${exactHeight}px`);
         }
 
-        // 5. Sync active states, pill positioning, and auto-scroll centering
+        // Sync active states, pill positioning, and auto-scroll centering
         syncToggleState();
         updateHighlights(true);
-        centerActiveTab('auto'); // Instant centering on screen resize to stay locked on screen
+        centerActiveTab('auto');
     }
 
     // Hardcodes toggle icon orientation directly to Bar 3 visibility
@@ -181,6 +174,7 @@
             if (!container) return;
 
             container.querySelectorAll('.tab-list').forEach(list => {
+                if (list.offsetWidth === 0 && list.offsetHeight === 0) return;
                 const activeLink = list.querySelector('.tab-link.is-active');
                 const highlight = list.querySelector('.active-tab-highlight');
 
@@ -385,6 +379,13 @@
                 document.documentElement.classList.remove('no-transitions');
             });
         });
+
+        if ('fonts' in document) {
+            document.fonts.ready.then(() => {
+                updateResponsiveLayout();
+            });
+        }
+
     }
 
     if (document.readyState === 'loading') {
