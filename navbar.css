@@ -344,13 +344,12 @@ h1, h2, h3, h4, h5, h6,
    8. Bar 3 Accordion Grid & Directional Fade Animations
    ------------------------------------------------------------- */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
-    display: grid;
-    grid-template-rows: 1fr;
+    display: block;
     width: 100%;
     margin-top: 0px;
     opacity: 1;
     overflow: hidden;
-    max-height: var(--bar3-h);
+    max-height: var(--bar3-h, fit-content);
     transition: max-height var(--bar3-fade-in-duration) var(--ease-cinematic);
     will-change: max-height;
 }

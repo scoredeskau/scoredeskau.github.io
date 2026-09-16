@@ -129,7 +129,9 @@
 
             if (isCollapsed && lowerWrapper) {
                 const isHidden = lowerWrapper.classList.contains('is-hidden');
-                container.style.setProperty('--bar3-h', isHidden ? '0px' : `${lowerWrapper.scrollHeight}px`);
+                // Explicitly set height on initial load so space matches post-toggle exactly
+                const exactHeight = lowerWrapper.firstElementChild ? lowerWrapper.firstElementChild.offsetHeight : lowerWrapper.scrollHeight;
+                container.style.setProperty('--bar3-h', isHidden ? '0px' : `${exactHeight}px`);
             }
 
             syncToggleState();
