@@ -279,7 +279,7 @@
                 </div>
                 <nav class="tab-scroll-viewport">
                     <ul class="tab-list">
-                        <div class="active-tab-highlight"></div>
+                        <li class="active-tab-highlight" aria-hidden="true"></li>
                         ${linksHTML}
                     </ul>
                 </nav>
@@ -290,7 +290,7 @@
                     <header class="navbar stacked-tab-navbar">
                         <nav class="tab-scroll-viewport">
                             <ul class="tab-list">
-                                <div class="active-tab-highlight"></div>
+                                <li class="active-tab-highlight" aria-hidden="true"></li>
                                 ${linksHTML}
                             </ul>
                         </nav>
@@ -299,27 +299,49 @@
             </div>
         `;
 
-        // 2. Attach pointer events AFTER elements exist in DOM
+        // Attach pointer events with guaranteed capture & release cleanup
         container.querySelectorAll('.icon-action-button').forEach(btn => {
             let pressStartTime = 0;
+            let releaseTimer = null;
 
-            btn.addEventListener('pointerdown', () => {
+            const clearPressed = () => {
+                if (releaseTimer) {
+                    clearTimeout(releaseTimer);
+                    releaseTimer = null;
+                }
+                btn.classList.remove('is-pressed');
+            };
+
+            btn.addEventListener('pointerdown', (e) => {
+                // Force browser to track pointer releases even if cursor moves outside button
+                if (btn.setPointerCapture) {
+                    try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+                }
+                clearPressed();
                 pressStartTime = Date.now();
                 btn.classList.add('is-pressed');
             });
 
-            const handleRelease = () => {
-                const elapsed = Date.now() - pressStartTime;
-                const remainingTime = Math.max(0, 100 - elapsed);
+            const handleRelease = (e) => {
+                if (btn.hasPointerCapture && btn.hasPointerCapture(e.pointerId)) {
+                    try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
+                }
 
-                setTimeout(() => {
-                    btn.classList.remove('is-pressed');
+                const elapsed = Date.now() - pressStartTime;
+                const remainingTime = Math.max(0, 80 - elapsed);
+
+                if (releaseTimer) clearTimeout(releaseTimer);
+
+                releaseTimer = setTimeout(() => {
+                    clearPressed();
                     btn.blur();
                 }, remainingTime);
             };
 
             btn.addEventListener('pointerup', handleRelease);
-            btn.addEventListener('pointercancel', handleRelease);
+            btn.addEventListener('pointercancel', clearPressed);
+            btn.addEventListener('pointerleave', clearPressed);
+            btn.addEventListener('blur', clearPressed);
         });
 
         const lowerWrapper = document.getElementById('lowerTabWrapper');
