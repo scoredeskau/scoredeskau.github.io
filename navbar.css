@@ -36,13 +36,14 @@
     /* Easing Definitions */
     --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
     /* MORE INITIAL EASING (Strong ease-in acceleration) */
-    --ease-bubble: cubic-bezier(0.85, 0, 0.15, 1); 
+    --ease-bubble: cubic-bezier(0.16, 1, 0.3, 1);
     --fade-duration: 0.4s;
-    --slide-duration: 0.65s;
+    --slide-duration: 0.75s;
+    --chevron-duration: 0.35s;
 
     /* BAR 3 ANIMATION TIMINGS */
-    --bar3-fade-out-duration: 0.35s;
-    --bar3-fade-in-duration: 0.35s;
+    --bar3-fade-out-duration: 0.75s;
+    --bar3-fade-in-duration: 0.75s;
 
     /* Set by JS when toggling Bar 3 */
     --bar3-h: auto;
@@ -183,12 +184,13 @@ h1, h2, h3, h4, h5, h6,
    Chevron Rotation - Full Clockwise Sweep via Right (90deg)
    ------------------------------------------------------------- */
 
+/* Update Section 4 */
 .toggle-menu-button svg {
     width: 18px;
     height: 18px;
-    /* Default / Collapsed Base: Points DOWN */
     transform: rotate(0deg);
-    transition: transform var(--slide-duration) var(--ease-cinematic);
+    /* Uses dedicated duration and snappy curve */
+    transition: transform var(--chevron-duration) var(--ease-cinematic);
     transform-origin: center center;
 }
 
@@ -339,9 +341,10 @@ h1, h2, h3, h4, h5, h6,
     margin-right: var(--back-btn-offset);
 }
 
+/* Update Section 7 toggle button press rule */
 .navigation-container.is-collapsed-mode .toggle-menu-button:active,
 .navigation-container.is-collapsed-mode .toggle-menu-button.is-pressed {
-    transform: translateY(-50%) scale(0.92);
+    transform: translateY(-50%) scale(0.92) !important;
 }
 
 .navigation-container.is-collapsed-mode .branding-group {
