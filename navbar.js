@@ -246,6 +246,8 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            padding-right: var(--tab-bubble-offset-v);
+            padding-left: var(--tab-bubble-offset-v);
             margin-left: auto;
             flex-shrink: 0;
         }
@@ -350,7 +352,7 @@
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
             width: 100%;
             margin-left: 0;
-            padding: 0 var(--tab-bubble-offset-v);
+            padding: 0;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list {
@@ -530,15 +532,13 @@
     }
 
     function checkCollisionBreakpoints(containerWidth) {
+        // Measure uncollapsed width safely
         navContainer.classList.remove('is-collapsed-mode');
-
-        if (!cachedTabsWidth) {
-            cachedTabsWidth = desktopTabListElement.scrollWidth;
-        }
+        cachedTabsWidth = desktopTabListElement.scrollWidth;
 
         const navbarWidth = containerWidth || combinedNavbar.clientWidth;
         const brandingWidth = brandingGroup.offsetWidth;
-        const totalRequiredWidth = brandingWidth + cachedTabsWidth + 16;
+        const totalRequiredWidth = brandingWidth + cachedTabsWidth + 8;
 
         if (navbarWidth < totalRequiredWidth) {
             navContainer.classList.add('is-collapsed-mode');
