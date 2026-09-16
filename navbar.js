@@ -363,8 +363,8 @@
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list {
             margin-left: 0;
-            /* Matches the spacing offset between the back button and header title text on Bar 1 */
-            padding-left: var(--back-btn-offset);
+            /* Exact distance from left navbar border to title text start (8px + 36px + 8px = 52px) */
+            padding-left: calc(var(--back-btn-offset) + var(--back-btn-size) + var(--back-btn-offset));
             padding-right: var(--tab-bubble-offset-v);
         }
 
@@ -541,13 +541,11 @@
     }
 
     function checkCollisionBreakpoints(containerWidth) {
-        // Clear collapsed state to accurately measure natural content widths
         navContainer.classList.remove('is-collapsed-mode');
         cachedTabsWidth = desktopTabListElement.scrollWidth;
 
         const navbarWidth = containerWidth || combinedNavbar.clientWidth;
         const brandingWidth = brandingGroup.scrollWidth;
-        // Total threshold calculation guarantees clipping never occurs before collapsing
         const totalRequiredWidth = brandingWidth + cachedTabsWidth + 12;
 
         if (navbarWidth < totalRequiredWidth) {
@@ -555,7 +553,7 @@
         }
 
         switchActiveTab(activeTabIndex, true);
-        updateContentOffset(); // Snap position immediately
+        updateContentOffset();
     }
 
     function switchActiveTab(index, isInstant = false) {
@@ -582,7 +580,6 @@
         updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, isInstant);
     }
 
-    // Toggle Mobile Stack & Dynamic Instant Height Snap
     toggleMenuButtonElement.addEventListener('click', () => {
         const isHidden = lowerTabWrapperElement.classList.toggle('is-hidden');
         toggleMenuButtonElement.classList.toggle('is-collapsed', isHidden);
@@ -593,7 +590,6 @@
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
 
-        // Instant position snap
         updateContentOffset();
     });
 
