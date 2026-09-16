@@ -1,3 +1,10 @@
+/* ==========================================================================
+   Navigation Component Stylesheet
+   ========================================================================== */
+
+/* -------------------------------------------------------------
+   0. Global Resets & Transitions Control
+   ------------------------------------------------------------- */
 .no-transitions *,
 .no-transitions *::before,
 .no-transitions *::after {
@@ -11,6 +18,9 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* -------------------------------------------------------------
+   1. Design Tokens & Theme Definitions
+   ------------------------------------------------------------- */
 :root {
     --canvas-background-color: #0B192C;
     --court-accent-color: #38BDF8;
@@ -22,11 +32,14 @@
     --page-outer-spacing: 24px;
     --navbar-pill-background: rgba(15, 23, 42, 0.75);
     --navbar-border-color: rgba(255, 255, 255, 0.2);
+    
+    /* Easing & Durations */
     --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
     --fade-duration: 1.2s;
     --slide-duration: 1.0s;
 }
 
+/* Themes */
 :root.theme-australian, body.theme-australian { --canvas-background-color: #071527; --court-accent-color: #38BDF8; }
 :root.theme-french, body.theme-french         { --canvas-background-color: #1A4D2E; --court-accent-color: #E27355; }
 :root.theme-wimbledon, body.theme-wimbledon   { --canvas-background-color: #3D2358; --court-accent-color: #34D399; }
@@ -34,6 +47,9 @@
 :root.theme-streams, body.theme-streams       { --canvas-background-color: #0B3D66; --court-accent-color: #38BDF8; }
 :root.theme-settings, body.theme-settings     { --canvas-background-color: #2B1B3F; --court-accent-color: #C084FC; }
 
+/* -------------------------------------------------------------
+   2. Base Layout & Typography
+   ------------------------------------------------------------- */
 body {
     background-color: var(--canvas-background-color);
     width: 100%;
@@ -46,7 +62,9 @@ body {
     transition: background-color var(--fade-duration) var(--ease-cinematic);
 }
 
-.active-tab-display, h1, h2, h3, h4, h5, h6, .main-content {
+.active-tab-display, 
+h1, h2, h3, h4, h5, h6, 
+.main-content {
     color: #FFFFFF !important;
 }
 
@@ -59,6 +77,9 @@ body {
     transform: translateZ(0);
 }
 
+/* -------------------------------------------------------------
+   3. Main Navbar Shell (Bar 1 / Bar 2)
+   ------------------------------------------------------------- */
 .navbar {
     width: 100%;
     height: var(--navbar-height);
@@ -81,6 +102,9 @@ body {
     }
 }
 
+/* -------------------------------------------------------------
+   4. Header & Branding Components
+   ------------------------------------------------------------- */
 .branding-group {
     display: flex;
     align-items: center;
@@ -102,17 +126,27 @@ body {
     color: rgba(255, 255, 255, 0.95);
     flex-shrink: 0;
     cursor: pointer;
-    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s var(--ease-cinematic), opacity var(--fade-duration) var(--ease-cinematic);
+    transition: background 0.4s ease, 
+                border-color 0.4s ease, 
+                transform 0.4s var(--ease-cinematic), 
+                opacity var(--fade-duration) var(--ease-cinematic);
     user-select: none;
     will-change: transform, opacity;
 }
 
 @media (hover: hover) {
-    .icon-action-button:hover { background: rgba(255, 255, 255, 0.22); border-color: rgba(255, 255, 255, 0.35); }
-    .tab-link:hover { color: #FFFFFF; opacity: 1; }
+    .icon-action-button:hover { 
+        background: rgba(255, 255, 255, 0.22); 
+        border-color: rgba(255, 255, 255, 0.35); 
+    }
+    .tab-link:hover { 
+        color: #FFFFFF; 
+        opacity: 1; 
+    }
 }
 
-.icon-action-button:active, .icon-action-button.is-pressed {
+.icon-action-button:active, 
+.icon-action-button.is-pressed {
     transform: scale(0.92);
     background: rgba(255, 255, 255, 0.28);
     border-color: rgba(255, 255, 255, 0.45);
@@ -124,8 +158,15 @@ body {
     transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.6s var(--ease-cinematic);
 }
 
-.toggle-menu-button { display: none; z-index: 10; }
-.toggle-menu-button.is-collapsed svg { transform: rotate(180deg); }
+/* Rightmost Menu Toggle Button */
+.toggle-menu-button { 
+    display: none; 
+    z-index: 10; 
+}
+
+.toggle-menu-button.is-collapsed svg { 
+    transform: rotate(180deg); 
+}
 
 .header-titles {
     height: var(--back-btn-size);
@@ -140,9 +181,23 @@ body {
     min-width: max-content;
 }
 
-.primary-title { font-size: 14px; line-height: 1.2; font-weight: 600; color: #FFFFFF; }
-.secondary-title { font-size: 12px; line-height: 1.2; font-weight: 400; color: rgba(255, 255, 255, 0.80); }
+.primary-title { 
+    font-size: 14px; 
+    line-height: 1.2; 
+    font-weight: 600; 
+    color: #FFFFFF; 
+}
 
+.secondary-title { 
+    font-size: 12px; 
+    line-height: 1.2; 
+    font-weight: 400; 
+    color: rgba(255, 255, 255, 0.80); 
+}
+
+/* -------------------------------------------------------------
+   5. Tabs & Active Pill Highlight
+   ------------------------------------------------------------- */
 .tab-scroll-viewport {
     position: relative;
     display: flex;
@@ -155,7 +210,9 @@ body {
     scroll-behavior: smooth;
 }
 
-.tab-scroll-viewport::-webkit-scrollbar { display: none; }
+.tab-scroll-viewport::-webkit-scrollbar { 
+    display: none; 
+}
 
 .tab-list {
     position: relative;
@@ -169,7 +226,14 @@ body {
     flex-shrink: 0;
 }
 
-.tab-item { height: 100%; display: flex; align-items: center; flex-shrink: 0; z-index: 1; position: relative; }
+.tab-item { 
+    height: 100%; 
+    display: flex; 
+    align-items: center; 
+    flex-shrink: 0; 
+    z-index: 1; 
+    position: relative; 
+}
 
 .tab-link {
     color: rgba(255, 255, 255, 0.72);
@@ -188,7 +252,10 @@ body {
     user-select: none;
 }
 
-.tab-link.is-active { color: #FFFFFF; opacity: 1; }
+.tab-link.is-active { 
+    color: #FFFFFF; 
+    opacity: 1; 
+}
 
 .active-tab-highlight {
     position: absolute;
@@ -200,15 +267,27 @@ body {
     border-radius: 9999px;
     pointer-events: none;
     opacity: 0;
-    transition: transform var(--slide-duration) var(--ease-cinematic), width var(--slide-duration) var(--ease-cinematic), opacity var(--fade-duration) var(--ease-cinematic);
+    transition: transform var(--slide-duration) var(--ease-cinematic), 
+                width var(--slide-duration) var(--ease-cinematic), 
+                opacity var(--fade-duration) var(--ease-cinematic);
     z-index: 0;
     will-change: transform, width, opacity;
 }
 
-.active-tab-highlight.is-visible { opacity: 1; }
-.active-tab-highlight.no-transition { transition: none !important; }
+.active-tab-highlight.is-visible { 
+    opacity: 1; 
+}
 
-.stacked-tab-wrapper { display: none; }
+.active-tab-highlight.no-transition { 
+    transition: none !important; 
+}
+
+/* -------------------------------------------------------------
+   6. State 2 Collapsed Layout Rules (Bar 2 & Bar 3)
+   ------------------------------------------------------------- */
+.stacked-tab-wrapper { 
+    display: none; 
+}
 
 .navigation-container.is-collapsed-mode .toggle-menu-button {
     display: grid;
@@ -226,50 +305,79 @@ body {
     flex-shrink: 1;
 }
 
-.navigation-container.is-collapsed-mode .header-titles { min-width: 0; flex-shrink: 1; }
-.navigation-container.is-collapsed-mode .primary-title,
-.navigation-container.is-collapsed-mode .secondary-title { text-overflow: ellipsis; overflow: hidden; }
-.navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { display: none; }
+.navigation-container.is-collapsed-mode .header-titles { 
+    min-width: 0; 
+    flex-shrink: 1; 
+}
 
+.navigation-container.is-collapsed-mode .primary-title,
+.navigation-container.is-collapsed-mode .secondary-title { 
+    text-overflow: ellipsis; 
+    overflow: hidden; 
+}
+
+/* Hide horizontal inline tab bar when collapsed into State 2 */
+.navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { 
+    display: none; 
+}
+
+/* -------------------------------------------------------------
+   7. Directional Fade & Slide Transitions (Bar 3)
+   ------------------------------------------------------------- */
+
+/* Outer Accordion Wrapper */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
     display: grid;
     grid-template-rows: 1fr;
     width: 100%;
-    transition: grid-template-rows 0.8s var(--ease-cinematic) 0.2s;
+    transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: grid-template-rows;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
     overflow: hidden;
     min-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
 }
 
+/* BAR 3 VISIBLE (Fades In Travelling Downwards) */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     display: flex;
     height: var(--navbar-height);
     margin-top: 6px;
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
     filter: blur(0px);
-    transition: opacity var(--fade-duration) var(--ease-cinematic), transform var(--slide-duration) var(--ease-cinematic), filter var(--fade-duration) var(--ease-cinematic), margin-top var(--slide-duration) var(--ease-cinematic);
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-top 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform, filter, margin-top;
 }
 
-.navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { width: 100%; padding: 0 var(--tab-bubble-offset-v); }
-.navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list { margin-left: 0; padding: 0; }
+.navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
+    width: 100%; 
+    padding: 0 var(--tab-bubble-offset-v); 
+}
 
+.navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list { 
+    margin-left: 0; 
+    padding: 0; 
+}
+
+/* BAR 3 HIDDEN (Fades Out Travelling Upwards into Bar 2) */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
     grid-template-rows: 0fr;
-    transition: grid-template-rows 0.8s var(--ease-cinematic) 0.4s;
+    transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
     opacity: 0;
-    transform: translateY(-12px) scale(0.97);
-    filter: blur(4px);
+    transform: translateY(-16px); /* Upward directional offset */
+    filter: blur(3px);
     margin-top: 0px;
     pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
