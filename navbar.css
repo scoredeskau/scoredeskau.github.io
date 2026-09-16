@@ -119,14 +119,21 @@ h1, h2, h3, h4, h5, h6,
 /* -------------------------------------------------------------
    4. Header & Branding Components
    ------------------------------------------------------------- */
+/* Ensure titles measure their full natural width without premature clipping */
 .branding-group {
     display: flex;
     align-items: center;
     padding-left: var(--back-btn-offset);
     flex-shrink: 0;
-    min-width: max-content;
+    width: max-content; /* Guarantees accurate scrollWidth measurement */
     z-index: 2;
     height: 100%;
+}
+
+/* In non-collapsed mode, prevent flex items from shrinking and squeezing tabs */
+.navigation-container:not(.is-collapsed-mode) .header-titles {
+    flex-shrink: 0;
+    width: max-content;
 }
 
 .icon-action-button {

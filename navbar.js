@@ -4,6 +4,47 @@
 (function () {
     'use strict';
 
+        /**
+     * Dynamically calculates if tabs will collide with title text.
+     * Switches to collapsed mode strictly when physical overlap occurs.
+     */
+    function checkNavbarOverflow() {
+        const navContainer = document.querySelector('.navigation-container');
+        const navbar = document.querySelector('.navbar');
+        const branding = document.querySelector('.branding-group');
+        const tabViewport = document.querySelector('#combinedNavbar .tab-scroll-viewport');
+        
+        if (!navbar || !branding || !tabViewport) return;
+
+        // Temporarily uncollapse to measure natural desktop widths
+        const wasCollapsed = navContainer.classList.contains('is-collapsed-mode');
+        navContainer.classList.remove('is-collapsed-mode');
+
+        // Measure actual rendered pixel widths
+        const navbarWidth = navbar.getBoundingClientRect().width;
+        const brandingWidth = branding.getBoundingClientRect().width;
+        const tabsWidth = tabViewport.scrollWidth; // Full width of all tab items combined
+        
+        const safetyBuffer = 24; // Extra padding buffer in pixels
+
+        // If total required content exceeds available navbar width, collapse
+        const shouldCollapse = (brandingWidth + tabsWidth + safetyBuffer) > navbarWidth;
+
+        if (shouldCollapse) {
+            navContainer.classList.add('is-collapsed-mode');
+        } else {
+            // Restore user's manual collapse preference if set
+            const savedState = localStorage.getItem('bar3_collapsed');
+            if (savedState === 'true') {
+                navContainer.classList.add('is-collapsed-mode');
+            }
+        }
+    }
+
+    // Recalculate on window resize & initial load
+    window.addEventListener('resize', checkNavbarOverflow);
+    document.addEventListener('DOMContentLoaded', checkNavbarOverflow);
+
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
         { label: 'Live Scores', target: '#scores' }
     ];
