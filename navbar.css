@@ -146,12 +146,13 @@ h1, h2, h3, h4, h5, h6,
     color: rgba(255, 255, 255, 0.95);
     flex-shrink: 0;
     cursor: pointer;
-    transition: background 0.3s ease, 
-                border-color 0.3s ease, 
-                transform 0.3s var(--ease-cinematic), 
-                opacity var(--fade-duration) var(--ease-cinematic);
     user-select: none;
-    will-change: transform, opacity;
+    will-change: transform, opacity, background;
+    /* Spring bounce physics on touch release */
+    transition: background 0.25s ease, 
+                border-color 0.25s ease, 
+                transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                opacity 0.25s ease;
 }
 
 @media (hover: hover) {
@@ -172,12 +173,13 @@ h1, h2, h3, h4, h5, h6,
     border-color: rgba(255, 255, 255, 0.35);
 }
 
-.icon-action-button:active,
+/* Instant scale-down & high contrast opacity on tap/click */
+.icon-action-button:active, 
 .icon-action-button.is-pressed {
-    transform: scale(0.92);
-    background: rgba(255, 255, 255, 0.28);
-    border-color: rgba(255, 255, 255, 0.45);
-    transition: transform 0.1s ease, background 0.1s ease, border-color 0.1s ease;
+    transform: scale(0.88) !important;
+    background: rgba(255, 255, 255, 0.32) !important;
+    border-color: rgba(255, 255, 255, 0.50) !important;
+    transition: transform 0.05s ease, background 0.05s ease, border-color 0.05s ease !important;
 }
 
 .icon-action-button svg {
@@ -298,7 +300,7 @@ h1, h2, h3, h4, h5, h6,
     color: rgba(255, 255, 255, 0.72);
     text-decoration: none;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: -0.1px;
     white-space: nowrap;
     height: 100%;
@@ -327,7 +329,7 @@ h1, h2, h3, h4, h5, h6,
 .tab-link.is-active:active { 
     color: #FFFFFF !important; 
     opacity: 1 !important; 
-    font-weight: 500;
+    font-weight: 400;
 }
 
 /* Hover state only for non-active tabs */
@@ -396,10 +398,9 @@ h1, h2, h3, h4, h5, h6,
     margin-left: 16px; 
 }
 
-/* Update Section 7 toggle button press rule */
 .navigation-container.is-collapsed-mode .toggle-menu-button:active,
 .navigation-container.is-collapsed-mode .toggle-menu-button.is-pressed {
-    transform: translateY(-50%) scale(0.92) !important;
+    transform: translateY(-50%) scale(0.88) !important;
 }
 
 .navigation-container.is-collapsed-mode .branding-group {
