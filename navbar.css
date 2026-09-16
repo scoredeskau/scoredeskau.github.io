@@ -84,6 +84,11 @@ h1, h2, h3, h4, h5, h6,
     transform: translateZ(0);
 }
 
+/* Ensure page content moves in sync with Bar 3 */
+.main-content {
+    transition: margin-top var(--bar3-fade-out-duration) var(--ease-cinematic);
+}
+
 /* -------------------------------------------------------------
    3. Main Navbar Shell (Bar 1 / Bar 2)
    ------------------------------------------------------------- */
@@ -352,6 +357,11 @@ h1, h2, h3, h4, h5, h6,
     /* Use in-duration for expanding; hidden state will override for collapsing */
     transition: max-height var(--bar3-fade-in-duration) var(--ease-cinematic);
     will-change: max-height;
+}
+
+/* When Bar 3 collapses/expands, animate the push of main content */
+.navigation-container.is-collapsed-mode + .main-content {
+    transition: transform var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
 /* Recreate the 8px gap without affecting the bar-3 animation box model */
