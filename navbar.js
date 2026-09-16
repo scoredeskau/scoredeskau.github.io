@@ -419,10 +419,10 @@
         </div>
     `;
 
-    // 4. Instant Content Position Snapping
+    // 4. Dynamic Offset Calculation
     function updateContentOffset() {
         const navHeight = navContainer.getBoundingClientRect().height;
-        const totalPadding = navHeight + 48; // Top padding (24px) + height + bottom gap (24px)
+        const totalPadding = navHeight + 48; // Top margin (24px) + bar height + bottom margin (24px)
         document.documentElement.style.setProperty('--nav-total-offset', `${totalPadding}px`);
     }
 
@@ -579,6 +579,7 @@
         updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, isInstant);
     }
 
+    let animateOffsetId = null;
     toggleMenuButtonElement.addEventListener('click', () => {
         const isHidden = lowerTabWrapperElement.classList.toggle('is-hidden');
         toggleMenuButtonElement.classList.toggle('is-collapsed', isHidden);
@@ -589,19 +590,20 @@
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
 
-        // Animate content offset smoothly during transition
+        // Animate page top padding smoothly frame-by-frame during the 300ms transition
+        if (animateOffsetId) cancelAnimationFrame(animateOffsetId);
         const startTime = performance.now();
-        const duration = 300; // Matches CSS transition duration
+        const durationMs = 320;
 
-        function stepOffsetAnimation(now) {
+        function animatePaddingStep(currentTime) {
             updateContentOffset();
-            if (now - startTime < duration) {
-                requestAnimationFrame(stepOffsetAnimation);
+            if (currentTime - startTime < durationMs) {
+                animateOffsetId = requestAnimationFrame(animatePaddingStep);
             } else {
                 updateContentOffset();
             }
         }
-        requestAnimationFrame(stepOffsetAnimation);
+        animateOffsetId = requestAnimationFrame(animatePaddingStep);
     });
 
     document.querySelectorAll('.icon-action-button').forEach(button => {
