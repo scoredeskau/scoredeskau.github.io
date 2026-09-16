@@ -394,6 +394,8 @@ h1, h2, h3, h4, h5, h6,
     flex-shrink: 0;
 }
 
+
+
 /* -------------------------------------------------------------
    8. Bar 3 Accordion Grid & Directional Fade Animations
    ------------------------------------------------------------- */
@@ -414,11 +416,7 @@ h1, h2, h3, h4, h5, h6,
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
     padding-top: 8px;
-}
-
-.navigation-container.is-collapsed-mode #combinedNavbar,
-.navigation-container.is-collapsed-mode .stacked-tab-navbar {
-    overflow: visible;
+    background: transparent;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
@@ -444,18 +442,11 @@ h1, h2, h3, h4, h5, h6,
     overflow: visible;
 }
 
-.navigation-container.is-collapsed-mode .navbar {
-    overflow: visible;
-}
-
-.navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
-    overflow: visible;
-    min-height: 0;
-}
-
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     display: flex;
     height: var(--navbar-height);
+    border-radius: 9999px;
+    overflow: hidden; /* Clips scrolling items to the pill curve */
     opacity: 1;
     transform: translateY(0);
     filter: blur(0px);
@@ -474,9 +465,13 @@ h1, h2, h3, h4, h5, h6,
                 filter var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
+/* Ensure the internal scroll container respects the parent pill clipping */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
     width: 100%; 
+    height: 100%;
     padding: 0 var(--tab-bubble-offset-v); 
+    border-radius: 9999px;
+    overflow-x: auto;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list { 
