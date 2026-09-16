@@ -33,13 +33,13 @@
     --navbar-pill-background: rgba(15, 23, 42, 0.75);
     --navbar-border-color: rgba(255, 255, 255, 0.2);
     
-    /* Global Easing & Timing Controls */
+    /* Easing Definitions */
     --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
     --fade-duration: 1.2s;
     --slide-duration: 1.0s;
 
-    /* BAR 3 ANIMATION TIMINGS (Adjust these values directly) */
-    --bar3-fade-out-duration: 0.8s;
+    /* BAR 3 ANIMATION TIMINGS */
+    --bar3-fade-out-duration: 0.5s;
     --bar3-fade-in-duration: 0.45s;
 }
 
@@ -287,12 +287,15 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   6. State 2 Collapsed Layout Rules (Bar 2 & Bar 3)
+   6. Desktop Hidden Stacked Wrapper
    ------------------------------------------------------------- */
-.stacked-tab-wrapper { 
-    display: none; 
+.stacked-tab-wrapper {
+    display: none;
 }
 
+/* -------------------------------------------------------------
+   7. State 2 Collapsed Layout Rules (Bar 2 & Bar 3)
+   ------------------------------------------------------------- */
 .navigation-container.is-collapsed-mode .toggle-menu-button {
     display: grid;
     position: absolute;
@@ -331,25 +334,25 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   7. Directional Fade & Slide Transitions (Bar 3)
+   8. Bar 3 Accordion Grid & Directional Fade Animations
    ------------------------------------------------------------- */
-
-/* Outer Accordion Wrapper */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
     display: grid;
     grid-template-rows: 1fr;
     width: 100%;
-    padding-top: 6px;
-    transition: grid-template-rows var(--bar3-fade-out-duration) var(--ease-cinematic);
-    will-change: grid-template-rows;
+    margin-top: 6px;
+    opacity: 1;
+    transition: grid-template-rows var(--bar3-fade-out-duration) var(--ease-cinematic),
+                margin-top var(--bar3-fade-out-duration) var(--ease-cinematic),
+                opacity var(--bar3-fade-out-duration) var(--ease-cinematic);
+    will-change: grid-template-rows, margin-top, opacity;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
-    overflow: visible;
+    overflow: hidden;
     min-height: 0;
 }
 
-/* BAR 3 VISIBLE (Fades In Travelling Downwards) */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     display: flex;
     height: var(--navbar-height);
@@ -372,22 +375,21 @@ h1, h2, h3, h4, h5, h6,
     padding: 0; 
 }
 
-/* BAR 3 HIDDEN (Fades Out Travelling Upwards into Bar 2) */
+/* BAR 3 HIDDEN STATE */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
     grid-template-rows: 0fr;
-    transition: grid-template-rows var(--bar3-fade-out-duration) var(--ease-cinematic);
-}
-
-.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar-inner {
-    overflow: hidden;
-    transition: overflow 0s linear var(--bar3-fade-out-duration);
+    margin-top: 0px;
+    opacity: 0;
+    pointer-events: none;
+    transition: grid-template-rows var(--bar3-fade-out-duration) var(--ease-cinematic),
+                margin-top var(--bar3-fade-out-duration) var(--ease-cinematic),
+                opacity var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
     opacity: 0;
-    transform: translateY(-20px);
-    filter: blur(4px);
-    pointer-events: none;
+    transform: translateY(-16px);
+    filter: blur(3px);
     transition: opacity var(--bar3-fade-out-duration) var(--ease-cinematic),
                 transform var(--bar3-fade-out-duration) var(--ease-cinematic),
                 filter var(--bar3-fade-out-duration) var(--ease-cinematic);

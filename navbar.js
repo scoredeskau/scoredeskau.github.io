@@ -181,7 +181,7 @@
         toggleMenuButton.setAttribute('aria-expanded', !isHidden);
 
         if (!isHidden) {
-            const activeMobileLink = mobileTabList.querySelector(`a[data-index="${index}"]` || mobileTabList.querySelector('.tab-link'));
+            const activeMobileLink = mobileTabList.querySelector(`a[data-index="${activeTabIndex}"]`);
             updateHighlightPosition(activeMobileLink, mobileHighlight, mobileViewport, true);
         }
     });
