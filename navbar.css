@@ -17,7 +17,7 @@
     padding: 0;
     -webkit-tap-highlight-color: transparent;
 }
-/* (removed stray transition fragment that broke CSS parsing) */
+
 /* -------------------------------------------------------------
    1. Design Tokens & Theme Definitions
    ------------------------------------------------------------- */
@@ -84,7 +84,6 @@ h1, h2, h3, h4, h5, h6,
     transform: translateZ(0);
 }
 
-/* Ensure page content moves in sync with Bar 3 */
 .main-content {
     transition: margin-top var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
@@ -170,7 +169,6 @@ h1, h2, h3, h4, h5, h6,
     transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.6s var(--ease-cinematic);
 }
 
-/* Rightmost Menu Toggle Button */
 .toggle-menu-button { 
     display: none; 
     z-index: 10; 
@@ -337,7 +335,6 @@ h1, h2, h3, h4, h5, h6,
     overflow: hidden; 
 }
 
-/* Hide horizontal inline tab bar when collapsed into State 2 */
 .navigation-container.is-collapsed-mode .combined-header-navbar .tab-scroll-viewport { 
     display: none; 
 }
@@ -351,33 +348,25 @@ h1, h2, h3, h4, h5, h6,
     width: 100%;
     margin-top: 0px;
     opacity: 1;
-    /* Height animation for seamless page scroll adjustment */
     overflow: hidden;
     max-height: var(--bar3-h);
-    /* Use in-duration for expanding; hidden state will override for collapsing */
     transition: max-height var(--bar3-fade-in-duration) var(--ease-cinematic);
     will-change: max-height;
 }
 
-/* When Bar 3 collapses/expands, animate the push of main content */
 .navigation-container.is-collapsed-mode + .main-content {
     transition: transform var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
-/* Recreate the 8px gap without affecting the bar-3 animation box model */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
     padding-top: 8px;
 }
 
-/* Avoid clipping artifacts when animating Bar 3 upward/downward */
 .navigation-container.is-collapsed-mode #combinedNavbar,
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     overflow: visible;
 }
 
-/* Wrapper can stay default; clipping is handled by Bar 1/2 mask */
-
-/* Make sure Bar 3 fades behind Bar 1/2 */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
     z-index: 1;
 }
@@ -387,28 +376,21 @@ h1, h2, h3, h4, h5, h6,
     z-index: 1;
 }
 
-/* Ensure Bar 1/2 are above */
 .navigation-container.is-collapsed-mode #combinedNavbar {
     position: relative;
     z-index: 3;
 }
 
-/* Clipping mask so Bar 3 visually goes under Bar 1/2.
-   We keep Bar 3 above (z-index-wise) but clip it at the bottom edge of the top bar. */
 .navigation-container.is-collapsed-mode {
     position: relative;
     z-index: 1000;
 }
 
-/* Keep Bar 1/2 above, but avoid clipping Bar 3 inside the pill itself.
-   If we clip the pill, rounded edges will cut awkwardly.
-   We'll instead use the stacked layout element as the clip target. */
 .navigation-container.is-collapsed-mode #lowerTabWrapper {
     overflow: visible;
 }
 
 .navigation-container.is-collapsed-mode .navbar {
-    /* no overflow clipping */
     overflow: visible;
 }
 
@@ -429,7 +411,6 @@ h1, h2, h3, h4, h5, h6,
     will-change: opacity, transform, filter;
 }
 
-/* Ensure Bar 3 starts with hidden styles when JS has set is-hidden */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
     opacity: 0;
     transform: translateY(-16px);
@@ -438,9 +419,6 @@ h1, h2, h3, h4, h5, h6,
                 transform var(--bar3-fade-out-duration) var(--ease-cinematic),
                 filter var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
-
-/* Note: Bar 3 seam is handled via spacing (margin-top),
-   not by forcing transparent backgrounds. */
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
     width: 100%; 
@@ -452,23 +430,10 @@ h1, h2, h3, h4, h5, h6,
     padding: 0; 
 }
 
-/* BAR 3 HIDDEN STATE */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
     opacity: 0;
     pointer-events: none;
     max-height: 0px;
-    /* Combined animation: fade + collapse together */
     transition: max-height var(--bar3-fade-out-duration) var(--ease-cinematic),
                 opacity var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
-
-.navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
-    opacity: 0;
-    transform: translateY(-16px);
-    filter: blur(3px);
-    transition: opacity var(--bar3-fade-out-duration) var(--ease-cinematic),
-                transform var(--bar3-fade-out-duration) var(--ease-cinematic),
-                filter var(--bar3-fade-out-duration) var(--ease-cinematic);
-}
-
-/* (Intentionally no JS fade hook classes; `.is-hidden` drives fade.) */
