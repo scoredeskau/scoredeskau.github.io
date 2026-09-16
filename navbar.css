@@ -180,27 +180,26 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   Chevron Rotation - Hardcoded Clockwise Sweep Through Right
+   Chevron Rotation - Full Clockwise Sweep via Right (90deg)
    ------------------------------------------------------------- */
 
-/* Default State: Bar 3 HIDDEN / COLLAPSED -> Arrow points DOWN */
 .toggle-menu-button svg {
     width: 18px;
     height: 18px;
+    /* Default / Collapsed Base: Points DOWN */
     transform: rotate(0deg);
     transition: transform var(--slide-duration) var(--ease-cinematic);
     transform-origin: center center;
 }
 
-/* Expanded State: Bar 3 SHOWN -> Arrow rotates Clockwise (+180deg) to point UP */
-/* Sweeps explicitly through +90deg (RIGHT / East) on the way up */
+/* Expanded State: 0deg -> 90deg (RIGHT) -> 180deg (UP) */
 .toggle-menu-button:not(.is-collapsed) svg {
-    transform: rotate(-180deg);
+    transform: rotate(180deg);
 }
 
-/* Explicit Collapsed State override */
+/* Collapsed State: 180deg -> 270deg (RIGHT) -> 360deg (DOWN) */
 .toggle-menu-button.is-collapsed svg { 
-    transform: rotate(0deg); 
+    transform: rotate(360deg); 
 }
 
 .header-titles {
