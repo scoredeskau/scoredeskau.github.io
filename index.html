@@ -4,17 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournament Dashboard</title>
-    <script src="anti-flash.js"></script>
-</head>
-<body>
-
-    <div class="navigation-container" id="navContainer"></div>
-
-    <main class="main-content">
-        <h1 class="active-tab-display" id="themeTitleHeading">Live Scores</h1>
-    </main>
-
-    <!-- Configure Page Specific Navbar Settings -->
+    <link rel="stylesheet" href="navbar.css">
+    
+    <!-- Config initialized prior to anti-flash execution -->
     <script>
         window.PAGE_THEME = 'theme-australian';
         window.PAGE_PRIMARY_TITLE = '2026 RSYLTC Clay Court Championships';
@@ -27,6 +19,16 @@
             { label: 'Streams', target: '#streams' }
         ];
     </script>
-    <script src="navbar.js"></script>
+    <script src="anti-flash.js" defer></script>
+    <script src="navbar.js" defer></script>
+</head>
+<body>
+
+    <div class="navigation-container" id="navContainer"></div>
+
+    <main class="main-content">
+        <h1 class="active-tab-display" id="themeTitleHeading">Live Scores</h1>
+    </main>
+
 </body>
 </html>

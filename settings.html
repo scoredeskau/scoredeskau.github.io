@@ -4,17 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournament Settings</title>
-    <script src="anti-flash.js"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="navbar.css">
 
-    <div class="navigation-container" id="navContainer"></div>
-
-    <main class="main-content">
-        <h1 class="active-tab-display" id="themeTitleHeading">General</h1>
-    </main>
-
-    <!-- Configure Page Specific Navbar Settings -->
+    <!-- Config initialized prior to anti-flash execution -->
     <script>
         window.PAGE_THEME = 'theme-settings';
         window.PAGE_PRIMARY_TITLE = 'Tournament Settings';
@@ -27,6 +19,16 @@
             { label: 'Export Data', target: '#export' }
         ];
     </script>
-    <script src="navbar.js"></script>
+    <script src="anti-flash.js" defer></script>
+    <script src="navbar.js" defer></script>
+</head>
+<body>
+
+    <div class="navigation-container" id="navContainer"></div>
+
+    <main class="main-content">
+        <h1 class="active-tab-display" id="themeTitleHeading">General</h1>
+    </main>
+
 </body>
 </html>
