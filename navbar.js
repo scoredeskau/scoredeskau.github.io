@@ -204,19 +204,6 @@
         // Drive height animation via a CSS variable.
         lowerTabWrapper.style.setProperty('--bar3-h', `${bar3MeasuredHeight}px`);
 
-        // If hiding, delay the actual height collapse until after fade-out,
-        // so fade-out remains visible.
-        if (isHidden) {
-            const fadeOutMs = 500; // matches --bar3-fade-out-duration
-            lowerTabWrapper.style.maxHeight = `var(--bar3-h)`;
-            window.setTimeout(() => {
-                lowerTabWrapper.style.maxHeight = '0px';
-            }, fadeOutMs);
-        } else {
-            // Ensure we expand back to measured height.
-            lowerTabWrapper.style.maxHeight = `var(--bar3-h)`;
-        }
-
         toggleMenuButton.classList.toggle('is-collapsed', isHidden);
         toggleMenuButton.setAttribute('aria-expanded', !isHidden);
 
@@ -263,21 +250,32 @@
     resizeObserver.observe(navContainer);
     checkCollisionBreakpoints();
 
-    // Initialize Bar 3 state deterministically on refresh.
-    // This prevents the first toggle from behaving differently than later toggles,
-    // and avoids Bar 3 temporarily overlaying main content during initial render.
-    (function initBar3() {
-        if (!lowerTabWrapper) return;
-        const stackedTabNavbar = lowerTabWrapper.querySelector('.stacked-tab-navbar');
-        const h = stackedTabNavbar
-            ? (stackedTabNavbar.scrollHeight || stackedTabNavbar.offsetHeight || 0)
-            : (lowerTabWrapper.scrollHeight || 0);
-        lowerTabWrapper.style.setProperty('--bar3-h', `${Math.max(1, h)}px`);
+    // Initialize Bar 3 state deterministically on refresh, but delay until after
+    // first paint to avoid any initial flash.
+    requestAnimationFrame(() => {
+        (function initBar3() {
+            if (!lowerTabWrapper) return;
 
-        // Start closed; JS will toggle as user interacts.
-        lowerTabWrapper.classList.add('is-hidden');
-        lowerTabWrapper.style.maxHeight = '0px';
-    })();
+            // Prevent any intermediate layout/paint while we set initial state.
+            lowerTabWrapper.style.opacity = '0';
+            lowerTabWrapper.style.maxHeight = '0px';
+            lowerTabWrapper.style.pointerEvents = 'none';
+
+            const stackedTabNavbar = lowerTabWrapper.querySelector('.stacked-tab-navbar');
+            const h = stackedTabNavbar
+                ? (stackedTabNavbar.scrollHeight || stackedTabNavbar.offsetHeight || 0)
+                : (lowerTabWrapper.scrollHeight || 0);
+            lowerTabWrapper.style.setProperty('--bar3-h', `${Math.max(1, h)}px`);
+
+            // Start closed; JS will toggle as user interacts.
+            lowerTabWrapper.classList.add('is-hidden');
+            lowerTabWrapper.style.maxHeight = '0px';
+
+            // Let CSS handle the final state immediately.
+            lowerTabWrapper.style.opacity = '';
+            lowerTabWrapper.style.pointerEvents = '';
+        })();
+    });
 
     // Enable Smooth Transitions Post Initial Paint
     requestAnimationFrame(() => {
