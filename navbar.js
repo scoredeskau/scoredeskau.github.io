@@ -60,7 +60,6 @@
             --page-outer-spacing: 24px;
             --navbar-pill-background: rgba(15, 23, 42, 0.75);
             --navbar-border-color: rgba(255, 255, 255, 0.2);
-            --nav-total-offset: calc(var(--page-outer-spacing) + var(--navbar-height) + var(--page-outer-spacing));
         }
 
         :root.theme-australian, body.theme-australian { --canvas-background-color: #071527; --court-accent-color: #38BDF8; }
@@ -75,15 +74,11 @@
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
-            padding-top: var(--nav-total-offset);
-            padding-left: var(--page-outer-spacing);
-            padding-right: var(--page-outer-spacing);
-            padding-bottom: var(--page-outer-spacing);
+            padding: var(--page-outer-spacing);
             font-family: "SF Pro Text", "SF Pro Icons", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #FFFFFF;
-            transition: padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .active-tab-display,
@@ -92,16 +87,14 @@
         }
 
         .navigation-container {
-            position: fixed;
+            position: sticky;
             top: var(--page-outer-spacing);
-            left: var(--page-outer-spacing);
-            right: var(--page-outer-spacing);
             z-index: 1000;
             display: flex;
             flex-direction: column;
             gap: 6px;
+            margin-bottom: var(--page-outer-spacing);
             transform: translateZ(0);
-            will-change: transform;
         }
 
         .navbar {
@@ -419,13 +412,6 @@
         </div>
     `;
 
-    // 4. Dynamic Offset Calculation
-    function updateContentOffset() {
-        const navHeight = navContainer.getBoundingClientRect().height;
-        const totalPadding = navHeight + 48; // Top margin (24px) + bar height + bottom margin (24px)
-        document.documentElement.style.setProperty('--nav-total-offset', `${totalPadding}px`);
-    }
-
     const combinedNavbar = document.getElementById('combinedNavbar');
     const brandingGroup = document.getElementById('brandingGroup');
     const desktopTabListElement = document.getElementById('desktopTabList');
@@ -552,7 +538,6 @@
         }
 
         switchActiveTab(activeTabIndex, true);
-        updateContentOffset();
     }
 
     function switchActiveTab(index, isInstant = false) {
@@ -579,7 +564,6 @@
         updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, isInstant);
     }
 
-    let animateOffsetId = null;
     toggleMenuButtonElement.addEventListener('click', () => {
         const isHidden = lowerTabWrapperElement.classList.toggle('is-hidden');
         toggleMenuButtonElement.classList.toggle('is-collapsed', isHidden);
@@ -589,21 +573,6 @@
             const activeMobileLink = mobileTabListElement.querySelector(`a[data-index="${activeTabIndex}"]`);
             updateHighlightPosition(activeMobileLink, updatedMobileHighlight, mobileViewportElement, true);
         }
-
-        // Animate page top padding smoothly frame-by-frame during the 300ms transition
-        if (animateOffsetId) cancelAnimationFrame(animateOffsetId);
-        const startTime = performance.now();
-        const durationMs = 320;
-
-        function animatePaddingStep(currentTime) {
-            updateContentOffset();
-            if (currentTime - startTime < durationMs) {
-                animateOffsetId = requestAnimationFrame(animatePaddingStep);
-            } else {
-                updateContentOffset();
-            }
-        }
-        animateOffsetId = requestAnimationFrame(animatePaddingStep);
     });
 
     document.querySelectorAll('.icon-action-button').forEach(button => {
@@ -656,7 +625,6 @@
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             document.documentElement.classList.remove('no-transitions');
-            updateContentOffset();
         });
     });
 })();
