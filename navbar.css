@@ -35,12 +35,12 @@
     
     /* Easing Definitions */
     --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
-    --fade-duration: 1.2s;
-    --slide-duration: 1.0s;
+    --fade-duration: 0.4s;
+    --slide-duration: 0.35s; /* FASTER BUBBLE ANIMATION (WAS 1.0s) */
 
     /* BAR 3 ANIMATION TIMINGS */
-    --bar3-fade-out-duration: 0.5s;
-    --bar3-fade-in-duration: 0.45s;
+    --bar3-fade-out-duration: 0.35s;
+    --bar3-fade-in-duration: 0.35s;
 
     /* Set by JS when toggling Bar 3 */
     --bar3-h: auto;
@@ -137,9 +137,9 @@ h1, h2, h3, h4, h5, h6,
     color: rgba(255, 255, 255, 0.95);
     flex-shrink: 0;
     cursor: pointer;
-    transition: background 0.4s ease, 
-                border-color 0.4s ease, 
-                transform 0.4s var(--ease-cinematic), 
+    transition: background 0.3s ease, 
+                border-color 0.3s ease, 
+                transform 0.3s var(--ease-cinematic), 
                 opacity var(--fade-duration) var(--ease-cinematic);
     user-select: none;
     will-change: transform, opacity;
@@ -166,7 +166,7 @@ h1, h2, h3, h4, h5, h6,
 .icon-action-button svg {
     width: 18px;
     height: 18px;
-    transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.6s var(--ease-cinematic);
+    transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
 }
 
 .toggle-menu-button { 
@@ -174,7 +174,7 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
-/* Rotates counter-clockwise when collapsed (hidden state) */
+/* Rotates counter-clockwise when collapsed */
 .toggle-menu-button.is-collapsed svg { 
     transform: rotate(-180deg); 
 }
@@ -259,7 +259,7 @@ h1, h2, h3, h4, h5, h6,
     padding: 0 16px;
     border-radius: 9999px;
     opacity: 0.72;
-    transition: color 0.6s var(--ease-cinematic), opacity 0.6s var(--ease-cinematic);
+    transition: color 0.3s var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
     user-select: none;
 }
 
