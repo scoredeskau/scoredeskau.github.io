@@ -497,8 +497,30 @@ h1, h2, h3, h4, h5, h6,
     z-index: 1000;
 }
 
-.navigation-container.is-collapsed-mode #lowerTabWrapper {
-    overflow: visible;
+/* 1. Smooth height collapse and strict content clipping */
+#lowerTabWrapper {
+    height: var(--bar3-h, 0px);
+    overflow: hidden; /* Clips content when height is 0px */
+    transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 2. Completely remove Bar 3 from the DOM layout in Desktop mode */
+.navigation-container:not(.is-collapsed-mode) #lowerTabWrapper {
+    display: none !important;
+}
+
+/* 3. Hide desktop tab bar in collapsed mode while preserving DOM measurements */
+.navigation-container.is-collapsed-mode #combinedNavbar .tab-scroll-viewport {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    opacity: 0 !important;
+    right: 0;
+}
+
+/* 4. Hide the toggle button in Desktop mode */
+.navigation-container:not(.is-collapsed-mode) .toggle-menu-button {
+    display: none !important;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {

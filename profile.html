@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" class="no-transitions">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="navbar.css">
+    
+    <script>
+        window.PAGE_THEME = 'theme-australian';
+        window.PAGE_PRIMARY_TITLE = 'Harry Bruce-Tennant';
+        window.PAGE_SECONDARY_TITLE = 'Profile';
+
+        window.PAGE_NAVIGATION_ITEMS = [
+            { label: 'Tournaments', target: '#tournaments' },
+            { label: 'Favourites', target: '#favourites' },
+            { label: 'Settings', target: '#settings' },
+        ];
+    </script>
+    <script src="anti-flash.js"></script>
+    <script src="navbar.js" defer></script>
+</head>
+<body>
+
+    <div class="navigation-container" id="navContainer"></div>
+
+    <main class="main-content">
+        <h1 class="active-tab-display" id="themeTitleHeading">Live Scores</h1>
+    </main>
+
+</body>
+</html>

@@ -4,6 +4,9 @@
 (function () {
     'use strict';
 
+    let lastKnownTabsWidth = 0;
+    let cachedDesktopWidth = 0;
+
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
         { label: 'Live Scores', target: '#scores' }
     ];
@@ -122,34 +125,50 @@
         const navContainer = document.querySelector('.navigation-container');
         const navbar = document.querySelector('#combinedNavbar');
         const branding = document.querySelector('.branding-group');
-        const tabViewport = document.querySelector('#combinedNavbar .tab-scroll-viewport');
+        const desktopTabList = document.querySelector('#combinedNavbar .tab-list');
         const lowerWrapper = document.getElementById('lowerTabWrapper');
 
-        if (!navContainer || !navbar || !branding || !tabViewport) return;
+        if (!navContainer || !navbar || !branding || !desktopTabList) return;
 
-        // Read current element dimensions without mutating DOM layout first
         const navbarWidth = navbar.getBoundingClientRect().width;
-        const brandingWidth = branding.getBoundingClientRect().width;
-        
-        // Query tabList from navContainer to ensure scrollWidth is measurable
-        const tabList = navContainer.querySelector('.tab-list');
-        const tabsWidth = tabList ? tabList.scrollWidth : 0;
-        
-        // Safety buffer: padding + toggle button width allowance when collapsed
-        const safetyBuffer = 32; 
+        const isCurrentlyCollapsed = navContainer.classList.contains('is-collapsed-mode');
 
-        // Dynamic Threshold: Collapse IF total content exceeds available navbar width
-        const shouldCollapse = (brandingWidth + tabsWidth + safetyBuffer) > navbarWidth;
+        // 1. Measure & cache baseline desktop width ONLY when in desktop mode or on init
+        if (!isCurrentlyCollapsed || cachedDesktopWidth === 0) {
+            const backBtn = branding.querySelector('.icon-action-button');
+            const primaryTitle = branding.querySelector('.primary-title');
+            const secondaryTitle = branding.querySelector('.secondary-title');
+
+            const backBtnWidth = backBtn ? backBtn.offsetWidth : 36;
+            const primaryWidth = primaryTitle ? primaryTitle.scrollWidth : 0;
+            const secondaryWidth = secondaryTitle ? secondaryTitle.scrollWidth : 0;
+            const titlesWidth = Math.max(primaryWidth, secondaryWidth);
+
+            const brandingWidth = backBtnWidth + titlesWidth + 24;
+            const tabsWidth = desktopTabList.scrollWidth;
+
+            // Store exact baseline threshold needed for full desktop bar
+            cachedDesktopWidth = brandingWidth + tabsWidth + 32;
+        }
+
+        // 2. Hysteresis Gap: Require 32px extra clearance to uncollapse.
+        // This absorbs vertical scrollbar appearances (15-17px) and subpixel rounding completely.
+        const uncollapseThreshold = cachedDesktopWidth + 32;
         
-        // Toggle class in a single batch operation
+        const shouldCollapse = isCurrentlyCollapsed 
+            ? navbarWidth < uncollapseThreshold 
+            : navbarWidth < cachedDesktopWidth;
+
+        // Toggle collapse state class
         navContainer.classList.toggle('is-collapsed-mode', shouldCollapse);
 
-        // Recalculate Accordion height (Bar 3)
+        // 3. Recalculate Accordion height (Bar 3)
         if (lowerWrapper) {
-            const isHidden = lowerWrapper.classList.contains('is-hidden');
+            const showBar3 = shouldCollapse && !lowerWrapper.classList.contains('is-hidden');
             const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
             const exactHeight = innerContent ? innerContent.offsetHeight : lowerWrapper.scrollHeight;
-            navContainer.style.setProperty('--bar3-h', isHidden ? '0px' : `${exactHeight}px`);
+            
+            navContainer.style.setProperty('--bar3-h', showBar3 ? `${exactHeight}px` : '0px');
         }
 
         // Sync active states, pill positioning, and auto-scroll centering
