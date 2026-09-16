@@ -230,6 +230,19 @@
         centerActiveTab(disableAnimation ? 'auto' : 'smooth');
     }
 
+    // In navbar.js
+    let resizeAnimationFrameId = null;
+
+    window.addEventListener('resize', () => {
+        if (resizeAnimationFrameId) {
+            cancelAnimationFrame(resizeAnimationFrameId);
+        }
+        resizeAnimationFrameId = requestAnimationFrame(() => {
+            updateResponsiveLayout();
+            resizeAnimationFrameId = null;
+        });
+    }, { passive: true });
+
     function initNavbar() {
         const container = document.getElementById('navContainer');
         if (!container) return;

@@ -165,11 +165,19 @@ h1, h2, h3, h4, h5, h6,
     }
 }
 
-.icon-action-button:active, 
+.icon-action-button:hover,
+.icon-action-button:active,
+.icon-action-button.is-pressed {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.icon-action-button:active,
 .icon-action-button.is-pressed {
     transform: scale(0.92);
     background: rgba(255, 255, 255, 0.28);
     border-color: rgba(255, 255, 255, 0.45);
+    transition: transform 0.1s ease, background 0.1s ease, border-color 0.1s ease;
 }
 
 .icon-action-button svg {
@@ -285,6 +293,7 @@ h1, h2, h3, h4, h5, h6,
     position: relative; 
 }
 
+/* Base link style for inactive tabs */
 .tab-link {
     color: rgba(255, 255, 255, 0.72);
     text-decoration: none;
@@ -300,18 +309,33 @@ h1, h2, h3, h4, h5, h6,
     opacity: 0.72;
     transition: color 0.3s var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
     user-select: none;
-}
-
-.tab-link.is-active { 
-    color: #FFFFFF; 
-    opacity: 1; 
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .tab-link {
     cursor: pointer;
-    /* Forces instant tap recognition on mobile browsers without waiting for 300ms tap delay */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Active tab state: Forced solid white text and full opacity continuously */
+.tab-link.is-active,
+.tab-link.is-active:hover,
+.tab-link.is-active:focus,
+.tab-link.is-active:active { 
+    color: #FFFFFF !important; 
+    opacity: 1 !important; 
+    font-weight: 500;
+}
+
+/* Hover state only for non-active tabs */
+@media (hover: hover) {
+    .tab-link:not(.is-active):hover { 
+        color: rgba(255, 255, 255, 0.95); 
+        opacity: 0.9; 
+    }
 }
 
 /* -------------------------------------------------------------
@@ -340,6 +364,13 @@ h1, h2, h3, h4, h5, h6,
 
 .active-tab-highlight.no-transition { 
     transition: none !important; 
+}
+
+.active-tab-highlight,
+.icon-action-button,
+.stacked-tab-navbar {
+    will-change: transform, opacity;
+    transform: translateZ(0);
 }
 
 /* -------------------------------------------------------------
