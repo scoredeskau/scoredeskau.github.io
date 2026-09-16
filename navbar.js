@@ -36,6 +36,7 @@
             `;
         }).join('');
 
+        // Bar 3 lowerTabWrapper starts default SHOWN on initial load
         container.innerHTML = `
             <header class="navbar combined-header-navbar" id="combinedNavbar">
                 <div class="branding-group">
@@ -53,7 +54,7 @@
                 </nav>
                 <button class="icon-action-button toggle-menu-button" aria-label="Toggle Navigation">${TOGGLE_SVG}</button>
             </header>
-            <div class="stacked-tab-wrapper is-hidden" id="lowerTabWrapper">
+            <div class="stacked-tab-wrapper" id="lowerTabWrapper">
                 <div class="stacked-tab-navbar-inner">
                     <header class="navbar stacked-tab-navbar">
                         <nav class="tab-scroll-viewport">
@@ -115,6 +116,15 @@
         const checkResponsiveMode = () => {
             const isCollapsed = window.innerWidth <= 768;
             container.classList.toggle('is-collapsed-mode', isCollapsed);
+
+            if (isCollapsed && lowerWrapper) {
+                // Default SHOWN on small devices
+                const isHidden = lowerWrapper.classList.contains('is-hidden');
+                if (!isHidden) {
+                    container.style.setProperty('--bar3-h', `${lowerWrapper.scrollHeight}px`);
+                }
+            }
+
             updateHighlights(true);
         };
 
@@ -125,7 +135,7 @@
         if (toggleBtn && lowerWrapper) {
             toggleBtn.addEventListener('click', () => {
                 const isHidden = lowerWrapper.classList.toggle('is-hidden');
-                toggleBtn.classList.toggle('is-collapsed', !isHidden);
+                toggleBtn.classList.toggle('is-collapsed', isHidden);
                 container.style.setProperty('--bar3-h', isHidden ? '0px' : `${lowerWrapper.scrollHeight}px`);
                 if (!isHidden) {
                     requestAnimationFrame(() => updateHighlights(true));
@@ -141,7 +151,6 @@
             e.preventDefault();
             const target = link.getAttribute('data-target');
 
-            // Push hash to URL history without triggering a full scroll jump
             if (window.location.hash !== target) {
                 history.pushState(null, '', target);
             }

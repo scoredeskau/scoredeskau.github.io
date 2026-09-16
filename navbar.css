@@ -43,7 +43,7 @@
     --bar3-fade-in-duration: 0.45s;
 
     /* Set by JS when toggling Bar 3 */
-    --bar3-h: 0px;
+    --bar3-h: auto;
 }
 
 /* Themes */
@@ -174,7 +174,7 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
-/* Rotates counter-clockwise in the opposite direction */
+/* Rotates counter-clockwise when collapsed (hidden state) */
 .toggle-menu-button.is-collapsed svg { 
     transform: rotate(-180deg); 
 }
