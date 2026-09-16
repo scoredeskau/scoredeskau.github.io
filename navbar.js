@@ -59,10 +59,39 @@
         const toggleBtn = container.querySelector('.toggle-menu-button');
         const displayTitleHeading = document.getElementById('themeTitleHeading');
 
+        // Positioning function for active tab highlight pill
+        const updateHighlights = (disableAnimation = false) => {
+            container.querySelectorAll('.tab-list').forEach(list => {
+                const activeLink = list.querySelector('.tab-link.is-active');
+                const highlight = list.querySelector('.active-tab-highlight');
+
+                if (!activeLink || !highlight) return;
+
+                const listRect = list.getBoundingClientRect();
+                const linkRect = activeLink.getBoundingClientRect();
+
+                const leftOffset = linkRect.left - listRect.left;
+                const width = linkRect.width;
+
+                if (disableAnimation) highlight.classList.add('no-transition');
+
+                highlight.style.transform = `translateX(${leftOffset}px)`;
+                highlight.style.width = `${width}px`;
+                highlight.classList.add('is-visible');
+
+                if (disableAnimation) {
+                    // Force reflow and re-enable transition
+                    void highlight.offsetWidth;
+                    highlight.classList.remove('no-transition');
+                }
+            });
+        };
+
         // Responsive Collapse Handler
         const checkResponsiveMode = () => {
             const isCollapsed = window.innerWidth <= 768;
             container.classList.toggle('is-collapsed-mode', isCollapsed);
+            updateHighlights(true);
         };
 
         checkResponsiveMode();
@@ -74,6 +103,9 @@
                 const isHidden = lowerWrapper.classList.toggle('is-hidden');
                 toggleBtn.classList.toggle('is-collapsed', !isHidden);
                 container.style.setProperty('--bar3-h', isHidden ? '0px' : `${lowerWrapper.scrollHeight}px`);
+                if (!isHidden) {
+                    requestAnimationFrame(() => updateHighlights(true));
+                }
             });
         }
 
@@ -93,10 +125,14 @@
             if (displayTitleHeading) {
                 displayTitleHeading.textContent = link.textContent.trim();
             }
+
+            // Animate highlight pill to the newly active tab
+            updateHighlights();
         });
 
-        // Remove initial anti-flash restriction on next tick
+        // Initialize pill positions immediately
         requestAnimationFrame(() => {
+            updateHighlights(true);
             document.documentElement.classList.remove('no-transitions');
         });
     }

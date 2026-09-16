@@ -174,8 +174,9 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
+/* Rotates counter-clockwise in the opposite direction */
 .toggle-menu-button.is-collapsed svg { 
-    transform: rotate(180deg); 
+    transform: rotate(-180deg); 
 }
 
 .header-titles {
