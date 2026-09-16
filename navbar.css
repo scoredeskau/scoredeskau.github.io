@@ -39,7 +39,7 @@
     --ease-bubble: cubic-bezier(0.16, 1, 0.3, 1);
     --fade-duration: 0.4s;
     --slide-duration: 0.75s;
-    --chevron-duration: 0.35s;
+    --chevron-duration: 0.5s;
 
     /* BAR 3 ANIMATION TIMINGS */
     --bar3-fade-out-duration: 0.75s;
