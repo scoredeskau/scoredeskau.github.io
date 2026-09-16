@@ -33,7 +33,7 @@
 
     let activeTabIndex = getInitialTabIndex();
 
-    // 2. Inject Refined CSS Styles with Safari Sizing Overrides
+    // 2. Inject Refined CSS Styles with Smooth Fade & Layout Transitions
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         .no-transitions *,
@@ -339,9 +339,9 @@
             transform: translateY(0);
             transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                         margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.25s ease-out, 
                         transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: max-height, margin-top, opacity;
+            will-change: max-height, margin-top, opacity, transform;
         }
 
         .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport {
@@ -355,13 +355,17 @@
             padding: 0;
         }
 
+        /* Hidden State: Graceful Cross-Fade Out + Layout Collapse */
         .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
-            max-height: 0px !important;
-            margin-top: 0px !important;
-            opacity: 0 !important;
-            transform: translateY(-6px) !important;
-            border-color: transparent !important;
-            pointer-events: none !important;
+            max-height: 0px;
+            margin-top: 0px;
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.18s ease-in, 
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     `;
     document.head.appendChild(styleElement);
