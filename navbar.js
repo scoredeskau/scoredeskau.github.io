@@ -6,6 +6,7 @@
 
     let lastKnownTabsWidth = 0;
     let cachedDesktopWidth = 0;
+    let isNavigatingBack = false;
 
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
         { label: 'Live Scores', target: '#scores' }
@@ -13,9 +14,83 @@
     const PRIMARY_TITLE = window.PAGE_PRIMARY_TITLE || 'Tournament';
     const SECONDARY_TITLE = window.PAGE_SECONDARY_TITLE || '';
     const BAR3_STORAGE_KEY = 'bar3_collapsed_state';
+    const PAGE_HISTORY_KEY = 'site_page_history';
 
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
+
+    /**
+     * Session-Based Page History Stack Management
+     */
+    function getPageHistory() {
+        try {
+            const stored = sessionStorage.getItem(PAGE_HISTORY_KEY);
+            return stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function setPageHistory(history) {
+        try {
+            sessionStorage.setItem(PAGE_HISTORY_KEY, JSON.stringify(history));
+        } catch (e) {}
+    }
+
+    function recordCurrentPageVisit() {
+        const currentUrl = window.location.href.split('#')[0];
+        let historyStack = getPageHistory();
+
+        const existingIndex = historyStack.lastIndexOf(currentUrl);
+        if (existingIndex !== -1) {
+            historyStack = historyStack.slice(0, existingIndex + 1);
+        } else {
+            historyStack.push(currentUrl);
+        }
+
+        setPageHistory(historyStack);
+    }
+
+    function handleSmartBack() {
+        if (isNavigatingBack) return;
+
+        const currentUrl = window.location.href.split('#')[0];
+        let historyStack = getPageHistory();
+
+        if (historyStack.length > 0 && historyStack[historyStack.length - 1] === currentUrl) {
+            historyStack.pop();
+        }
+
+        let targetUrl = '';
+
+        if (historyStack.length > 0) {
+            targetUrl = historyStack[historyStack.length - 1];
+            setPageHistory(historyStack);
+        } else {
+            const referrer = document.referrer;
+            const isSameOriginReferrer = referrer && referrer.startsWith(window.location.origin) && referrer.split('#')[0] !== currentUrl;
+
+            if (isSameOriginReferrer) {
+                targetUrl = referrer;
+            } else if (!currentUrl.endsWith('index.html') && !currentUrl.endsWith('/')) {
+                targetUrl = 'index.html';
+            }
+        }
+
+        isNavigatingBack = true;
+
+        if (targetUrl) {
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 50);
+        } else {
+            setTimeout(() => {
+                window.history.back();
+            }, 50);
+        }
+    }
+
+    recordCurrentPageVisit();
 
     function getActiveTargetFromHash() {
         const hash = window.location.hash;
@@ -33,7 +108,6 @@
 
         let x = Math.min(Math.max(t, 0), 1);
         for (let i = 0; i < 8; i++) {
-            // Updated with x1 = 0.32, x2 = 0.2
             const currentX = 3 * (1 - x) * (1 - x) * x * 0.32 + 3 * (1 - x) * x * x * 0.2 + x * x * x;
             const dx = 3 * (1 - x) * (1 - x) * 0.32 + 6 * (1 - x) * x * (0.2 - 0.32) + 3 * x * x * (1 - 0.2);
             if (Math.abs(currentX - t) < 1e-5 || dx === 0) break;
@@ -41,7 +115,6 @@
             x = Math.min(Math.max(x, 0), 1);
         }
 
-        // Updated with y1 = 0.94, y2 = 1.0
         return 3 * (1 - x) * (1 - x) * x * 0.94 + 3 * (1 - x) * x * x * 1.0 + x * x * x;
     }
 
@@ -406,6 +479,14 @@
         }
 
         container.addEventListener('click', (e) => {
+            const backBtn = e.target.closest('.branding-group .icon-action-button');
+            if (backBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSmartBack();
+                return;
+            }
+
             const link = e.target.closest('.tab-link');
             if (!link) return;
 
