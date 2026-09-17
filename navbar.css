@@ -45,7 +45,7 @@
     --bar3-fade-in-duration: 0.75s;
 
     /* Set by JS when toggling Bar 3 */
-    --bar3-h: auto;
+    --bar3-h: 0px;
 }
 
 /* Themes */
@@ -77,16 +77,22 @@ h1, h2, h3, h4, h5, h6,
     color: #FFFFFF !important;
 }
 
+/* Floating Navigation Container */
 .navigation-container {
-    position: relative;
+    position: fixed;
+    top: var(--page-outer-spacing);
+    left: var(--page-outer-spacing);
+    right: var(--page-outer-spacing);
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    margin-bottom: var(--page-outer-spacing);
+    margin-bottom: 0;
     transform: translateZ(0);
 }
 
+/* Main Content Spacing & Smooth Shift for Bar 3 */
 .main-content {
+    margin-top: calc(var(--navbar-height) + var(--page-outer-spacing) + var(--bar3-h, 0px));
     transition: margin-top var(--bar3-fade-out-duration) var(--ease-cinematic),
                 transform 0.3s var(--ease-cinematic);
 }
@@ -602,19 +608,18 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .navigation-container.is-collapsed-mode {
-    position: relative;
+    position: fixed;
     z-index: 1000;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
     width: 100%; 
     height: 100%;
-    padding: 0 var(--tab-bubble-offset-v); 
     border-radius: 9999px;
     overflow-x: auto;
 }
 
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-list { 
     margin-left: 0; 
-    padding: 0; 
+    padding: 0 var(--tab-bubble-offset-v); 
 }
