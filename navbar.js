@@ -17,7 +17,6 @@
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
-    // Add near the top of navbar_2.js
     const MatrixClass = window.DOMMatrix || window.WebKitCSSMatrix || window.MSCSSMatrix;
 
     function getParsedMatrix(element) {
@@ -135,7 +134,7 @@
 
         // 1. Measure & cache baseline desktop width ONLY when in desktop mode or on init
         if (!isCurrentlyCollapsed || cachedDesktopWidth === 0) {
-            const backBtn = branding.querySelector('.icon-action-button');
+            const backBtn = branding.querySelector('.icon-action-button, .action-button');
             const primaryTitle = branding.querySelector('.primary-title');
             const secondaryTitle = branding.querySelector('.secondary-title');
 
@@ -152,7 +151,6 @@
         }
 
         // 2. Hysteresis Gap: Require 32px extra clearance to uncollapse.
-        // This absorbs vertical scrollbar appearances (15-17px) and subpixel rounding completely.
         const uncollapseThreshold = cachedDesktopWidth + 32;
         
         const shouldCollapse = isCurrentlyCollapsed 
@@ -188,58 +186,55 @@
         toggleBtn.classList.toggle('is-collapsed', isHidden);
     }
 
-        function updateHighlights(disableAnimation = false) {
-            const container = document.getElementById('navContainer');
-            if (!container) return;
+    function updateHighlights(disableAnimation = false) {
+        const container = document.getElementById('navContainer');
+        if (!container) return;
 
-            container.querySelectorAll('.tab-list').forEach(list => {
-                if (list.offsetWidth === 0 && list.offsetHeight === 0) return;
-                const activeLink = list.querySelector('.tab-link.is-active');
-                const highlight = list.querySelector('.active-tab-highlight');
+        container.querySelectorAll('.tab-list').forEach(list => {
+            if (list.offsetWidth === 0 && list.offsetHeight === 0) return;
+            const activeLink = list.querySelector('.tab-link.is-active');
+            const highlight = list.querySelector('.active-tab-highlight');
 
-                if (!activeLink || !highlight) return;
+            if (!activeLink || !highlight) return;
 
-                const listRect = list.getBoundingClientRect();
-                const linkRect = activeLink.getBoundingClientRect();
+            const listRect = list.getBoundingClientRect();
+            const linkRect = activeLink.getBoundingClientRect();
 
-                const targetLeft = linkRect.left - listRect.left;
-                const targetWidth = linkRect.width;
+            const targetLeft = linkRect.left - listRect.left;
+            const targetWidth = linkRect.width;
 
-                if (disableAnimation) {
-                    highlight.style.transition = 'none';
-                    highlight.style.transform = `translateX(${targetLeft}px)`;
-                    highlight.style.width = `${targetWidth}px`;
-                    highlight.classList.add('is-visible');
-                    
-                    // Force browser layout flush while transitions are strictly inline disabled
-                    void highlight.offsetWidth; 
-                    highlight.style.transition = '';
-                    return;
-                }
-
-                // Interrupt existing CSS transition cleanly by freezing current rendered position
-                // NEW / FIX CODE
-                // FIXED:
-                const matrix = getParsedMatrix(highlight);
-                const translateX = matrix.m41 ?? matrix.e;
-                const currentLeft = (typeof translateX === 'number' && !Number.isNaN(translateX)) ? translateX : targetLeft;
-                const currentWidth = highlight.offsetWidth || targetWidth;
-
-                // 1. Instantly freeze pill at current mid-animation coordinates
-                highlight.classList.add('no-transition');
-                highlight.style.transform = `translateX(${currentLeft}px)`;
-                highlight.style.width = `${currentWidth}px`;
-
-                // 2. Force reflow to flush frozen styles
-                void highlight.offsetWidth;
-
-                // 3. Re-enable CSS transitions to travel smoothly to new target
-                highlight.classList.remove('no-transition');
+            if (disableAnimation) {
+                highlight.style.transition = 'none';
                 highlight.style.transform = `translateX(${targetLeft}px)`;
                 highlight.style.width = `${targetWidth}px`;
                 highlight.classList.add('is-visible');
-            });
-        }
+                
+                // Force browser layout flush while transitions are strictly inline disabled
+                void highlight.offsetWidth; 
+                highlight.style.transition = '';
+                return;
+            }
+
+            const matrix = getParsedMatrix(highlight);
+            const translateX = matrix.m41 ?? matrix.e;
+            const currentLeft = (typeof translateX === 'number' && !Number.isNaN(translateX)) ? translateX : targetLeft;
+            const currentWidth = highlight.offsetWidth || targetWidth;
+
+            // 1. Instantly freeze pill at current mid-animation coordinates
+            highlight.classList.add('no-transition');
+            highlight.style.transform = `translateX(${currentLeft}px)`;
+            highlight.style.width = `${currentWidth}px`;
+
+            // 2. Force reflow to flush frozen styles
+            void highlight.offsetWidth;
+
+            // 3. Re-enable CSS transitions to travel smoothly to new target
+            highlight.classList.remove('no-transition');
+            highlight.style.transform = `translateX(${targetLeft}px)`;
+            highlight.style.width = `${targetWidth}px`;
+            highlight.classList.add('is-visible');
+        });
+    }
 
     function setActiveTab(target, disableAnimation = false) {
         const container = document.getElementById('navContainer');
@@ -258,68 +253,14 @@
         centerActiveTab(disableAnimation ? 'auto' : 'smooth');
     }
 
-    // In navbar.js
-    let resizeAnimationFrameId = null;
+    /**
+     * Attaches tactile spring bounce and pointer capture handlers to buttons
+     */
+    function attachActionButtonListeners(scope = document) {
+        scope.querySelectorAll('.action-button, .icon-action-button').forEach(btn => {
+            if (btn._hasActionButtonListener) return;
+            btn._hasActionButtonListener = true;
 
-    window.addEventListener('resize', () => {
-        if (resizeAnimationFrameId) {
-            cancelAnimationFrame(resizeAnimationFrameId);
-        }
-        resizeAnimationFrameId = requestAnimationFrame(() => {
-            updateResponsiveLayout();
-            resizeAnimationFrameId = null;
-        });
-    }, { passive: true });
-
-    function initNavbar() {
-        const container = document.getElementById('navContainer');
-        if (!container) return;
-
-        const initialTarget = getActiveTargetFromHash();
-        const isBar3HiddenStored = localStorage.getItem(BAR3_STORAGE_KEY) === 'true';
-
-        const linksHTML = NAVIGATION_ITEMS.map((item) => {
-            const isActive = item.target === initialTarget;
-            return `
-                <li class="tab-item">
-                    <a href="${item.target}" class="tab-link ${isActive ? 'is-active' : ''}" data-target="${item.target}">${item.label}</a>
-                </li>
-            `;
-        }).join('');
-
-       container.innerHTML = `
-            <header class="navbar combined-header-navbar" id="combinedNavbar">
-                <div class="branding-group">
-                    <button class="icon-action-button" aria-label="Go Back">${BACK_SVG}</button>
-                    <div class="header-titles">
-                        <span class="primary-title">${PRIMARY_TITLE}</span>
-                        ${SECONDARY_TITLE ? `<span class="secondary-title">${SECONDARY_TITLE}</span>` : ''}
-                    </div>
-                </div>
-                <nav class="tab-scroll-viewport">
-                    <ul class="tab-list">
-                        <li class="active-tab-highlight" aria-hidden="true"></li>
-                        ${linksHTML}
-                    </ul>
-                </nav>
-                <button class="icon-action-button toggle-menu-button" aria-label="Toggle Navigation">${TOGGLE_SVG}</button>
-            </header>
-            <div class="stacked-tab-wrapper ${isBar3HiddenStored ? 'is-hidden' : ''}" id="lowerTabWrapper">
-                <div class="stacked-tab-navbar-inner">
-                    <header class="navbar stacked-tab-navbar">
-                        <nav class="tab-scroll-viewport">
-                            <ul class="tab-list">
-                                <li class="active-tab-highlight" aria-hidden="true"></li>
-                                ${linksHTML}
-                            </ul>
-                        </nav>
-                    </header>
-                </div>
-            </div>
-        `;
-
-        // Attach pointer events with guaranteed capture & release cleanup
-        container.querySelectorAll('.icon-action-button').forEach(btn => {
             let pressStartTime = 0;
             let releaseTimer = null;
 
@@ -362,6 +303,71 @@
             btn.addEventListener('pointerleave', clearPressed);
             btn.addEventListener('blur', clearPressed);
         });
+    }
+
+    window.attachActionButtonListeners = attachActionButtonListeners;
+
+    let resizeAnimationFrameId = null;
+
+    window.addEventListener('resize', () => {
+        if (resizeAnimationFrameId) {
+            cancelAnimationFrame(resizeAnimationFrameId);
+        }
+        resizeAnimationFrameId = requestAnimationFrame(() => {
+            updateResponsiveLayout();
+            resizeAnimationFrameId = null;
+        });
+    }, { passive: true });
+
+    function initNavbar() {
+        const container = document.getElementById('navContainer');
+        if (!container) return;
+
+        const initialTarget = getActiveTargetFromHash();
+        const isBar3HiddenStored = localStorage.getItem(BAR3_STORAGE_KEY) === 'true';
+
+        const linksHTML = NAVIGATION_ITEMS.map((item) => {
+            const isActive = item.target === initialTarget;
+            return `
+                <li class="tab-item">
+                    <a href="${item.target}" class="tab-link ${isActive ? 'is-active' : ''}" data-target="${item.target}">${item.label}</a>
+                </li>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <header class="navbar combined-header-navbar" id="combinedNavbar">
+                <div class="branding-group">
+                    <button class="icon-action-button" aria-label="Go Back">${BACK_SVG}</button>
+                    <div class="header-titles">
+                        <span class="primary-title">${PRIMARY_TITLE}</span>
+                        ${SECONDARY_TITLE ? `<span class="secondary-title">${SECONDARY_TITLE}</span>` : ''}
+                    </div>
+                </div>
+                <nav class="tab-scroll-viewport">
+                    <ul class="tab-list">
+                        <li class="active-tab-highlight" aria-hidden="true"></li>
+                        ${linksHTML}
+                    </ul>
+                </nav>
+                <button class="icon-action-button toggle-menu-button" aria-label="Toggle Navigation">${TOGGLE_SVG}</button>
+            </header>
+            <div class="stacked-tab-wrapper ${isBar3HiddenStored ? 'is-hidden' : ''}" id="lowerTabWrapper">
+                <div class="stacked-tab-navbar-inner">
+                    <header class="navbar stacked-tab-navbar">
+                        <nav class="tab-scroll-viewport">
+                            <ul class="tab-list">
+                                <li class="active-tab-highlight" aria-hidden="true"></li>
+                                ${linksHTML}
+                            </ul>
+                        </nav>
+                    </header>
+                </div>
+            </div>
+        `;
+
+        // Attach tactile interaction handlers to navbar buttons
+        attachActionButtonListeners(container);
 
         const lowerWrapper = document.getElementById('lowerTabWrapper');
         const toggleBtn = container.querySelector('.toggle-menu-button');
@@ -426,12 +432,15 @@
                 updateResponsiveLayout();
             });
         }
-
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initNavbar);
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavbar();
+            attachActionButtonListeners(document);
+        });
     } else {
         initNavbar();
+        attachActionButtonListeners(document);
     }
 })();

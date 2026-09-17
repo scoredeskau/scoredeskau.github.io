@@ -117,7 +117,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   4. Header & Branding Components
+   4. Universal Action Button & Branding Components
    ------------------------------------------------------------- */
 .branding-group {
     display: flex;
@@ -135,15 +135,23 @@ h1, h2, h3, h4, h5, h6,
     width: max-content;
 }
 
+/* Universal Adaptable Action Button */
+.action-button,
 .icon-action-button {
     height: var(--back-btn-size);
-    width: var(--back-btn-size);
+    min-width: var(--back-btn-size);
     border-radius: 9999px;
-    display: grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.22);
     color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
     flex-shrink: 0;
     cursor: pointer;
     user-select: none;
@@ -157,13 +165,24 @@ h1, h2, h3, h4, h5, h6,
                 border-color 0.25s ease;
 }
 
+/* Icon-only circular variation */
+.action-button.icon-only,
+.icon-action-button {
+    width: var(--back-btn-size);
+    padding: 0;
+}
+
 @media (hover: hover) and (pointer: fine) {
+    .action-button:hover,
     .icon-action-button:hover { 
         background: rgba(255, 255, 255, 0.22); 
         border-color: rgba(255, 255, 255, 0.35); 
     }
 }
 
+.action-button:hover,
+.action-button:active,
+.action-button.is-pressed,
 .icon-action-button:hover,
 .icon-action-button:active,
 .icon-action-button.is-pressed {
@@ -172,6 +191,8 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* Instant scale-down & high contrast opacity on tap/click */
+.action-button:active, 
+.action-button.is-pressed,
 .icon-action-button:active, 
 .icon-action-button.is-pressed {
     transform: scale(0.88) !important;
@@ -180,6 +201,7 @@ h1, h2, h3, h4, h5, h6,
     transition: transform 0.05s ease, background 0.05s ease, border-color 0.05s ease !important;
 }
 
+.action-button.is-pressed,
 .icon-action-button.is-pressed {
     transform: scale(0.82) !important;
     background: rgba(255, 255, 255, 0.38) !important;
@@ -187,10 +209,30 @@ h1, h2, h3, h4, h5, h6,
     transition: transform 0.04s ease, background-color 0.04s ease, border-color 0.04s ease !important;
 }
 
+/* Prevent mobile sticky focus background */
+.action-button:focus,
+.action-button:focus-visible,
+.icon-action-button:focus,
+.icon-action-button:focus-visible {
+    outline: none;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.action-button svg,
 .icon-action-button svg {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
     transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
+}
+
+/* Section Header Alignment Helper */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 /* -------------------------------------------------------------
@@ -202,11 +244,7 @@ h1, h2, h3, h4, h5, h6,
     z-index: 10; 
 }
 
-/* -------------------------------------------------------------
-   Chevron Rotation - Full Clockwise Sweep via Right (90deg)
-   ------------------------------------------------------------- */
-
-/* Update Section 4 */
+/* Chevron Rotation - Full Clockwise Sweep via Right (90deg) */
 .toggle-menu-button svg {
     width: 18px;
     height: 18px;
@@ -331,14 +369,6 @@ h1, h2, h3, h4, h5, h6,
     font-weight: 400;
 }
 
-/* Prevent mobile sticky focus background */
-.icon-action-button:focus,
-.icon-action-button:focus-visible {
-    outline: none;
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.22);
-}
-
 /* Hover state only for non-active tabs */
 @media (hover: hover) {
     .tab-link:not(.is-active):hover { 
@@ -377,6 +407,7 @@ h1, h2, h3, h4, h5, h6,
 
 .active-tab-highlight,
 .icon-action-button,
+.action-button,
 .stacked-tab-navbar {
     will-change: transform, opacity;
     transform: translateZ(0);
