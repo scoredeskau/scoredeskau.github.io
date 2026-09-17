@@ -1,5 +1,5 @@
 /**
- * Shared Navbar Component - High-Performance Edition (Dynamic Auto-Collapse)
+ * Shared Navbar Component - High-Performance Edition (Dynamic Auto-Collapse & Section Header Stacking)
  */
 (function () {
     'use strict';
@@ -52,6 +52,45 @@
         }
 
         return 3 * (1 - x) * (1 - x) * x * 1 + 3 * (1 - x) * x * x * 1 + x * x * x;
+    }
+
+    /**
+     * Dynamic Section Header Stacking Calculator
+     * Checks title + action buttons width against container width to toggle .is-stacked
+     */
+    function updateSectionHeaderLayout() {
+        const headers = document.querySelectorAll('.section-header');
+        headers.forEach(header => {
+            const title = header.querySelector('h1, h2, h3, .active-tab-display, .section-title');
+            const actions = header.querySelector('.section-actions');
+            if (!title || !actions) return;
+
+            const children = Array.from(actions.children);
+            if (children.length === 0) return;
+
+            const availableWidth = header.clientWidth;
+            if (availableWidth === 0) return; // Skip hidden tab views
+
+            const titleWidth = title.getBoundingClientRect().width;
+            let totalButtonsWidth = 0;
+            children.forEach(child => {
+                totalButtonsWidth += child.getBoundingClientRect().width;
+            });
+
+            const gapBetweenButtons = 8;
+            if (children.length > 1) {
+                totalButtonsWidth += (children.length - 1) * gapBetweenButtons;
+            }
+
+            const gapBetweenTitleAndActions = 16;
+            const totalRequiredWidth = titleWidth + gapBetweenTitleAndActions + totalButtonsWidth;
+
+            if (totalRequiredWidth > availableWidth) {
+                header.classList.add('is-stacked');
+            } else {
+                header.classList.remove('is-stacked');
+            }
+        });
     }
 
     /**
@@ -169,10 +208,11 @@
             navContainer.style.setProperty('--bar3-h', showBar3 ? `${exactHeight}px` : '0px');
         }
 
-        // Sync active states, pill positioning, and auto-scroll centering
+        // Sync active states, pill positioning, auto-scroll centering, and header stacking
         syncToggleState();
         updateHighlights(true);
         centerActiveTab('auto');
+        updateSectionHeaderLayout();
     }
 
     // Hardcodes toggle icon orientation directly to Bar 3 visibility
@@ -260,6 +300,9 @@
 
         updateHighlights(disableAnimation);
         centerActiveTab(disableAnimation ? 'auto' : 'smooth');
+        
+        // Recalculate section header button layout for newly unhidden tab view
+        updateSectionHeaderLayout();
     }
 
     /**
@@ -315,6 +358,7 @@
     }
 
     window.attachActionButtonListeners = attachActionButtonListeners;
+    window.updateSectionHeaderLayout = updateSectionHeaderLayout;
 
     let resizeAnimationFrameId = null;
 
@@ -428,6 +472,7 @@
         // Force synchronous layout paint before stripping anti-flash class
         updateHighlights(true);
         centerActiveTab('auto');
+        updateSectionHeaderLayout();
 
         // Double rAF ensures the compositor has committed the initial transform frame to display
         requestAnimationFrame(() => {

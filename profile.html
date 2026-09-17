@@ -25,32 +25,54 @@
     <div class="navigation-container" id="navContainer"></div>
 
     <main class="main-content">
-
         <section id="tournaments" class="tab-view">
             <div class="section-header">
                 <h1>Tournaments</h1>
-                <button class="action-button" aria-label="Add Tournament">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    <span>Add</span>
-                </button>
-                <button class="action-button" aria-label="Sort Tournaments">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16"></path>
-                    </svg>
-                    <span>Sort</span>
-                </button>
+                <p class="section-subtitle">View and manage upcoming tournament schedules and registrations.</p>
             </div>
         </section>
 
         <section id="favourites" class="tab-view">
-            <h1>Favourites</h1>
+            <div class="section-header">
+                <h1>Favourites</h1>
+                <div class="section-actions">
+                    <button class="action-button" aria-label="Add Favourite">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>Add</span>
+                    </button>
+                    <button class="action-button" aria-label="Sort Favourites">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16"></path>
+                        </svg>
+                        <span>Sort</span>
+                    </button>
+                    <button class="action-button" aria-label="Filter Favourites">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                        <span>Filter</span>
+                    </button>
+                    <button class="action-button" aria-label="Export Favourites">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Export</span>
+                    </button>
+                </div>
+                <p class="section-subtitle">Manage your saved items, filter shortcuts, and preferred tennis venues.</p>
+            </div>
         </section>
 
         <section id="settings" class="tab-view">
-            <h1>Settings</h1>
+            <div class="section-header">
+                <h1>Settings</h1>
+                <p class="section-subtitle">Configure app preferences, notification settings, and theme customization.</p>
+            </div>
         </section>
     </main>
 

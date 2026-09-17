@@ -35,7 +35,6 @@
     
     /* Easing Definitions */
     --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
-    /* MORE INITIAL EASING (Strong ease-in acceleration) */
     --ease-bubble: cubic-bezier(0.16, 1, 0.3, 1);
     --fade-duration: 0.4s;
     --slide-duration: 0.75s;
@@ -88,12 +87,14 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .main-content {
-    transition: margin-top var(--bar3-fade-out-duration) var(--ease-cinematic);
+    transition: margin-top var(--bar3-fade-out-duration) var(--ease-cinematic),
+                transform 0.3s var(--ease-cinematic);
 }
 
 /* Tab Views */
 .tab-view {
     display: none;
+    overflow: visible;
 }
 
 .tab-view.is-active {
@@ -133,12 +134,11 @@ h1, h2, h3, h4, h5, h6,
     align-items: center;
     padding-left: var(--back-btn-offset);
     flex-shrink: 0;
-    width: max-content; /* Prevents title wrapping during calculation */
+    width: max-content;
     z-index: 2;
     height: 100%;
 }
 
-/* In non-collapsed mode, prevent flex items from shrinking and squeezing tabs */
 .navigation-container:not(.is-collapsed-mode) .header-titles {
     flex-shrink: 0;
     width: max-content;
@@ -168,13 +168,11 @@ h1, h2, h3, h4, h5, h6,
     outline: none;
     touch-action: manipulation;
     will-change: transform, background-color;
-    /* Spring bounce timing when returning to default position */
     transition: transform 0.4s cubic-bezier(0.34, 1.75, 0.64, 1), 
                 background-color 0.25s ease, 
                 border-color 0.25s ease;
 }
 
-/* Icon-only circular variation */
 .action-button.icon-only,
 .icon-action-button {
     width: var(--back-btn-size);
@@ -199,7 +197,6 @@ h1, h2, h3, h4, h5, h6,
     border-color: rgba(255, 255, 255, 0.35);
 }
 
-/* Instant scale-down & high contrast opacity on tap/click */
 .action-button:active, 
 .action-button.is-pressed,
 .icon-action-button:active, 
@@ -218,7 +215,6 @@ h1, h2, h3, h4, h5, h6,
     transition: transform 0.04s ease, background-color 0.04s ease, border-color 0.04s ease !important;
 }
 
-/* Prevent mobile sticky focus background */
 .action-button:focus,
 .action-button:focus-visible,
 .icon-action-button:focus,
@@ -236,39 +232,128 @@ h1, h2, h3, h4, h5, h6,
     transition: transform var(--slide-duration) var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
 }
 
-/* Section Header Alignment Helper */
+/* -------------------------------------------------------------
+   4b. Dynamic Section Header & Paragraph Animation
+   ------------------------------------------------------------- */
 .section-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
     margin-bottom: 24px;
+    width: 100%;
+    overflow: visible;
+    transition: gap 0.4s var(--ease-cinematic);
+}
+
+.section-header h1,
+.section-header .active-tab-display {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+/* Subtitle paragraph below main title */
+.section-subtitle {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.72);
+    width: 100%;
+    order: 3;
+    transition: transform 0.4s var(--ease-cinematic), 
+                margin-top 0.4s var(--ease-cinematic),
+                opacity 0.3s var(--ease-cinematic);
+}
+
+/* Action Row Container */
+.section-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    order: 2;
+    
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Vertical padding prevents tap scale clipping */
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-top: -6px;
+    margin-bottom: -6px;
+
+    transition: margin 0.4s var(--ease-cinematic),
+                padding 0.4s var(--ease-cinematic),
+                width 0.4s var(--ease-cinematic),
+                transform 0.4s var(--ease-cinematic);
+}
+
+.section-actions::-webkit-scrollbar {
+    display: none;
+}
+
+.section-actions .action-button,
+.section-actions .icon-action-button {
+    flex-shrink: 0;
+}
+
+/* INLINE STATE: Fits alongside title text */
+.section-header:not(.is-stacked) {
+    flex-direction: row;
+    gap: 12px 16px;
+}
+
+.section-header:not(.is-stacked) .section-actions {
+    width: auto;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.section-header:not(.is-stacked) .section-subtitle {
+    margin-top: 4px;
+}
+
+/* STACKED STATE: Wraps cleanly below title, full-bleed scrollable */
+.section-header.is-stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.section-header.is-stacked .section-actions {
+    margin-left: calc(-1 * var(--page-outer-spacing));
+    margin-right: calc(-1 * var(--page-outer-spacing));
+    padding-left: var(--page-outer-spacing);
+    padding-right: var(--page-outer-spacing);
+    width: calc(100% + (2 * var(--page-outer-spacing)));
+}
+
+.section-header.is-stacked .section-subtitle {
+    margin-top: 2px;
 }
 
 /* -------------------------------------------------------------
-   4. Header & Chevron Hardcoded States
+   5. Header & Chevron Hardcoded States
    ------------------------------------------------------------- */
-
 .toggle-menu-button { 
     display: none; 
     z-index: 10; 
 }
 
-/* Chevron Rotation - Full Clockwise Sweep via Right (90deg) */
 .toggle-menu-button svg {
     width: 18px;
     height: 18px;
     transform: rotate(0deg);
-    /* Uses dedicated duration and snappy curve */
     transition: transform var(--chevron-duration) var(--ease-cinematic);
     transform-origin: center center;
 }
 
-/* Expanded State: 0deg -> 90deg (RIGHT) -> 180deg (UP) */
 .toggle-menu-button:not(.is-collapsed) svg {
     transform: rotate(180deg);
 }
 
-/* Collapsed State: 180deg -> 270deg (RIGHT) -> 360deg (DOWN) */
 .toggle-menu-button.is-collapsed svg { 
     transform: rotate(360deg); 
 }
@@ -282,7 +367,7 @@ h1, h2, h3, h4, h5, h6,
     white-space: nowrap;
     padding: 0 var(--back-btn-offset);
     overflow: hidden;
-    flex-shrink: 0; /* Ensures natural text width is preserved for measurements */
+    flex-shrink: 0;
     width: max-content;
 }
 
@@ -301,7 +386,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   5. Tabs & Active Pill Highlight
+   6. Tabs & Active Pill Highlight
    ------------------------------------------------------------- */
 .tab-scroll-viewport {
     position: relative;
@@ -312,13 +397,9 @@ h1, h2, h3, h4, h5, h6,
     overflow-x: auto;
     scrollbar-width: none;
     min-width: 0;
-    
-    /* Disables native CSS smooth scroll so JS rAF handles position */
     scroll-behavior: auto !important;
-
-    /* Prevents mobile touch gestures from blocking programmatic click events */
     overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: auto; /* Uses standard rendering during JS control */
+    -webkit-overflow-scrolling: auto;
     touch-action: pan-x pan-y;
 }
 
@@ -347,7 +428,6 @@ h1, h2, h3, h4, h5, h6,
     position: relative; 
 }
 
-/* Base link style for inactive tabs */
 .tab-link {
     color: rgba(255, 255, 255, 0.72);
     text-decoration: none;
@@ -368,7 +448,6 @@ h1, h2, h3, h4, h5, h6,
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Active tab state: Forced solid white text and full opacity continuously */
 .tab-link.is-active,
 .tab-link.is-active:hover,
 .tab-link.is-active:focus,
@@ -378,7 +457,6 @@ h1, h2, h3, h4, h5, h6,
     font-weight: 400;
 }
 
-/* Hover state only for non-active tabs */
 @media (hover: hover) {
     .tab-link:not(.is-active):hover { 
         color: rgba(255, 255, 255, 0.95); 
@@ -386,9 +464,6 @@ h1, h2, h3, h4, h5, h6,
     }
 }
 
-/* -------------------------------------------------------------
-   5. Active Pill Highlight (Uses New Bubble Easing)
-   ------------------------------------------------------------- */
 .active-tab-highlight {
     position: absolute;
     top: var(--tab-bubble-offset-v);
@@ -422,9 +497,6 @@ h1, h2, h3, h4, h5, h6,
     transform: translateZ(0);
 }
 
-/* -------------------------------------------------------------
-   6. Desktop Hidden Stacked Wrapper
-   ------------------------------------------------------------- */
 .stacked-tab-wrapper {
     display: none;
     z-index: 0;
@@ -440,8 +512,6 @@ h1, h2, h3, h4, h5, h6,
     top: 50%;
     transform: translateY(-50%);
     margin-right: var(--back-btn-offset);
-    
-    /* ADJUST THIS VALUE to change the gap/padding to the LEFT of the button */
     margin-left: 16px; 
 }
 
@@ -469,12 +539,10 @@ h1, h2, h3, h4, h5, h6,
     overflow: hidden; 
 }
 
-/* Ensure main bar retains header dimensions when toggled */
 .combined-header-navbar {
     flex-shrink: 0;
 }
 
-/* Prevent inline navbar flex items from shrinking during width measurement */
 .navigation-container:not(.is-collapsed-mode) .branding-group {
     flex-shrink: 0;
 }
@@ -484,33 +552,26 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   8. Bar 3 Accordion Grid & Directional Fade Animations
+   8. Bar 3 Accordion Grid & Animations
    ------------------------------------------------------------- */
-
-/* Outer Bar 3 Wrapper Container - NO CLIPPING MASK */
 #lowerTabWrapper,
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper {
     display: block;
     width: 100%;
     margin-top: 0px;
-    
-    /* Prevents horizontal cropping or hard cut-off edges */
     overflow: visible !important; 
-    
     height: var(--bar3-h, 0px);
     transition: height var(--bar3-fade-in-duration) var(--ease-cinematic);
     will-change: height;
     z-index: 1;
 }
 
-/* Hidden State - Collapses container height while Bar 3 travels upward */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden {
     pointer-events: none;
     height: 0px !important;
     transition: height var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
-/* Desktop Mode Overrides */
 .navigation-container:not(.is-collapsed-mode) #lowerTabWrapper {
     display: none !important;
 }
@@ -528,18 +589,16 @@ h1, h2, h3, h4, h5, h6,
     right: 0;
 }
 
-/* Inner Bar 3 Spacing */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar-inner {
     padding-top: 8px;
     background: transparent;
 }
 
-/* Inner Bar 3 Pill - Expanded Resting State */
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     display: flex;
     height: var(--navbar-height);
     border-radius: 9999px;
-    overflow: hidden; /* Clips internal tab scrolling to pill shape */
+    overflow: hidden;
     opacity: 1;
     transform: translateY(0);
     filter: blur(0px);
@@ -551,8 +610,6 @@ h1, h2, h3, h4, h5, h6,
     z-index: 1;
 }
 
-/* Inner Bar 3 Pill - Hidden State
-   - Moves up by 100% of its height + 8px gap to perfectly match Bar 1's position */
 .navigation-container.is-collapsed-mode .stacked-tab-wrapper.is-hidden .stacked-tab-navbar {
     opacity: 0;
     transform: translateY(calc(-100% - 8px));
@@ -562,7 +619,6 @@ h1, h2, h3, h4, h5, h6,
                 filter var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
-/* Ensure Bar 1 sits above Bar 3 so Bar 3 slides underneath seamlessly */
 .navigation-container.is-collapsed-mode #combinedNavbar {
     position: relative;
     z-index: 3;
