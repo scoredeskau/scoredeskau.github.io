@@ -6,6 +6,7 @@
 
     let cachedDesktopWidth = 0;
     let isNavigatingBack = false;
+    let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
         { label: 'Live Scores', target: '#scores' }
@@ -17,6 +18,38 @@
 
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
+
+    /**
+     * Touch & Pointer Press Feedback Manager for Mobile Devices
+     */
+    function setupTouchPressFeedback() {
+        // Enable iOS Safari :active pseudo-class support globally
+        window.addEventListener('touchstart', function () {}, { passive: true });
+
+        function handlePressStart(e) {
+            const btn = e.target.closest('.action-button, .icon-action-button, .toggle-menu-button, .tab-link');
+            if (btn) {
+                btn.classList.add('is-pressed');
+            }
+        }
+
+        function handlePressEnd() {
+            const pressedElements = document.querySelectorAll('.is-pressed');
+            pressedElements.forEach(el => el.classList.remove('is-pressed'));
+        }
+
+        if (window.PointerEvent) {
+            document.addEventListener('pointerdown', handlePressStart, { passive: true });
+            document.addEventListener('pointerup', handlePressEnd, { passive: true });
+            document.addEventListener('pointercancel', handlePressEnd, { passive: true });
+        } else {
+            document.addEventListener('touchstart', handlePressStart, { passive: true });
+            document.addEventListener('touchend', handlePressEnd, { passive: true });
+            document.addEventListener('touchcancel', handlePressEnd, { passive: true });
+            document.addEventListener('mousedown', handlePressStart, { passive: true });
+            document.addEventListener('mouseup', handlePressEnd, { passive: true });
+        }
+    }
 
     /**
      * Session-Based Page History Stack Management
@@ -232,14 +265,17 @@
         const viewports = container.querySelectorAll('.tab-scroll-viewport');
 
         viewports.forEach(viewport => {
-            let highlight = viewport.querySelector('.active-tab-highlight');
+            const tabList = viewport.querySelector('.tab-list');
+            if (!tabList) return;
+
+            let highlight = tabList.querySelector('.active-tab-highlight');
             if (!highlight) {
                 highlight = document.createElement('div');
                 highlight.className = 'active-tab-highlight';
-                viewport.appendChild(highlight);
+                tabList.appendChild(highlight);
             }
 
-            const activeLink = viewport.querySelector('.tab-link.is-active');
+            const activeLink = tabList.querySelector('.tab-link.is-active');
             if (!activeLink) {
                 highlight.classList.remove('is-visible');
                 return;
@@ -396,6 +432,8 @@
         const container = document.getElementById('navContainer');
         if (!container) return;
 
+        setupTouchPressFeedback();
+
         let initialCollapsedState = 'expanded';
         try {
             initialCollapsedState = localStorage.getItem(BAR3_STORAGE_KEY) || 'expanded';
@@ -486,7 +524,10 @@
     });
 
     window.addEventListener('resize', function () {
-        updateResponsiveLayout();
+        if (window.innerWidth !== lastWindowWidth) {
+            lastWindowWidth = window.innerWidth;
+            updateResponsiveLayout();
+        }
     });
 
     if (document.readyState === 'loading') {

@@ -425,11 +425,18 @@ h1, h2, h3, h4, h5, h6,
     padding: 0 16px;
     border-radius: 9999px;
     opacity: 0.72;
-    transition: color 0.3s var(--ease-cinematic), opacity 0.3s var(--ease-cinematic);
+    transition: color 0.3s var(--ease-cinematic), 
+                opacity 0.3s var(--ease-cinematic), 
+                transform 0.4s cubic-bezier(0.34, 1.75, 0.64, 1);
     user-select: none;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+}
+
+.tab-link:active,
+.tab-link.is-pressed {
+    transform: scale(0.92) !important;
 }
 
 .tab-link.is-active,
