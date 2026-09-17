@@ -91,6 +91,15 @@ h1, h2, h3, h4, h5, h6,
     transition: margin-top var(--bar3-fade-out-duration) var(--ease-cinematic);
 }
 
+/* Tab Views */
+.tab-view {
+    display: none;
+}
+
+.tab-view.is-active {
+    display: block;
+}
+
 /* -------------------------------------------------------------
    3. Main Navbar Shell (Bar 1 / Bar 2)
    ------------------------------------------------------------- */

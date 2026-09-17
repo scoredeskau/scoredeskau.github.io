@@ -241,12 +241,21 @@
         const displayTitleHeading = document.getElementById('themeTitleHeading');
         if (!container) return;
 
+        // 1. Update tab link active states
         container.querySelectorAll('.tab-link').forEach(link => {
             const isActive = link.getAttribute('data-target') === target;
             link.classList.toggle('is-active', isActive);
             if (isActive && displayTitleHeading) {
                 displayTitleHeading.textContent = link.textContent.trim();
             }
+        });
+
+        // 2. Toggle corresponding tab view visibility
+        const targetId = target ? target.replace('#', '') : '';
+        const views = document.querySelectorAll('.tab-view');
+        views.forEach(view => {
+            const matches = view.id === targetId || view.getAttribute('data-tab-view') === targetId;
+            view.classList.toggle('is-active', matches);
         });
 
         updateHighlights(disableAnimation);

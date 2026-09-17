@@ -25,16 +25,33 @@
     <div class="navigation-container" id="navContainer"></div>
 
     <main class="main-content">
-        <div class="section-header">
-            <h1 class="active-tab-display" id="themeTitleHeading">Tournaments</h1>
-            <button class="action-button" aria-label="Add Tournament">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span>Add</span>
-            </button>
-        </div>
+
+        <section id="tournaments" class="tab-view">
+            <div class="section-header">
+                <h1>Tournaments</h1>
+                <button class="action-button" aria-label="Add Tournament">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Add</span>
+                </button>
+                <button class="action-button" aria-label="Sort Tournaments">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16"></path>
+                    </svg>
+                    <span>Sort</span>
+                </button>
+            </div>
+        </section>
+
+        <section id="favourites" class="tab-view">
+            <h1>Favourites</h1>
+        </section>
+
+        <section id="settings" class="tab-view">
+            <h1>Settings</h1>
+        </section>
     </main>
 
 </body>
