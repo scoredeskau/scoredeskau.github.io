@@ -34,8 +34,8 @@
     --navbar-border-color: rgba(255, 255, 255, 0.2);
     
     /* Easing Definitions */
-    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-bubble: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-cinematic: cubic-bezier(0.32, 0.94, 0.2, 1);
+    --ease-bubble: cubic-bezier(0.32, 0.94, 0.2, 1);
     --fade-duration: 0.4s;
     --slide-duration: 0.75s;
     --chevron-duration: 0.5s;
@@ -284,10 +284,10 @@ h1, h2, h3, h4, h5, h6,
 .section-header:not(.is-stacked) .section-actions {
     width: auto;
     max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .section-header:not(.is-stacked) .section-subtitle {

@@ -33,14 +33,16 @@
 
         let x = Math.min(Math.max(t, 0), 1);
         for (let i = 0; i < 8; i++) {
-            const currentX = 3 * (1 - x) * (1 - x) * x * 0.16 + 3 * (1 - x) * x * x * 0.3 + x * x * x;
-            const dx = 3 * (1 - x) * (1 - x) * 0.16 + 6 * (1 - x) * x * (0.3 - 0.16) + 3 * x * x * (1 - 0.3);
+            // Updated with x1 = 0.32, x2 = 0.2
+            const currentX = 3 * (1 - x) * (1 - x) * x * 0.32 + 3 * (1 - x) * x * x * 0.2 + x * x * x;
+            const dx = 3 * (1 - x) * (1 - x) * 0.32 + 6 * (1 - x) * x * (0.2 - 0.32) + 3 * x * x * (1 - 0.2);
             if (Math.abs(currentX - t) < 1e-5 || dx === 0) break;
             x -= (currentX - t) / dx;
             x = Math.min(Math.max(x, 0), 1);
         }
 
-        return 3 * (1 - x) * (1 - x) * x * 1 + 3 * (1 - x) * x * x * 1 + x * x * x;
+        // Updated with y1 = 0.94, y2 = 1.0
+        return 3 * (1 - x) * (1 - x) * x * 0.94 + 3 * (1 - x) * x * x * 1.0 + x * x * x;
     }
 
     /**
