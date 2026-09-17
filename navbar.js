@@ -322,6 +322,9 @@
                     releaseTimer = null;
                 }
                 btn.classList.remove('is-pressed');
+                if (typeof btn.blur === 'function') {
+                    btn.blur();
+                }
             };
 
             btn.addEventListener('pointerdown', (e) => {
@@ -340,20 +343,18 @@
                 }
 
                 const elapsed = Date.now() - pressStartTime;
-                const remainingTime = Math.max(0, 80 - elapsed);
+                const remainingTime = Math.max(0, 70 - elapsed);
 
                 if (releaseTimer) clearTimeout(releaseTimer);
 
                 releaseTimer = setTimeout(() => {
                     clearPressed();
-                    btn.blur();
                 }, remainingTime);
             };
 
             btn.addEventListener('pointerup', handleRelease);
             btn.addEventListener('pointercancel', clearPressed);
             btn.addEventListener('pointerleave', clearPressed);
-            btn.addEventListener('blur', clearPressed);
         });
     }
 
