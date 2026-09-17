@@ -17,18 +17,6 @@
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
-    const MatrixClass = window.DOMMatrix || window.WebKitCSSMatrix || window.MSCSSMatrix;
-
-    function getParsedMatrix(element) {
-        const transform = window.getComputedStyle(element).transform;
-        
-        if (!transform || transform === 'none') {
-            return new MatrixClass();
-        }
-        
-        return new MatrixClass(transform);
-    }
-
     function getActiveTargetFromHash() {
         const hash = window.location.hash;
         return NAVIGATION_ITEMS.some(item => item.target === hash)
@@ -43,12 +31,13 @@
         if (t <= 0) return 0;
         if (t >= 1) return 1;
 
-        let x = t;
+        let x = Math.min(Math.max(t, 0), 1);
         for (let i = 0; i < 8; i++) {
             const currentX = 3 * (1 - x) * (1 - x) * x * 0.16 + 3 * (1 - x) * x * x * 0.3 + x * x * x;
             const dx = 3 * (1 - x) * (1 - x) * 0.16 + 6 * (1 - x) * x * (0.3 - 0.16) + 3 * x * x * (1 - 0.3);
             if (Math.abs(currentX - t) < 1e-5 || dx === 0) break;
             x -= (currentX - t) / dx;
+            x = Math.min(Math.max(x, 0), 1);
         }
 
         return 3 * (1 - x) * (1 - x) * x * 1 + 3 * (1 - x) * x * x * 1 + x * x * x;
@@ -56,7 +45,6 @@
 
     /**
      * Dynamic Section Header Stacking Calculator
-     * Checks title + action buttons width against container width to toggle .is-stacked
      */
     function updateSectionHeaderLayout() {
         const headers = document.querySelectorAll('.section-header');
@@ -69,7 +57,7 @@
             if (children.length === 0) return;
 
             const availableWidth = header.clientWidth;
-            if (availableWidth === 0) return; // Skip hidden tab views
+            if (availableWidth === 0) return;
 
             const titleWidth = title.getBoundingClientRect().width;
             let totalButtonsWidth = 0;
@@ -94,7 +82,7 @@
     }
 
     /**
-     * Interruptible smooth auto-scroll controller.
+     * Smooth, bounded auto-scroll controller.
      */
     function centerActiveTab(behavior = 'smooth') {
         const container = document.getElementById('navContainer');
@@ -116,7 +104,9 @@
             const currentScrollLeft = viewport.scrollLeft;
             const itemRelativeLeft = itemRect.left - viewportRect.left + currentScrollLeft;
             
-            const targetScrollLeft = Math.max(0, itemRelativeLeft - (viewportRect.width / 2) + (itemRect.width / 2));
+            const rawTargetScrollLeft = itemRelativeLeft - (viewportRect.width / 2) + (itemRect.width / 2);
+            const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+            const targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft);
 
             if (behavior === 'auto') {
                 if (viewport._scrollAnim) {
@@ -127,7 +117,6 @@
                 return;
             }
 
-            // Immediately kill existing scroll loop on new click
             if (viewport._scrollAnim) {
                 cancelAnimationFrame(viewport._scrollAnim);
                 viewport._scrollAnim = null;
@@ -139,7 +128,7 @@
             if (Math.abs(distance) < 0.5) return;
 
             const startTime = performance.now();
-            const duration = 750; // Match --slide-duration
+            const duration = 750;
 
             function step(currentTime) {
                 const elapsed = currentTime - startTime;
@@ -171,7 +160,6 @@
         const navbarWidth = navbar.getBoundingClientRect().width;
         const isCurrentlyCollapsed = navContainer.classList.contains('is-collapsed-mode');
 
-        // 1. Measure & cache baseline desktop width ONLY when in desktop mode or on init
         if (!isCurrentlyCollapsed || cachedDesktopWidth === 0) {
             const backBtn = branding.querySelector('.icon-action-button, .action-button');
             const primaryTitle = branding.querySelector('.primary-title');
@@ -185,21 +173,17 @@
             const brandingWidth = backBtnWidth + titlesWidth + 24;
             const tabsWidth = desktopTabList.scrollWidth;
 
-            // Store exact baseline threshold needed for full desktop bar
             cachedDesktopWidth = brandingWidth + tabsWidth + 32;
         }
 
-        // 2. Hysteresis Gap: Require 32px extra clearance to uncollapse.
         const uncollapseThreshold = cachedDesktopWidth + 32;
         
         const shouldCollapse = isCurrentlyCollapsed 
             ? navbarWidth < uncollapseThreshold 
             : navbarWidth < cachedDesktopWidth;
 
-        // Toggle collapse state class
         navContainer.classList.toggle('is-collapsed-mode', shouldCollapse);
 
-        // 3. Recalculate Accordion height (Bar 3)
         if (lowerWrapper) {
             const showBar3 = shouldCollapse && !lowerWrapper.classList.contains('is-hidden');
             const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
@@ -208,14 +192,12 @@
             navContainer.style.setProperty('--bar3-h', showBar3 ? `${exactHeight}px` : '0px');
         }
 
-        // Sync active states, pill positioning, auto-scroll centering, and header stacking
         syncToggleState();
         updateHighlights(true);
         centerActiveTab('auto');
         updateSectionHeaderLayout();
     }
 
-    // Hardcodes toggle icon orientation directly to Bar 3 visibility
     function syncToggleState() {
         const navContainer = document.querySelector('.navigation-container');
         const lowerWrapper = document.getElementById('lowerTabWrapper');
@@ -244,31 +226,16 @@
             const targetWidth = linkRect.width;
 
             if (disableAnimation) {
-                highlight.style.transition = 'none';
+                highlight.classList.add('no-transition');
                 highlight.style.transform = `translateX(${targetLeft}px)`;
                 highlight.style.width = `${targetWidth}px`;
                 highlight.classList.add('is-visible');
                 
-                // Force browser layout flush while transitions are strictly inline disabled
                 void highlight.offsetWidth; 
-                highlight.style.transition = '';
+                highlight.classList.remove('no-transition');
                 return;
             }
 
-            const matrix = getParsedMatrix(highlight);
-            const translateX = matrix.m41 ?? matrix.e;
-            const currentLeft = (typeof translateX === 'number' && !Number.isNaN(translateX)) ? translateX : targetLeft;
-            const currentWidth = highlight.offsetWidth || targetWidth;
-
-            // 1. Instantly freeze pill at current mid-animation coordinates
-            highlight.classList.add('no-transition');
-            highlight.style.transform = `translateX(${currentLeft}px)`;
-            highlight.style.width = `${currentWidth}px`;
-
-            // 2. Force reflow to flush frozen styles
-            void highlight.offsetWidth;
-
-            // 3. Re-enable CSS transitions to travel smoothly to new target
             highlight.classList.remove('no-transition');
             highlight.style.transform = `translateX(${targetLeft}px)`;
             highlight.style.width = `${targetWidth}px`;
@@ -281,7 +248,6 @@
         const displayTitleHeading = document.getElementById('themeTitleHeading');
         if (!container) return;
 
-        // 1. Update tab link active states
         container.querySelectorAll('.tab-link').forEach(link => {
             const isActive = link.getAttribute('data-target') === target;
             link.classList.toggle('is-active', isActive);
@@ -290,7 +256,6 @@
             }
         });
 
-        // 2. Toggle corresponding tab view visibility
         const targetId = target ? target.replace('#', '') : '';
         const views = document.querySelectorAll('.tab-view');
         views.forEach(view => {
@@ -300,14 +265,9 @@
 
         updateHighlights(disableAnimation);
         centerActiveTab(disableAnimation ? 'auto' : 'smooth');
-        
-        // Recalculate section header button layout for newly unhidden tab view
         updateSectionHeaderLayout();
     }
 
-    /**
-     * Attaches tactile spring bounce and pointer capture handlers to buttons
-     */
     function attachActionButtonListeners(scope = document) {
         scope.querySelectorAll('.action-button, .icon-action-button').forEach(btn => {
             if (btn._hasActionButtonListener) return;
@@ -328,7 +288,6 @@
             };
 
             btn.addEventListener('pointerdown', (e) => {
-                // Force browser to track pointer releases even if cursor moves outside button
                 if (btn.setPointerCapture) {
                     try { btn.setPointerCapture(e.pointerId); } catch (_) {}
                 }
@@ -420,13 +379,11 @@
             </div>
         `;
 
-        // Attach tactile interaction handlers to navbar buttons
         attachActionButtonListeners(container);
 
         const lowerWrapper = document.getElementById('lowerTabWrapper');
         const toggleBtn = container.querySelector('.toggle-menu-button');
 
-        // Toggle Accordion (Bar 3) with unified localStorage key
         if (toggleBtn && lowerWrapper) {
             toggleBtn.addEventListener('click', () => {
                 const isHidden = lowerWrapper.classList.toggle('is-hidden');
@@ -446,7 +403,6 @@
             });
         }
 
-        // Delegated Navigation Clicks
         container.addEventListener('click', (e) => {
             const link = e.target.closest('.tab-link');
             if (!link) return;
@@ -461,21 +417,17 @@
             setActiveTab(target);
         });
 
-        // Sync tabs on browser navigation (Back/Forward)
         window.addEventListener('popstate', () => {
             setActiveTab(getActiveTargetFromHash());
         });
 
-        // Initial render execution
         setActiveTab(initialTarget, true);
         updateResponsiveLayout();
 
-        // Force synchronous layout paint before stripping anti-flash class
         updateHighlights(true);
         centerActiveTab('auto');
         updateSectionHeaderLayout();
 
-        // Double rAF ensures the compositor has committed the initial transform frame to display
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 document.documentElement.classList.remove('no-transitions');
