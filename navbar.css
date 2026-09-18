@@ -434,9 +434,12 @@ h1, h2, h3, h4, h5, h6,
     -webkit-tap-highlight-color: transparent;
 }
 
-.tab-link:active,
-.tab-link.is-pressed {
-    transform: scale(0.92) !important;
+/* Tab Name Bounce: Active on desktop (mouse/pointer), disabled on mobile (touch) */
+@media (hover: hover) and (pointer: fine) {
+    .tab-link:active,
+    .tab-link.is-pressed {
+        transform: scale(0.92) !important;
+    }
 }
 
 .tab-link.is-active,
