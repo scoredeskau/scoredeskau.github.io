@@ -5,6 +5,7 @@
     'use strict';
 
     let isNavigatingBack = false;
+    let isCardNavigating = false;
     let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
@@ -17,6 +18,11 @@
 
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
+
+    // Reset navigation flag when page is shown (e.g., via browser Back button BFCache)
+    window.addEventListener('pageshow', function () {
+        isCardNavigating = false;
+    });
 
     /**
      * Touch & Pointer Press Feedback Manager for Mobile & Desktop
@@ -67,19 +73,23 @@
 
             if (targetUrl && !targetUrl.startsWith('#') && !targetUrl.startsWith('javascript:')) {
                 e.preventDefault();
-                
-                // Trigger immediate press compression
-                card.classList.add('is-pressed');
 
-                // Unpress quickly so spring bounce plays on release
-                setTimeout(() => {
-                    card.classList.remove('is-pressed');
-                }, 70);
+                if (isCardNavigating) return;
+                isCardNavigating = true;
 
-                // Perform page navigation after allowing bounce animation to display
+                // Handle keyboard activation (Enter key) where pointer events didn't fire
+                const isKeyboardClick = e.detail === 0 && e.clientX === 0 && e.clientY === 0;
+                if (isKeyboardClick) {
+                    card.classList.add('is-pressed');
+                    setTimeout(() => {
+                        card.classList.remove('is-pressed');
+                    }, 70);
+                }
+
+                // Perform page navigation after allowing the release bounce animation to play
                 setTimeout(() => {
                     window.location.href = targetUrl;
-                }, 220);
+                }, 200);
             }
         });
     }
