@@ -342,7 +342,15 @@
 
         const showBar3 = navContainer.classList.contains('is-collapsed-mode') && !isHidden;
         const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
-        const exactHeight = innerContent ? innerContent.offsetHeight : lowerWrapper.scrollHeight;
+        
+        let exactHeight = 0;
+        if (innerContent && innerContent.offsetHeight > 0) {
+            exactHeight = innerContent.offsetHeight;
+        } else if (lowerWrapper && lowerWrapper.scrollHeight > 0) {
+            exactHeight = lowerWrapper.scrollHeight;
+        } else {
+            exactHeight = 60; // 8px top-padding + 52px navbar pill height
+        }
 
         const hVal = showBar3 ? `${exactHeight}px` : '0px';
         navContainer.style.setProperty('--bar3-h', hVal);
@@ -477,6 +485,9 @@
         updateHighlights();
         centerActiveTab('smooth');
         updateSectionHeaderLayout();
+        
+        // Ensure screen starts at top Y=0 so section headers aren't pulled under navbar
+        window.scrollTo(0, 0);
     }
 
     function checkLayoutMode() {
@@ -496,7 +507,7 @@
 
         const requiredWidth = brandingWidth + viewportScrollWidth + 32;
 
-        if (availableWidth < requiredWidth) {
+        if (availableWidth < requiredWidth || window.innerWidth <= 768) {
             container.classList.add('is-collapsed-mode');
         } else {
             container.classList.remove('is-collapsed-mode');
@@ -506,6 +517,10 @@
     }
 
     function init() {
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
@@ -513,12 +528,15 @@
         const activeTarget = getActiveTargetFromHash();
         switchTab(activeTarget);
 
-        requestAnimationFrame(() => {
-            checkLayoutMode();
-            updateHighlights(true);
-            centerActiveTab('auto');
-            updateSectionHeaderLayout();
+        // Run synchronously to calculate --bar3-h BEFORE initial paint while no-transitions is active
+        checkLayoutMode();
+        updateHighlights(true);
+        centerActiveTab('auto');
+        updateSectionHeaderLayout();
+        window.scrollTo(0, 0);
 
+        // Remove anti-flash class after frame settles
+        requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 document.documentElement.classList.remove('no-transitions');
             });

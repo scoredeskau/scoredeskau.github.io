@@ -49,6 +49,13 @@
     --bar3-h: 0px;
 }
 
+/* Mobile Default CSS Fallback so content is clear before JS runs */
+@media (max-width: 768px) {
+    :root {
+        --bar3-h: 60px;
+    }
+}
+
 /* Themes */
 :root.theme-australian, body.theme-australian { --canvas-background-color: #071527; --court-accent-color: #38BDF8; }
 :root.theme-french, body.theme-french         { --canvas-background-color: #1A4D2E; --court-accent-color: #E27355; }
@@ -102,6 +109,7 @@ h1, h2, h3, h4, h5, h6,
 .tab-view {
     display: none;
     overflow: visible;
+    scroll-margin-top: calc(var(--navbar-height) + (2 * var(--page-outer-spacing)) + var(--bar3-h, 0px));
 }
 
 .tab-view.is-active {

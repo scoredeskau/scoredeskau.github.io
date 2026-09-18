@@ -1,9 +1,14 @@
 /**
  * Anti-Flash Script (Optimized)
- * Synchronously sets class on root element to avoid early repaint flashes.
+ * Synchronously sets class on root element and manages scroll restoration to prevent early layout shifts.
  */
 (function () {
     'use strict';
+
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
     const STORAGE_KEY = 'activeTournamentTheme';
     const VALID_THEMES = new Set([
         'theme-australian', 
