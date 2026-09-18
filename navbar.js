@@ -1,5 +1,5 @@
 /**
- * Shared Navbar Component - High-Performance Edition
+ * Shared Navbar Component - High-Performance Edition (Safari WebKit Patch)
  */
 (function () {
     'use strict';
@@ -19,7 +19,6 @@
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
-    // Reset navigation flag when page is shown (e.g., via browser Back button BFCache)
     window.addEventListener('pageshow', function () {
         isCardNavigating = false;
     });
@@ -77,7 +76,6 @@
                 if (isCardNavigating) return;
                 isCardNavigating = true;
 
-                // Handle keyboard activation (Enter key) where pointer events didn't fire
                 const isKeyboardClick = e.detail === 0 && e.clientX === 0 && e.clientY === 0;
                 if (isKeyboardClick) {
                     card.classList.add('is-pressed');
@@ -86,7 +84,6 @@
                     }, 70);
                 }
 
-                // Perform page navigation after allowing the release bounce animation to play
                 setTimeout(() => {
                     window.location.href = targetUrl;
                 }, 200);
@@ -217,7 +214,8 @@
             const gapBetweenTitleAndActions = 16;
             const totalRequiredWidth = titleWidth + gapBetweenTitleAndActions + totalButtonsWidth;
 
-            if (totalRequiredWidth > availableWidth) {
+            // Safari WebKit Fix: Added +2px tolerance buffer for subpixel font width rendering
+            if (totalRequiredWidth > availableWidth + 2) {
                 header.classList.add('is-stacked');
             } else {
                 header.classList.remove('is-stacked');
@@ -359,7 +357,7 @@
         } else if (lowerWrapper && lowerWrapper.scrollHeight > 0) {
             exactHeight = lowerWrapper.scrollHeight;
         } else {
-            exactHeight = 60; // 8px top-padding + 52px navbar pill height
+            exactHeight = 60;
         }
 
         const hVal = showBar3 ? `${exactHeight}px` : '0px';
@@ -376,251 +374,156 @@
         syncToggleState();
     }
 
+    function handleTabSwitch(target) {
+        if (!target) return;
+
+        const allLinks = document.querySelectorAll('.tab-link');
+        allLinks.forEach(link => {
+            const isActive = link.getAttribute('href') === target;
+            link.classList.toggle('is-active', isActive);
+            if (isActive) {
+                link.setAttribute('aria-selected', 'true');
+            } else {
+                link.removeAttribute('aria-selected');
+            }
+        });
+
+        const tabViews = document.querySelectorAll('.tab-view');
+        tabViews.forEach(view => {
+            const isMatch = '#' + view.id === target;
+            view.classList.toggle('is-active', isMatch);
+        });
+
+        updateHighlights(false);
+        centerActiveTab('smooth');
+        updateSectionHeaderLayout();
+    }
+
+    function checkResponsiveCollapse() {
+        const container = document.getElementById('navContainer');
+        if (!container) return;
+
+        const combinedNavbar = document.getElementById('combinedNavbar');
+        const brandingGroup = combinedNavbar ? combinedNavbar.querySelector('.branding-group') : null;
+        const viewport = combinedNavbar ? combinedNavbar.querySelector('.tab-scroll-viewport') : null;
+
+        if (!combinedNavbar || !brandingGroup || !viewport) return;
+
+        const containerWidth = combinedNavbar.clientWidth;
+        const brandingWidth = brandingGroup.scrollWidth;
+        const viewportWidth = viewport.scrollWidth;
+        const requiredWidth = brandingWidth + viewportWidth + 32;
+
+        const shouldCollapse = containerWidth < requiredWidth;
+        container.classList.toggle('is-collapsed-mode', shouldCollapse);
+
+        syncToggleState();
+        updateHighlights(true);
+        centerActiveTab('auto');
+        updateSectionHeaderLayout();
+    }
+
+    function buildTabListHTML() {
+        const activeTarget = getActiveTargetFromHash();
+        return NAVIGATION_ITEMS.map(item => {
+            const isActive = item.target === activeTarget;
+            return `
+                <li class="tab-item">
+                    <a href="${item.target}" class="tab-link ${isActive ? 'is-active' : ''}" ${isActive ? 'aria-selected="true"' : ''}>
+                        ${item.label}
+                    </a>
+                </li>
+            `;
+        }).join('');
+    }
+
     function renderNavbar() {
         const container = document.getElementById('navContainer');
         if (!container) return;
 
-        const activeTarget = getActiveTargetFromHash();
+        const savedBar3State = localStorage.getItem(BAR3_STORAGE_KEY);
+        const isBar3Hidden = savedBar3State === 'collapsed';
 
-        const tabItemsHtml = NAVIGATION_ITEMS.map(item => {
-            const isActive = item.target === activeTarget ? 'is-active' : '';
-            return `
-                <li class="tab-item">
-                    <a href="${item.target}" class="tab-link ${isActive}">${item.label}</a>
-                </li>
-            `;
-        }).join('');
-
-        let savedCollapsedState = 'expanded';
-        try {
-            savedCollapsedState = localStorage.getItem(BAR3_STORAGE_KEY) || 'expanded';
-        } catch (e) {}
-
-        const isLowerHidden = savedCollapsedState === 'collapsed';
+        const tabListHTML = buildTabListHTML();
 
         container.innerHTML = `
-            <div class="navbar combined-header-navbar" id="combinedNavbar">
+            <header class="navbar combined-header-navbar" id="combinedNavbar">
                 <div class="branding-group">
-                    <button class="icon-action-button back-button" id="backButton" aria-label="Go Back">
+                    <button class="icon-action-button back-button" id="backBtn" aria-label="Go Back">
                         ${BACK_SVG}
                     </button>
                     <div class="header-titles">
                         <span class="primary-title">${PRIMARY_TITLE}</span>
-                        ${SECONDARY_TITLE ? `<span class="secondary-title">${SECONDARY_TITLE}</span>` : ''}
+                        <span class="secondary-title">${SECONDARY_TITLE}</span>
                     </div>
                 </div>
 
                 <div class="tab-scroll-viewport">
                     <ul class="tab-list">
-                        ${tabItemsHtml}
+                        ${tabListHTML}
                     </ul>
                 </div>
 
-                <button class="icon-action-button toggle-menu-button ${isLowerHidden ? 'is-collapsed' : ''}" id="toggleMenuButton" aria-label="Toggle navigation menu">
+                <button class="icon-action-button toggle-menu-button ${isBar3Hidden ? 'is-collapsed' : ''}" id="toggleBtn" aria-label="Toggle Menu">
                     ${TOGGLE_SVG}
                 </button>
-            </div>
+            </header>
 
-            <div class="stacked-tab-wrapper ${isLowerHidden ? 'is-hidden' : ''}" id="lowerTabWrapper">
+            <div class="stacked-tab-wrapper ${isBar3Hidden ? 'is-hidden' : ''}" id="lowerTabWrapper">
                 <div class="stacked-tab-navbar-inner">
-                    <div class="navbar stacked-tab-navbar">
+                    <nav class="navbar stacked-tab-navbar">
                         <div class="tab-scroll-viewport">
                             <ul class="tab-list">
-                                ${tabItemsHtml}
+                                ${tabListHTML}
                             </ul>
                         </div>
-                    </div>
+                    </nav>
                 </div>
             </div>
         `;
 
-        const backBtn = container.querySelector('#backButton');
-        if (backBtn) {
-            backBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                handleSmartBack();
-            });
-        }
+        document.getElementById('backBtn')?.addEventListener('click', handleSmartBack);
+        document.getElementById('toggleBtn')?.addEventListener('click', toggleBar3);
 
-        const toggleBtn = container.querySelector('#toggleMenuButton');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                toggleBar3();
-            });
-        }
-
-        const tabLinks = container.querySelectorAll('.tab-link');
-        tabLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#')) {
+        container.addEventListener('click', function (e) {
+            const link = e.target.closest('.tab-link');
+            if (link) {
+                const target = link.getAttribute('href');
+                if (target && target.startsWith('#')) {
                     e.preventDefault();
-                    switchTab(href);
+                    if (window.location.hash !== target) {
+                        history.pushState(null, '', target);
+                    }
+                    handleTabSwitch(target);
                 }
-            });
-        });
-    }
-
-    function switchTab(targetHash) {
-        if (!targetHash) return;
-
-        if (window.history.pushState) {
-            window.history.pushState(null, '', targetHash);
-        } else {
-            window.location.hash = targetHash;
-        }
-
-        const container = document.getElementById('navContainer');
-        if (container) {
-            const allLinks = container.querySelectorAll('.tab-link');
-            allLinks.forEach(link => {
-                if (link.getAttribute('href') === targetHash) {
-                    link.classList.add('is-active');
-                } else {
-                    link.classList.remove('is-active');
-                }
-            });
-        }
-
-        const tabViews = document.querySelectorAll('.tab-view');
-        tabViews.forEach(view => {
-            if ('#' + view.id === targetHash) {
-                view.classList.add('is-active');
-            } else {
-                view.classList.remove('is-active');
             }
         });
 
-        updateHighlights();
-        centerActiveTab('smooth');
-        updateSectionHeaderLayout();
-        
-        // Ensure screen starts at top Y=0 so section headers aren't pulled under navbar
-        window.scrollTo(0, 0);
-    }
-
-    function checkLayoutMode() {
-        const container = document.getElementById('navContainer');
-        if (!container) return;
-
-        const combinedNavbar = document.getElementById('combinedNavbar');
-        if (!combinedNavbar) return;
-
-        const brandingGroup = combinedNavbar.querySelector('.branding-group');
-        const viewport = combinedNavbar.querySelector('.tab-scroll-viewport');
-        if (!brandingGroup || !viewport) return;
-
-        const availableWidth = combinedNavbar.clientWidth;
-        if (availableWidth === 0) return;
-
-        // Calculate intrinsic branding width dynamically from titles & back button
-        const backBtn = brandingGroup.querySelector('#backButton');
-        const primaryTitle = brandingGroup.querySelector('.primary-title');
-        const secondaryTitle = brandingGroup.querySelector('.secondary-title');
-
-        const backBtnWidth = (backBtn && backBtn.offsetWidth > 0) ? backBtn.offsetWidth : (backBtn ? backBtn.getBoundingClientRect().width : 36);
-
-        // Helper to measure exact unclipped pixel text width via DOM Range (immune to CSS truncation/ellipsis)
-        function getTextWidth(el) {
-            if (!el || !el.textContent || !el.textContent.trim()) return 0;
-            try {
-                const range = document.createRange();
-                range.selectNodeContents(el);
-                const rect = range.getBoundingClientRect();
-                return rect.width || 0;
-            } catch (e) {
-                return el.scrollWidth || 0;
-            }
-        }
-
-        const primaryWidth = getTextWidth(primaryTitle);
-        const secondaryWidth = getTextWidth(secondaryTitle);
-        const titleWidth = Math.ceil(Math.max(primaryWidth, secondaryWidth));
-
-        // 8px branding padding-left + 8px titles padding-left + 8px titles padding-right = 24px
-        const brandingWidth = backBtnWidth + titleWidth + 24;
-
-        // Calculate total intrinsic tab list width
-        let tabsScrollWidth = 0;
-        const tabItems = viewport.querySelectorAll('.tab-item');
-        if (tabItems.length > 0) {
-            let itemsSum = 0;
-            tabItems.forEach(item => {
-                const rect = item.getBoundingClientRect();
-                itemsSum += rect.width || 0;
-            });
-            const gap = 4;
-            const padding = 8; // 4px left + 4px right padding on .tab-list
-            tabsScrollWidth = itemsSum + ((tabItems.length - 1) * gap) + padding;
-        }
-
-        // Buffer gap between branding group and tabs (16px)
-        const requiredWidth = brandingWidth + tabsScrollWidth + 16;
-
-        if (availableWidth < requiredWidth) {
-            container.classList.add('is-collapsed-mode');
-        } else {
-            container.classList.remove('is-collapsed-mode');
-        }
-
-        syncToggleState();
-    }
-
-    function init() {
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-
-        renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
 
-        const activeTarget = getActiveTargetFromHash();
-        switchTab(activeTarget);
-
-        // Run synchronously to calculate --bar3-h BEFORE initial paint while no-transitions is active
-        checkLayoutMode();
-        updateHighlights(true);
-        centerActiveTab('auto');
-        updateSectionHeaderLayout();
-        window.scrollTo(0, 0);
-
-        // Re-check layout mode when web fonts finish loading so font metrics are 100% precise
-        if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(function () {
-                checkLayoutMode();
-                updateHighlights(true);
-            });
-        }
-
-        // Remove anti-flash class after frame settles
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                document.documentElement.classList.remove('no-transitions');
-            });
-        });
-
-        window.addEventListener('resize', function () {
-            const currentWidth = window.innerWidth;
-            if (currentWidth !== lastWindowWidth) {
-                lastWindowWidth = currentWidth;
-                checkLayoutMode();
-                updateHighlights(true);
-                centerActiveTab('auto');
-                updateSectionHeaderLayout();
-            }
-        });
-
-        window.addEventListener('hashchange', function () {
-            const hash = getActiveTargetFromHash();
-            switchTab(hash);
+            checkResponsiveCollapse();
+            handleTabSwitch(getActiveTargetFromHash());
+            document.documentElement.classList.remove('no-transitions');
         });
     }
 
+    window.addEventListener('hashchange', function () {
+        handleTabSwitch(getActiveTargetFromHash());
+    });
+
+    window.addEventListener('resize', function () {
+        const currentWidth = window.innerWidth;
+        if (currentWidth !== lastWindowWidth) {
+            lastWindowWidth = currentWidth;
+            checkResponsiveCollapse();
+        }
+    });
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', renderNavbar);
     } else {
-        init();
+        renderNavbar();
     }
 })();
