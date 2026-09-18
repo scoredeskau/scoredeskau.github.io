@@ -1,10 +1,9 @@
 /**
- * Shared Navbar Component - High-Performance Edition (Floating Header & Synchronized Bar 3 Shifting)
+ * Shared Navbar Component - High-Performance Edition
  */
 (function () {
     'use strict';
 
-    let cachedDesktopWidth = 0;
     let isNavigatingBack = false;
     let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
@@ -20,14 +19,15 @@
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
     /**
-     * Touch & Pointer Press Feedback Manager for Mobile Devices
+     * Touch & Pointer Press Feedback Manager for Mobile & Desktop
      */
     function setupTouchPressFeedback() {
-        // Enable iOS Safari :active pseudo-class support globally
         window.addEventListener('touchstart', function () {}, { passive: true });
 
+        const targetSelectors = '.action-button, .icon-action-button, .toggle-menu-button, .tab-link, .card, .portal-card, .nav-card, .section-card, .feature-card, [data-href]';
+
         function handlePressStart(e) {
-            const btn = e.target.closest('.action-button, .icon-action-button, .toggle-menu-button, .tab-link');
+            const btn = e.target.closest(targetSelectors);
             if (btn) {
                 btn.classList.add('is-pressed');
             }
@@ -49,6 +49,39 @@
             document.addEventListener('mousedown', handlePressStart, { passive: true });
             document.addEventListener('mouseup', handlePressEnd, { passive: true });
         }
+    }
+
+    /**
+     * Smooth Tile/Card Navigation with Spring Compression & Bounce Delay
+     */
+    function setupCardNavigationFeedback() {
+        document.addEventListener('click', function (e) {
+            const card = e.target.closest('.card, .portal-card, .nav-card, .section-card, .feature-card, [data-href]');
+            if (!card) return;
+
+            let targetUrl = card.getAttribute('href') || card.getAttribute('data-href');
+            if (!targetUrl) {
+                const innerLink = card.querySelector('a[href]');
+                if (innerLink) targetUrl = innerLink.getAttribute('href');
+            }
+
+            if (targetUrl && !targetUrl.startsWith('#') && !targetUrl.startsWith('javascript:')) {
+                e.preventDefault();
+                
+                // Trigger immediate press compression
+                card.classList.add('is-pressed');
+
+                // Unpress quickly so spring bounce plays on release
+                setTimeout(() => {
+                    card.classList.remove('is-pressed');
+                }, 70);
+
+                // Perform page navigation after allowing bounce animation to display
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 220);
+            }
+        });
     }
 
     /**
@@ -131,9 +164,6 @@
             : NAVIGATION_ITEMS[0]?.target;
     }
 
-    /**
-     * Exact cubic-bezier solver matching cubic-bezier(0.32, 0.94, 0.2, 1)
-     */
     function easeBubble(t) {
         if (t <= 0) return 0;
         if (t >= 1) return 1;
@@ -150,9 +180,6 @@
         return 3 * (1 - x) * (1 - x) * x * 0.94 + 3 * (1 - x) * x * x * 1.0 + x * x * x;
     }
 
-    /**
-     * Dynamic Section Header Stacking Calculator
-     */
     function updateSectionHeaderLayout() {
         const headers = document.querySelectorAll('.section-header');
         headers.forEach(header => {
@@ -188,9 +215,6 @@
         });
     }
 
-    /**
-     * Smooth, bounded auto-scroll controller.
-     */
     function centerActiveTab(behavior = 'smooth') {
         const container = document.getElementById('navContainer');
         if (!container) return;
@@ -255,9 +279,6 @@
         });
     }
 
-    /**
-     * Updates highlighted bubble indicator over active tab link.
-     */
     function updateHighlights(noTransition = false) {
         const container = document.getElementById('navContainer');
         if (!container) return;
@@ -303,9 +324,6 @@
         });
     }
 
-    /**
-     * Synchronizes Bar 3 toggle button icon and dynamic height variables.
-     */
     function syncToggleState() {
         const navContainer = document.querySelector('.navigation-container');
         const lowerWrapper = document.getElementById('lowerTabWrapper');
@@ -331,128 +349,41 @@
         document.documentElement.style.setProperty('--bar3-h', hVal);
     }
 
-    /**
-     * Handles clicking the Bar 2 chevron button to expand or collapse Bar 3.
-     */
-    function toggleMenu() {
+    function toggleBar3() {
         const lowerWrapper = document.getElementById('lowerTabWrapper');
         if (!lowerWrapper) return;
 
-        lowerWrapper.classList.toggle('is-hidden');
+        const isCurrentlyHidden = lowerWrapper.classList.contains('is-hidden');
+        lowerWrapper.classList.toggle('is-hidden', !isCurrentlyHidden);
         syncToggleState();
     }
 
-    /**
-     * Updates layout mode between Desktop (Bar 1) and Collapsed Mobile (Bar 2 + Bar 3).
-     */
-    function updateResponsiveLayout() {
-        const navContainer = document.querySelector('.navigation-container');
-        const navbar = document.querySelector('#combinedNavbar');
-        const branding = document.querySelector('.branding-group');
-        const desktopTabList = document.querySelector('#combinedNavbar .tab-list');
-        const lowerWrapper = document.getElementById('lowerTabWrapper');
-
-        if (!navContainer || !navbar || !branding || !desktopTabList) return;
-
-        const navbarWidth = navbar.getBoundingClientRect().width;
-        const isCurrentlyCollapsed = navContainer.classList.contains('is-collapsed-mode');
-
-        if (!isCurrentlyCollapsed || cachedDesktopWidth === 0) {
-            const backBtn = branding.querySelector('.icon-action-button, .action-button');
-            const primaryTitle = branding.querySelector('.primary-title');
-            const secondaryTitle = branding.querySelector('.secondary-title');
-
-            const backBtnWidth = backBtn ? backBtn.offsetWidth : 36;
-            const primaryWidth = primaryTitle ? primaryTitle.scrollWidth : 0;
-            const secondaryWidth = secondaryTitle ? secondaryTitle.scrollWidth : 0;
-            const titlesWidth = Math.max(primaryWidth, secondaryWidth);
-
-            const brandingWidth = backBtnWidth + titlesWidth + 24;
-            const tabsWidth = desktopTabList.scrollWidth;
-
-            cachedDesktopWidth = brandingWidth + tabsWidth + 32;
-        }
-
-        const uncollapseThreshold = cachedDesktopWidth + 32;
-        
-        const shouldCollapse = isCurrentlyCollapsed 
-            ? navbarWidth < uncollapseThreshold 
-            : navbarWidth < cachedDesktopWidth;
-
-        navContainer.classList.toggle('is-collapsed-mode', shouldCollapse);
-
-        if (lowerWrapper) {
-            const showBar3 = shouldCollapse && !lowerWrapper.classList.contains('is-hidden');
-            const innerContent = lowerWrapper.querySelector('.stacked-tab-navbar-inner');
-            const exactHeight = innerContent ? innerContent.offsetHeight : lowerWrapper.scrollHeight;
-            
-            const hVal = showBar3 ? `${exactHeight}px` : '0px';
-            navContainer.style.setProperty('--bar3-h', hVal);
-            document.documentElement.style.setProperty('--bar3-h', hVal);
-        }
-
-        syncToggleState();
-        updateHighlights(true);
-        centerActiveTab('auto');
-        updateSectionHeaderLayout();
-    }
-
-    /**
-     * Navigates between view tabs and updates page states.
-     */
-    function setActiveTab(targetHash, isUserAction = false) {
-        if (!targetHash) return;
-
-        const allLinks = document.querySelectorAll('.navigation-container .tab-link');
-        allLinks.forEach(link => {
-            const isMatch = link.getAttribute('href') === targetHash;
-            link.classList.toggle('is-active', isMatch);
-            if (isMatch) {
-                link.setAttribute('aria-selected', 'true');
-            } else {
-                link.setAttribute('aria-selected', 'false');
-            }
-        });
-
-        const tabViews = document.querySelectorAll('.tab-view');
-        tabViews.forEach(view => {
-            const matches = ('#' + view.id) === targetHash;
-            view.classList.toggle('is-active', matches);
-        });
-
-        updateHighlights(!isUserAction);
-        centerActiveTab(isUserAction ? 'smooth' : 'auto');
-        updateSectionHeaderLayout();
-    }
-
-    /**
-     * Builds and renders the complete Navigation component inside #navContainer.
-     */
-    function buildNavbarUI() {
+    function renderNavbar() {
         const container = document.getElementById('navContainer');
         if (!container) return;
 
-        setupTouchPressFeedback();
+        const activeTarget = getActiveTargetFromHash();
 
-        let initialCollapsedState = 'expanded';
+        const tabItemsHtml = NAVIGATION_ITEMS.map(item => {
+            const isActive = item.target === activeTarget ? 'is-active' : '';
+            return `
+                <li class="tab-item">
+                    <a href="${item.target}" class="tab-link ${isActive}">${item.label}</a>
+                </li>
+            `;
+        }).join('');
+
+        let savedCollapsedState = 'expanded';
         try {
-            initialCollapsedState = localStorage.getItem(BAR3_STORAGE_KEY) || 'expanded';
+            savedCollapsedState = localStorage.getItem(BAR3_STORAGE_KEY) || 'expanded';
         } catch (e) {}
 
-        const isBar3Hidden = initialCollapsedState === 'collapsed';
-
-        const tabsMarkup = NAVIGATION_ITEMS.map((item, index) => `
-            <li class="tab-item">
-                <a href="${item.target}" class="tab-link ${index === 0 ? 'is-active' : ''}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}">
-                    ${item.label}
-                </a>
-            </li>
-        `).join('');
+        const isLowerHidden = savedCollapsedState === 'collapsed';
 
         container.innerHTML = `
-            <header class="navbar combined-header-navbar" id="combinedNavbar">
+            <div class="navbar combined-header-navbar" id="combinedNavbar">
                 <div class="branding-group">
-                    <button class="icon-action-button back-button" id="navBackBtn" aria-label="Go back">
+                    <button class="icon-action-button back-button" id="backButton" aria-label="Go Back">
                         ${BACK_SVG}
                     </button>
                     <div class="header-titles">
@@ -461,78 +392,150 @@
                     </div>
                 </div>
 
-                <button class="icon-action-button toggle-menu-button ${isBar3Hidden ? 'is-collapsed' : ''}" id="navToggleBtn" aria-label="Toggle navigation menu">
+                <div class="tab-scroll-viewport">
+                    <ul class="tab-list">
+                        ${tabItemsHtml}
+                    </ul>
+                </div>
+
+                <button class="icon-action-button toggle-menu-button ${isLowerHidden ? 'is-collapsed' : ''}" id="toggleMenuButton" aria-label="Toggle navigation menu">
                     ${TOGGLE_SVG}
                 </button>
+            </div>
 
-                <nav class="tab-scroll-viewport" id="desktopTabViewport" aria-label="Primary navigation">
-                    <ul class="tab-list" role="tablist">
-                        ${tabsMarkup}
-                    </ul>
-                </nav>
-            </header>
-
-            <div class="stacked-tab-wrapper ${isBar3Hidden ? 'is-hidden' : ''}" id="lowerTabWrapper">
+            <div class="stacked-tab-wrapper ${isLowerHidden ? 'is-hidden' : ''}" id="lowerTabWrapper">
                 <div class="stacked-tab-navbar-inner">
-                    <header class="navbar stacked-tab-navbar">
-                        <nav class="tab-scroll-viewport" id="mobileTabViewport" aria-label="Mobile tab navigation">
-                            <ul class="tab-list" role="tablist">
-                                ${tabsMarkup}
+                    <div class="navbar stacked-tab-navbar">
+                        <div class="tab-scroll-viewport">
+                            <ul class="tab-list">
+                                ${tabItemsHtml}
                             </ul>
-                        </nav>
-                    </header>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
 
-        const backBtn = document.getElementById('navBackBtn');
+        const backBtn = container.querySelector('#backButton');
         if (backBtn) {
-            backBtn.addEventListener('click', handleSmartBack);
-        }
-
-        const toggleBtn = document.getElementById('navToggleBtn');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', toggleMenu);
-        }
-
-        container.addEventListener('click', function (e) {
-            const tabLink = e.target.closest('.tab-link');
-            if (tabLink) {
+            backBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetHash = tabLink.getAttribute('href');
-                if (window.location.hash !== targetHash) {
-                    history.pushState(null, '', targetHash);
+                handleSmartBack();
+            });
+        }
+
+        const toggleBtn = container.querySelector('#toggleMenuButton');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                toggleBar3();
+            });
+        }
+
+        const tabLinks = container.querySelectorAll('.tab-link');
+        tabLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    switchTab(href);
                 }
-                setActiveTab(targetHash, true);
+            });
+        });
+    }
+
+    function switchTab(targetHash) {
+        if (!targetHash) return;
+
+        if (window.history.pushState) {
+            window.history.pushState(null, '', targetHash);
+        } else {
+            window.location.hash = targetHash;
+        }
+
+        const container = document.getElementById('navContainer');
+        if (container) {
+            const allLinks = container.querySelectorAll('.tab-link');
+            allLinks.forEach(link => {
+                if (link.getAttribute('href') === targetHash) {
+                    link.classList.add('is-active');
+                } else {
+                    link.classList.remove('is-active');
+                }
+            });
+        }
+
+        const tabViews = document.querySelectorAll('.tab-view');
+        tabViews.forEach(view => {
+            if ('#' + view.id === targetHash) {
+                view.classList.add('is-active');
+            } else {
+                view.classList.remove('is-active');
             }
         });
 
-        const activeHash = getActiveTargetFromHash();
-        setActiveTab(activeHash, false);
+        updateHighlights();
+        centerActiveTab('smooth');
+        updateSectionHeaderLayout();
+    }
+
+    function checkLayoutMode() {
+        const container = document.getElementById('navContainer');
+        if (!container) return;
+
+        const combinedNavbar = document.getElementById('combinedNavbar');
+        if (!combinedNavbar) return;
+
+        const brandingGroup = combinedNavbar.querySelector('.branding-group');
+        const viewport = combinedNavbar.querySelector('.tab-scroll-viewport');
+        if (!brandingGroup || !viewport) return;
+
+        const containerWidth = combinedNavbar.clientWidth;
+        const brandingWidth = brandingGroup.offsetWidth;
+        const tabList = viewport.querySelector('.tab-list');
+        const tabsWidth = tabList ? tabList.scrollWidth : viewport.scrollWidth;
+
+        const neededWidth = brandingWidth + tabsWidth + 32;
+
+        if (containerWidth < neededWidth) {
+            container.classList.add('is-collapsed-mode');
+        } else {
+            container.classList.remove('is-collapsed-mode');
+        }
+
+        syncToggleState();
+        updateHighlights(true);
+        centerActiveTab('auto');
+        updateSectionHeaderLayout();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        renderNavbar();
+        setupTouchPressFeedback();
+        setupCardNavigationFeedback();
+
+        const initialTarget = getActiveTargetFromHash();
+        switchTab(initialTarget);
 
         requestAnimationFrame(() => {
-            updateResponsiveLayout();
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 document.documentElement.classList.remove('no-transitions');
-            }, 50);
+                checkLayoutMode();
+            });
         });
-    }
 
-    window.addEventListener('hashchange', function () {
-        const activeHash = getActiveTargetFromHash();
-        setActiveTab(activeHash, true);
+        window.addEventListener('resize', function () {
+            const currentWidth = window.innerWidth;
+            if (currentWidth !== lastWindowWidth) {
+                lastWindowWidth = currentWidth;
+                checkLayoutMode();
+            }
+        });
+
+        window.addEventListener('hashchange', function () {
+            const currentHash = getActiveTargetFromHash();
+            switchTab(currentHash);
+        });
     });
 
-    window.addEventListener('resize', function () {
-        if (window.innerWidth !== lastWindowWidth) {
-            lastWindowWidth = window.innerWidth;
-            updateResponsiveLayout();
-        }
-    });
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', buildNavbarUI);
-    } else {
-        buildNavbarUI();
-    }
 })();
