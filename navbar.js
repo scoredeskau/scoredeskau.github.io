@@ -512,12 +512,53 @@
         if (!brandingGroup || !viewport) return;
 
         const availableWidth = combinedNavbar.clientWidth;
-        const brandingWidth = brandingGroup.getBoundingClientRect().width;
-        const viewportScrollWidth = viewport.scrollWidth;
+        if (availableWidth === 0) return;
 
-        const requiredWidth = brandingWidth + viewportScrollWidth + 32;
+        // Calculate intrinsic branding width dynamically from titles & back button
+        const backBtn = brandingGroup.querySelector('#backButton');
+        const primaryTitle = brandingGroup.querySelector('.primary-title');
+        const secondaryTitle = brandingGroup.querySelector('.secondary-title');
 
-        if (availableWidth < requiredWidth || window.innerWidth <= 768) {
+        const backBtnWidth = (backBtn && backBtn.offsetWidth > 0) ? backBtn.offsetWidth : (backBtn ? backBtn.getBoundingClientRect().width : 36);
+
+        // Helper to measure exact unclipped pixel text width via DOM Range (immune to CSS truncation/ellipsis)
+        function getTextWidth(el) {
+            if (!el || !el.textContent || !el.textContent.trim()) return 0;
+            try {
+                const range = document.createRange();
+                range.selectNodeContents(el);
+                const rect = range.getBoundingClientRect();
+                return rect.width || 0;
+            } catch (e) {
+                return el.scrollWidth || 0;
+            }
+        }
+
+        const primaryWidth = getTextWidth(primaryTitle);
+        const secondaryWidth = getTextWidth(secondaryTitle);
+        const titleWidth = Math.ceil(Math.max(primaryWidth, secondaryWidth));
+
+        // 8px branding padding-left + 8px titles padding-left + 8px titles padding-right = 24px
+        const brandingWidth = backBtnWidth + titleWidth + 24;
+
+        // Calculate total intrinsic tab list width
+        let tabsScrollWidth = 0;
+        const tabItems = viewport.querySelectorAll('.tab-item');
+        if (tabItems.length > 0) {
+            let itemsSum = 0;
+            tabItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                itemsSum += rect.width || 0;
+            });
+            const gap = 4;
+            const padding = 8; // 4px left + 4px right padding on .tab-list
+            tabsScrollWidth = itemsSum + ((tabItems.length - 1) * gap) + padding;
+        }
+
+        // Buffer gap between branding group and tabs (16px)
+        const requiredWidth = brandingWidth + tabsScrollWidth + 16;
+
+        if (availableWidth < requiredWidth) {
             container.classList.add('is-collapsed-mode');
         } else {
             container.classList.remove('is-collapsed-mode');
@@ -544,6 +585,14 @@
         centerActiveTab('auto');
         updateSectionHeaderLayout();
         window.scrollTo(0, 0);
+
+        // Re-check layout mode when web fonts finish loading so font metrics are 100% precise
+        if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function () {
+                checkLayoutMode();
+                updateHighlights(true);
+            });
+        }
 
         // Remove anti-flash class after frame settles
         requestAnimationFrame(() => {

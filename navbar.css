@@ -45,15 +45,8 @@
     --bar3-fade-out-duration: 0.75s;
     --bar3-fade-in-duration: 0.75s;
 
-    /* Set by JS when toggling Bar 3 */
+    /* Set dynamically by JS when toggling Bar 3 */
     --bar3-h: 0px;
-}
-
-/* Mobile Default CSS Fallback so content is clear before JS runs */
-@media (max-width: 768px) {
-    :root {
-        --bar3-h: 60px;
-    }
 }
 
 /* Themes */
