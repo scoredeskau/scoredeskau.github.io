@@ -490,37 +490,37 @@
         const viewport = combinedNavbar.querySelector('.tab-scroll-viewport');
         if (!brandingGroup || !viewport) return;
 
-        const containerWidth = combinedNavbar.clientWidth;
-        const brandingWidth = brandingGroup.offsetWidth;
-        const tabList = viewport.querySelector('.tab-list');
-        const tabsWidth = tabList ? tabList.scrollWidth : viewport.scrollWidth;
+        const availableWidth = combinedNavbar.clientWidth;
+        const brandingWidth = brandingGroup.getBoundingClientRect().width;
+        const viewportScrollWidth = viewport.scrollWidth;
 
-        const neededWidth = brandingWidth + tabsWidth + 32;
+        const requiredWidth = brandingWidth + viewportScrollWidth + 32;
 
-        if (containerWidth < neededWidth) {
+        if (availableWidth < requiredWidth) {
             container.classList.add('is-collapsed-mode');
         } else {
             container.classList.remove('is-collapsed-mode');
         }
 
         syncToggleState();
-        updateHighlights(true);
-        centerActiveTab('auto');
-        updateSectionHeaderLayout();
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function init() {
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
 
-        const initialTarget = getActiveTargetFromHash();
-        switchTab(initialTarget);
+        const activeTarget = getActiveTargetFromHash();
+        switchTab(activeTarget);
 
         requestAnimationFrame(() => {
+            checkLayoutMode();
+            updateHighlights(true);
+            centerActiveTab('auto');
+            updateSectionHeaderLayout();
+
             requestAnimationFrame(() => {
                 document.documentElement.classList.remove('no-transitions');
-                checkLayoutMode();
             });
         });
 
@@ -529,13 +529,21 @@
             if (currentWidth !== lastWindowWidth) {
                 lastWindowWidth = currentWidth;
                 checkLayoutMode();
+                updateHighlights(true);
+                centerActiveTab('auto');
+                updateSectionHeaderLayout();
             }
         });
 
         window.addEventListener('hashchange', function () {
-            const currentHash = getActiveTargetFromHash();
-            switchTab(currentHash);
+            const hash = getActiveTargetFromHash();
+            switchTab(hash);
         });
-    });
+    }
 
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

@@ -397,29 +397,54 @@ h1, h2, h3, h4, h5, h6,
     padding: 0 16px;
     border-radius: 9999px;
     opacity: 0.72;
-    transition: color 0.3s var(--ease-cinematic), 
-                opacity 0.3s var(--ease-cinematic), 
-                transform var(--ease-spring) 0.4s;
+    background: transparent !important;
+    will-change: transform, opacity, color;
+    transition: transform 0.4s var(--ease-spring), 
+                color 0.3s var(--ease-cinematic), 
+                opacity 0.3s var(--ease-cinematic);
     user-select: none;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
 
+.tab-link,
+.tab-item {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+.tab-link:focus {
+    outline: none;
+}
+
+.tab-link:focus-visible {
+    outline: 2px solid var(--court-accent-color);
+    outline-offset: 2px;
+}
+
 .tab-link.is-active,
-.tab-link.is-active:hover,
-.tab-link.is-active:focus,
-.tab-link.is-active:active { 
+.tab-link.is-active:focus { 
     color: #FFFFFF !important; 
     opacity: 1 !important; 
     font-weight: 400;
+    background: transparent !important;
 }
 
 @media (hover: hover) {
-    .tab-link:not(.is-active):hover { 
+    .tab-link:hover { 
+        transform: translateY(-1px);
         color: rgba(255, 255, 255, 0.95); 
-        opacity: 0.9; 
+        opacity: 0.95; 
+        background: transparent !important;
     }
+}
+
+.tab-link:active,
+.tab-link.is-pressed {
+    transform: translateY(0) scale(0.92) !important;
+    transition: transform 0.05s ease !important;
 }
 
 .active-tab-highlight {
@@ -604,7 +629,6 @@ h1, h2, h3, h4, h5, h6,
 .action-button,
 .icon-action-button,
 .toggle-menu-button,
-.tab-link,
 .card,
 .portal-card,
 .nav-card,
@@ -644,8 +668,7 @@ h1, h2, h3, h4, h5, h6,
 @media (hover: hover) and (pointer: fine) {
     .action-button:hover,
     .icon-action-button:hover,
-    .toggle-menu-button:hover,
-    .tab-link:hover {
+    .toggle-menu-button:hover {
         transform: translateY(-1px) scale(1.01);
         background: rgba(255, 255, 255, 0.22);
         border-color: rgba(255, 255, 255, 0.35);
@@ -670,9 +693,7 @@ h1, h2, h3, h4, h5, h6,
 .icon-action-button:active,
 .icon-action-button.is-pressed,
 .toggle-menu-button:active,
-.toggle-menu-button.is-pressed,
-.tab-link:active,
-.tab-link.is-pressed {
+.toggle-menu-button.is-pressed {
     transform: scale(0.82) !important;
     background: rgba(255, 255, 255, 0.38) !important;
     border-color: rgba(255, 255, 255, 0.55) !important;
