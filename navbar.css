@@ -330,19 +330,23 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .primary-title { 
+    display: block;
     font-size: 14px; 
     line-height: 1.2; 
     font-weight: 500; 
     color: #FFFFFF; 
+    letter-spacing: normal;
+    text-align: left;
 }
 
 .secondary-title { 
-    display: inline-flex;
-    align-items: center;
+    display: block;
     font-size: 12px; 
     line-height: 1.2; 
     font-weight: 400; 
     color: rgba(255, 255, 255, 0.80); 
+    letter-spacing: normal;
+    text-align: left;
 }
 
 /* -------------------------------------------------------------
@@ -522,8 +526,11 @@ h1, h2, h3, h4, h5, h6,
 
 .navigation-container.is-collapsed-mode .primary-title,
 .navigation-container.is-collapsed-mode .secondary-title { 
-    text-overflow: ellipsis; 
+    width: 100%;
+    min-width: 0;
+    white-space: nowrap;
     overflow: hidden; 
+    text-overflow: ellipsis;
 }
 
 .combined-header-navbar {
