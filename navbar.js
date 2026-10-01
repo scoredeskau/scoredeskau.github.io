@@ -512,6 +512,43 @@
         window.scrollTo(0, 0);
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+        const cardTextElements = document.querySelectorAll('.portal-card h2, .portal-card span, .card h2, .card span');
+
+        cardTextElements.forEach(el => {
+            if (el.children.length === 0 && el.textContent.trim()) {
+                el.textContent = el.textContent.split(' ').map(word => {
+                    // Separate leading punctuation, core letters/numbers, and trailing punctuation
+                    const match = word.match(/^([^a-zA-Z0-9]*)([a-zA-Z0-9]+)([^a-zA-Z0-9]*)$/);
+                    if (!match) return word;
+
+                    const [, prefix, core, suffix] = match;
+
+                    // Leave short words (4 letters or fewer) alone
+                    if (core.length <= 4) return word;
+
+                    const chunks = [];
+                    let i = 0;
+
+                    // Odd length: start with 3 characters so remaining length is even
+                    if (core.length % 2 !== 0) {
+                        chunks.push(core.slice(0, 3));
+                        i = 3;
+                    }
+
+                    // Chunk remaining even letters in pairs of 2
+                    while (i < core.length) {
+                        chunks.push(core.slice(i, i + 2));
+                        i += 2;
+                    }
+
+                    // Reattach punctuation around the hyphenated core word
+                    return prefix + chunks.join('\u00AD') + suffix;
+                }).join(' ');
+            }
+        });
+    });
+
     function checkLayoutMode() {
         const container = document.getElementById('navContainer');
         if (!container) return;

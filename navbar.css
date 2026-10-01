@@ -661,6 +661,32 @@ h1, h2, h3, h4, h5, h6,
                 opacity 0.2s ease;
 }
 
+.portal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.portal-card,
+.card {
+    min-width: 0;           
+    word-break: normal;      
+    overflow-wrap: break-word;  
+    /* Desktop (> 627px): Ignore JS soft hyphens completely */
+    -webkit-hyphens: none;  
+    hyphens: none;
+}
+
+/* 627px or smaller: Render JS soft hyphens (\u00AD) when text wraps */
+@media (max-width: 627px) {
+    .portal-card,
+    .card {
+        -webkit-hyphens: manual;  
+        hyphens: manual;
+    }
+}
+
 /* Portal Tile Default Layout */
 .card,
 .portal-card,
