@@ -101,259 +101,248 @@
     <!-- Tournament Renderer Script -->
     <script>
         const tournamentData = [
-            // =========================================================================
-            // 2027 UPCOMING EVENTS (Latest Start Dates First)
-            // =========================================================================
-            { title: "Tamworth Country Weekend Masters", location: "Tamworth, NSW", date: "Dec 18 - Dec 19, 2027", status: "upcoming" },
-            { title: "Devonport Tennis Challenge", location: "Devonport, TAS", date: "Dec 10 - Dec 14, 2027", status: "upcoming" },
-            { title: "Esperance Coastal Sprint", location: "Esperance, WA", date: "Dec 4 - Dec 5, 2027", status: "upcoming" },
-            { title: "Tasmanian Summer Masters", location: "Hobart, TAS", date: "Dec 1 - Dec 14, 2027", status: "upcoming" },
-            { title: "Margaret River Clay Sprint", location: "Margaret River, WA", date: "Nov 20 - Nov 21, 2027", status: "upcoming" },
-            { title: "Wollongong City Showcase", location: "Wollongong, NSW", date: "Nov 12 - Nov 16, 2027", status: "upcoming" },
-            { title: "Bunbury Clay Court Sprint", location: "Bunbury, WA", date: "Nov 6 - Nov 7, 2027", status: "upcoming" },
-            { title: "Brisbane Amateur Masters", location: "Brisbane, QLD", date: "Nov 3 - Nov 16, 2027", status: "upcoming" },
-            { title: "Cairns Tennis Weekend Classic", location: "Cairns, QLD", date: "Oct 23 - Oct 24, 2027", status: "upcoming" },
-            { title: "Newcastle City Open", location: "Newcastle, NSW", date: "Oct 15 - Oct 19, 2027", status: "upcoming" },
-            { title: "Townsville Tropical Sprint", location: "Townsville, QLD", date: "Oct 9 - Oct 10, 2027", status: "upcoming" },
-            { title: "Perth Hardcourt Showcase", location: "Perth, WA", date: "Oct 1 - Oct 14, 2027", status: "upcoming" },
-            { title: "Sunshine Coast Clay Sprint", location: "Caloundra, QLD", date: "Sep 25 - Sep 26, 2027", status: "upcoming" },
-            { title: "Melbourne Winter Indoor Classic", location: "Albert Park, VIC", date: "Sep 16 - Sep 20, 2027", status: "upcoming" },
-            { title: "Devonport Clay Court Sprint", location: "Devonport, TAS", date: "Sep 11 - Sep 12, 2027", status: "upcoming" },
-            { title: "Australian Grass Court Championships", location: "Kooyong, VIC", date: "Sep 2 - Sep 15, 2027", status: "upcoming" },
-            { title: "Noosa Heads Weekend Invitational", location: "Noosa, QLD", date: "Aug 28 - Aug 29, 2027", status: "upcoming" },
-            { title: "Toorak Lawn Tennis Classic", location: "Toorak, VIC", date: "Aug 17 - Aug 22, 2027", status: "upcoming" },
-            { title: "Kalgoorlie Goldfields Sprint", location: "Kalgoorlie, WA", date: "Aug 7 - Aug 8, 2027", status: "upcoming" },
-            { title: "Sydney Harbour Masters Fortnight", location: "Sydney, NSW", date: "Aug 1 - Aug 14, 2027", status: "upcoming" },
-            { title: "Karratha Hardcourt Sprint", location: "Karratha, WA", date: "Jul 24 - Jul 25, 2027", status: "upcoming" },
-            { title: "Geraldton Sun Open", location: "Geraldton, WA", date: "Jul 15 - Jul 19, 2027", status: "upcoming" },
-            { title: "Geelong Regional Shield", location: "Geelong, VIC", date: "Jul 10 - Jul 11, 2027", status: "upcoming" },
-            { title: "Darwin Dry Season Classic", location: "Darwin, NT", date: "Jul 1 - Jul 14, 2027", status: "upcoming" },
-            { title: "Port Macquarie Coastal Sprint", location: "Port Macquarie, NSW", date: "Jun 26 - Jun 27, 2027", status: "upcoming" },
-            { title: "Whitsunday Tropical Cup", location: "Airlie Beach, QLD", date: "Jun 18 - Jun 22, 2027", status: "upcoming" },
-            { title: "Dubbo Inland Sprint", location: "Dubbo, NSW", date: "Jun 5 - Jun 6, 2027", status: "upcoming" },
-            { title: "Queensland State Championships", location: "Gold Coast, QLD", date: "Jun 2 - Jun 15, 2027", status: "upcoming" },
-            { title: "Swan Hill Riverland Weekend Cup", location: "Swan Hill, VIC", date: "May 29 - May 30, 2027", status: "upcoming" },
-            { title: "Mackay Tropical Challenge", location: "Mackay, QLD", date: "May 18 - May 22, 2027", status: "upcoming" },
-            { title: "Broome Coastal Trophy", location: "Broome, WA", date: "May 8 - May 9, 2027", status: "upcoming" },
-            { title: "RSYLTC Autumn Club Champs", location: "Toorak, VIC", date: "May 2 - May 15, 2027", status: "upcoming" },
-            { title: "Anzac Day Weekend Challenge", location: "Williamstown, VIC", date: "Apr 24 - Apr 25, 2027", status: "upcoming" },
-            { title: "Frankston Hardcourt Masters", location: "Frankston, VIC", date: "Apr 14 - Apr 18, 2027", status: "upcoming" },
-            { title: "Orange Wine Country Sprint", location: "Orange, NSW", date: "Apr 10 - Apr 11, 2027", status: "upcoming" },
-            { title: "Adelaide Autumn Classic Fortnight", location: "Adelaide, SA", date: "Apr 2 - Apr 15, 2027", status: "upcoming" },
-            { title: "Bundaberg Sugar City Open", location: "Bundaberg, QLD", date: "Mar 24 - Mar 29, 2027", status: "upcoming" },
-            { title: "Albany Coastal Weekend Cup", location: "Albany, WA", date: "Mar 20 - Mar 21, 2027", status: "upcoming" },
-            { title: "Gippsland Regional Championships", location: "Traralgon, VIC", date: "Mar 12 - Mar 16, 2027", status: "upcoming" },
-            { title: "Tamworth Country Open", location: "Tamworth, NSW", date: "Mar 6 - Mar 7, 2027", status: "upcoming" },
-            { title: "Canberra Easter Clay Cup", location: "Canberra, ACT", date: "Mar 3 - Mar 16, 2027", status: "upcoming" },
-            { title: "Wollongong Weekend Cup", location: "Wollongong, NSW", date: "Feb 20 - Feb 21, 2027", status: "upcoming" },
-            { title: "Surf Coast Classic", location: "Torquay, VIC", date: "Feb 17 - Feb 21, 2027", status: "upcoming" },
-            { title: "RSYLTC Clay Court Championships", location: "Toorak, VIC", date: "Feb 10 - Feb 23, 2027", status: "upcoming" },
-            { title: "Ballarat Goldfields Sprint", location: "Ballarat, VIC", date: "Feb 6 - Feb 7, 2027", status: "upcoming" },
-            { title: "Burnie International Shield", location: "Burnie, TAS", date: "Feb 3 - Feb 7, 2027", status: "upcoming" },
-            { title: "Gold Coast International Masters", location: "Surfers Paradise, QLD", date: "Jan 26 - Feb 8, 2027", status: "upcoming" },
-            { title: "Summer Grass Weekend Slam", location: "Kooyong, VIC", date: "Jan 23 - Jan 24, 2027", status: "upcoming" },
-            { title: "Australian Open Warmup Series", location: "Melbourne, VIC", date: "Jan 12 - Jan 17, 2027", status: "upcoming" },
-            { title: "Hobart International Showcase", location: "Hobart, TAS", date: "Jan 9 - Jan 10, 2027", status: "upcoming" },
-            { title: "Adelaide International Trophy", location: "Adelaide, SA", date: "Jan 4 - Jan 17, 2027", status: "upcoming" },
-            { title: "Kooyong Classic Invitational", location: "Kooyong, VIC", date: "Jan 2 - Jan 5, 2027", status: "upcoming" },
+            { title: "Tamworth Country Weekend Masters", location: "Tamworth, NSW", date: "Dec 18 - Dec 19, 2027" },
+            { title: "Devonport Tennis Challenge", location: "Devonport, TAS", date: "Dec 10 - Dec 14, 2027" },
+            { title: "Esperance Coastal Sprint", location: "Esperance, WA", date: "Dec 4 - Dec 5, 2027" },
+            { title: "Tasmanian Summer Masters", location: "Hobart, TAS", date: "Dec 1 - Dec 14, 2027" },
+            { title: "Margaret River Clay Sprint", location: "Margaret River, WA", date: "Nov 20 - Nov 21, 2027" },
+            { title: "Wollongong City Showcase", location: "Wollongong, NSW", date: "Nov 12 - Nov 16, 2027" },
+            { title: "Bunbury Clay Court Sprint", location: "Bunbury, WA", date: "Nov 6 - Nov 7, 2027" },
+            { title: "Brisbane Amateur Masters", location: "Brisbane, QLD", date: "Nov 3 - Nov 16, 2027" },
+            { title: "Cairns Tennis Weekend Classic", location: "Cairns, QLD", date: "Oct 23 - Oct 24, 2027" },
+            { title: "Newcastle City Open", location: "Newcastle, NSW", date: "Oct 15 - Oct 19, 2027" },
+            { title: "Townsville Tropical Sprint", location: "Townsville, QLD", date: "Oct 9 - Oct 10, 2027" },
+            { title: "Perth Hardcourt Showcase", location: "Perth, WA", date: "Oct 1 - Oct 14, 2027" },
+            { title: "Sunshine Coast Clay Sprint", location: "Caloundra, QLD", date: "Sep 25 - Sep 26, 2027" },
+            { title: "Melbourne Winter Indoor Classic", location: "Albert Park, VIC", date: "Sep 16 - Sep 20, 2027" },
+            { title: "Devonport Clay Court Sprint", location: "Devonport, TAS", date: "Sep 11 - Sep 12, 2027" },
+            { title: "Australian Grass Court Championships", location: "Kooyong, VIC", date: "Sep 2 - Sep 15, 2027" },
+            { title: "Noosa Heads Weekend Invitational", location: "Noosa, QLD", date: "Aug 28 - Aug 29, 2027" },
+            { title: "Toorak Lawn Tennis Classic", location: "Toorak, VIC", date: "Aug 17 - Aug 22, 2027" },
+            { title: "Kalgoorlie Goldfields Sprint", location: "Kalgoorlie, WA", date: "Aug 7 - Aug 8, 2027" },
+            { title: "Sydney Harbour Masters Fortnight", location: "Sydney, NSW", date: "Aug 1 - Aug 14, 2027" },
+            { title: "Karratha Hardcourt Sprint", location: "Karratha, WA", date: "Jul 24 - Jul 25, 2027" },
+            { title: "Geraldton Sun Open", location: "Geraldton, WA", date: "Jul 15 - Jul 19, 2027" },
+            { title: "Geelong Regional Shield", location: "Geelong, VIC", date: "Jul 10 - Jul 11, 2027" },
+            { title: "Darwin Dry Season Classic", location: "Darwin, NT", date: "Jul 1 - Jul 14, 2027" },
+            { title: "Port Macquarie Coastal Sprint", location: "Port Macquarie, NSW", date: "Jun 26 - Jun 27, 2027" },
+            { title: "Whitsunday Tropical Cup", location: "Airlie Beach, QLD", date: "Jun 18 - Jun 22, 2027" },
+            { title: "Dubbo Inland Sprint", location: "Dubbo, NSW", date: "Jun 5 - Jun 6, 2027" },
+            { title: "Queensland State Championships", location: "Gold Coast, QLD", date: "Jun 2 - Jun 15, 2027" },
+            { title: "Swan Hill Riverland Weekend Cup", location: "Swan Hill, VIC", date: "May 29 - May 30, 2027" },
+            { title: "Mackay Tropical Challenge", location: "Mackay, QLD", date: "May 18 - May 22, 2027" },
+            { title: "Broome Coastal Trophy", location: "Broome, WA", date: "May 8 - May 9, 2027" },
+            { title: "RSYLTC Autumn Club Champs", location: "Toorak, VIC", date: "May 2 - May 15, 2027" },
+            { title: "Anzac Day Weekend Challenge", location: "Williamstown, VIC", date: "Apr 24 - Apr 25, 2027" },
+            { title: "Frankston Hardcourt Masters", location: "Frankston, VIC", date: "Apr 14 - Apr 18, 2027" },
+            { title: "Orange Wine Country Sprint", location: "Orange, NSW", date: "Apr 10 - Apr 11, 2027" },
+            { title: "Adelaide Autumn Classic Fortnight", location: "Adelaide, SA", date: "Apr 2 - Apr 15, 2027" },
+            { title: "Bundaberg Sugar City Open", location: "Bundaberg, QLD", date: "Mar 24 - Mar 29, 2027" },
+            { title: "Albany Coastal Weekend Cup", location: "Albany, WA", date: "Mar 20 - Mar 21, 2027" },
+            { title: "Gippsland Regional Championships", location: "Traralgon, VIC", date: "Mar 12 - Mar 16, 2027" },
+            { title: "Tamworth Country Open", location: "Tamworth, NSW", date: "Mar 6 - Mar 7, 2027" },
+            { title: "Canberra Easter Clay Cup", location: "Canberra, ACT", date: "Mar 3 - Mar 16, 2027" },
+            { title: "Wollongong Weekend Cup", location: "Wollongong, NSW", date: "Feb 20 - Feb 21, 2027" },
+            { title: "Surf Coast Classic", location: "Torquay, VIC", date: "Feb 17 - Feb 21, 2027" },
+            { title: "RSYLTC Clay Court Championships", location: "Toorak, VIC", date: "Feb 10 - Feb 23, 2027" },
+            { title: "Ballarat Goldfields Sprint", location: "Ballarat, VIC", date: "Feb 6 - Feb 7, 2027" },
+            { title: "Burnie International Shield", location: "Burnie, TAS", date: "Feb 3 - Feb 7, 2027" },
+            { title: "Gold Coast International Masters", location: "Surfers Paradise, QLD", date: "Jan 26 - Feb 8, 2027" },
+            { title: "Summer Grass Weekend Slam", location: "Kooyong, VIC", date: "Jan 23 - Jan 24, 2027" },
+            { title: "Australian Open Warmup Series", location: "Melbourne, VIC", date: "Jan 12 - Jan 17, 2027" },
+            { title: "Hobart International Showcase", location: "Hobart, TAS", date: "Jan 9 - Jan 10, 2027" },
+            { title: "Adelaide International Trophy", location: "Adelaide, SA", date: "Jan 4 - Jan 17, 2027" },
+            { title: "Kooyong Classic Invitational", location: "Kooyong, VIC", date: "Jan 2 - Jan 5, 2027" },
 
-            // =========================================================================
-            // LATE 2026 UPCOMING EVENTS
-            // =========================================================================
-            { title: "Gold Coast Festive Sprint", location: "Surfers Paradise, QLD", date: "Dec 26 - Dec 27, 2026", status: "upcoming" },
-            { title: "Perth New Year Showcase", location: "Perth, WA", date: "Dec 18 - Dec 23, 2026", status: "upcoming" },
-            { title: "Hobart Christmas Sprint", location: "Hobart, TAS", date: "Dec 12 - Dec 13, 2026", status: "upcoming" },
-            { title: "RSYLTC End of Year Masters", location: "Toorak, VIC", date: "Dec 10 - Dec 23, 2026", status: "upcoming" },
-            { title: "Mornington Peninsula Sprint", location: "Mornington, VIC", date: "Dec 5 - Dec 6, 2026", status: "upcoming" },
-            { title: "Sydney Harbour Grass Cup", location: "Manly, NSW", date: "Dec 2 - Dec 6, 2026", status: "upcoming" },
-            { title: "Royal Sydney Invitational Masters", location: "Sydney, NSW", date: "Nov 25 - Dec 8, 2026", status: "upcoming" },
-            { title: "Launceston Grass Classic", location: "Launceston, TAS", date: "Nov 21 - Nov 22, 2026", status: "upcoming" },
-            { title: "Adelaide Grass Court Open", location: "Memorial Drive, SA", date: "Nov 18 - Nov 24, 2026", status: "upcoming" },
-            { title: "Coffs Harbour Weekend Open", location: "Coffs Harbour, NSW", date: "Nov 14 - Nov 15, 2026", status: "upcoming" },
-            { title: "Sunraysia Lawn Open", location: "Mildura, VIC", date: "Nov 10 - Nov 15, 2026", status: "upcoming" },
-            { title: "Tweed Heads Coast Sprint", location: "Tweed Heads, NSW", date: "Nov 7 - Nov 8, 2026", status: "upcoming" },
-            { title: "Australian Clay Masters", location: "Canberra, ACT", date: "Nov 1 - Nov 14, 2026", status: "upcoming" },
-            { title: "Victorian Open Championships", location: "Melbourne, VIC", date: "Oct 27 - Nov 1, 2026", status: "upcoming" },
-            { title: "Rockhampton Weekend Shield", location: "Rockhampton, QLD", date: "Oct 24 - Oct 25, 2026", status: "upcoming" },
-            { title: "Toowoomba Hardcourt Open", location: "Toowoomba, QLD", date: "Oct 22 - Oct 26, 2026", status: "upcoming" },
-            { title: "Wagga Wagga Gold Cup Masters", location: "Wagga Wagga, NSW", date: "Oct 20 - Nov 2, 2026", status: "upcoming" },
-            { title: "Albury Border Sprint", location: "Albury, NSW", date: "Oct 17 - Oct 18, 2026", status: "upcoming" },
-            { title: "Warrnambool Grass Court Open", location: "Warrnambool, VIC", date: "Oct 14 - Oct 18, 2026", status: "upcoming" },
-            { title: "Geelong Lawn Weekend Challenge", location: "Geelong, VIC", date: "Oct 10 - Oct 11, 2026", status: "upcoming" },
-            { title: "Shepparton Spring Classic", location: "Shepparton, VIC", date: "Oct 8 - Oct 12, 2026", status: "upcoming" },
-            { title: "Bendigo International Clay Trophy", location: "Bendigo, VIC", date: "Oct 5 - Oct 18, 2026", status: "upcoming" },
-            { title: "Alice Springs Desert Sprint", location: "Alice Springs, NT", date: "Oct 3 - Oct 4, 2026", status: "upcoming" },
+            { title: "Gold Coast Festive Sprint", location: "Surfers Paradise, QLD", date: "Dec 26 - Dec 27, 2026" },
+            { title: "Perth New Year Showcase", location: "Perth, WA", date: "Dec 18 - Dec 23, 2026" },
+            { title: "Hobart Christmas Sprint", location: "Hobart, TAS", date: "Dec 12 - Dec 13, 2026" },
+            { title: "RSYLTC End of Year Masters", location: "Toorak, VIC", date: "Dec 10 - Dec 23, 2026" },
+            { title: "Mornington Peninsula Sprint", location: "Mornington, VIC", date: "Dec 5 - Dec 6, 2026" },
+            { title: "Sydney Harbour Grass Cup", location: "Manly, NSW", date: "Dec 2 - Dec 6, 2026" },
+            { title: "Royal Sydney Invitational Masters", location: "Sydney, NSW", date: "Nov 25 - Dec 8, 2026" },
+            { title: "Launceston Grass Classic", location: "Launceston, TAS", date: "Nov 21 - Nov 22, 2026" },
+            { title: "Adelaide Grass Court Open", location: "Memorial Drive, SA", date: "Nov 18 - Nov 24, 2026" },
+            { title: "Coffs Harbour Weekend Open", location: "Coffs Harbour, NSW", date: "Nov 14 - Nov 15, 2026" },
+            { title: "Sunraysia Lawn Open", location: "Mildura, VIC", date: "Nov 10 - Nov 15, 2026" },
+            { title: "Tweed Heads Coast Sprint", location: "Tweed Heads, NSW", date: "Nov 7 - Nov 8, 2026" },
+            { title: "Australian Clay Masters", location: "Canberra, ACT", date: "Nov 1 - Nov 14, 2026" },
+            { title: "Victorian Open Championships", location: "Melbourne, VIC", date: "Oct 27 - Nov 1, 2026" },
+            { title: "Rockhampton Weekend Shield", location: "Rockhampton, QLD", date: "Oct 24 - Oct 25, 2026" },
+            { title: "Toowoomba Hardcourt Open", location: "Toowoomba, QLD", date: "Oct 22 - Oct 26, 2026" },
+            { title: "Wagga Wagga Gold Cup Masters", location: "Wagga Wagga, NSW", date: "Oct 20 - Nov 2, 2026" },
+            { title: "Albury Border Sprint", location: "Albury, NSW", date: "Oct 17 - Oct 18, 2026" },
+            { title: "Warrnambool Grass Court Open", location: "Warrnambool, VIC", date: "Oct 14 - Oct 18, 2026" },
+            { title: "Geelong Lawn Weekend Challenge", location: "Geelong, VIC", date: "Oct 10 - Oct 11, 2026" },
+            { title: "Shepparton Spring Classic", location: "Shepparton, VIC", date: "Oct 8 - Oct 12, 2026" },
+            { title: "Bendigo International Clay Trophy", location: "Bendigo, VIC", date: "Oct 5 - Oct 18, 2026" },
+            { title: "Alice Springs Desert Sprint", location: "Alice Springs, NT", date: "Oct 3 - Oct 4, 2026" },
+            { title: "Boroondara Tennis Sprint", location: "Balwyn, VIC", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Parramatta City Express", location: "Parramatta, NSW", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Mildura Lawn Express", location: "Mildura, VIC", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Rockhampton Spring Sprint", location: "Rockhampton, QLD", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Fremantle Coastal Sprint", location: "Fremantle, WA", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Albury Border Sprint Cup", location: "Albury, NSW", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Burnie Mid-Week Challenge", location: "Burnie, TAS", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Queanbeyan ACT Border Sprint", location: "Queanbeyan, NSW", date: "Oct 1 - Oct 2, 2026" },
+            { title: "Redcliffe Peninsula Trophy", location: "Redcliffe, QLD", date: "Sep 30 - Oct 5, 2026" },
+            { title: "Fawkner Park City Trophy", location: "South Yarra, VIC", date: "Sep 30 - Oct 5, 2026" },
+            { title: "Geelong Spring Lawn Classic", location: "Geelong, VIC", date: "Sep 30 - Oct 5, 2026" },
+            { title: "Shepparton Goulburn Valley Open", location: "Shepparton, VIC", date: "Sep 30 - Oct 4, 2026" },
+            { title: "Robertson Park October Cup", location: "Perth, WA", date: "Sep 30 - Oct 4, 2026" },
+            { title: "Toowoomba Spring Challenge", location: "Toowoomba, QLD", date: "Sep 30 - Oct 4, 2026" },
+            { title: "Hobart Spring Invitational", location: "Hobart, TAS", date: "Sep 30 - Oct 4, 2026" },
+            { title: "Newcastle October Invitational", location: "Newcastle, NSW", date: "Sep 29 - Oct 4, 2026" },
+            { title: "Wollongong Illawarra Classic", location: "Wollongong, NSW", date: "Sep 29 - Oct 4, 2026" },
+            { title: "Queanbeyan ACT Border Open", location: "Queanbeyan, NSW", date: "Sep 29 - Oct 4, 2026" },
+            { title: "Manly Beachside Classic", location: "Manly, NSW", date: "Sep 29 - Oct 4, 2026" },
+            { title: "Strathfield Spring Open", location: "Strathfield, NSW", date: "Sep 29 - Oct 3, 2026" },
+            { title: "Wagga Wagga Spring Cup", location: "Wagga Wagga, NSW", date: "Sep 29 - Oct 3, 2026" },
+            { title: "Domain Hobart Spring Open", location: "Hobart, TAS", date: "Sep 29 - Oct 3, 2026" },
+            { title: "Darwin Top End Open", location: "Darwin, NT", date: "Sep 29 - Oct 3, 2026" },
+            { title: "Gold Coast Spring Trophy", location: "Surfers Paradise, QLD", date: "Sep 28 - Oct 4, 2026" },
+            { title: "Boroondara Tennis Showcase", location: "Balwyn, VIC", date: "Sep 28 - Oct 3, 2026" },
+            { title: "Tea Tree Gully SA Trophy", location: "Tea Tree Gully, SA", date: "Sep 28 - Oct 3, 2026" },
+            { title: "Mornington October Classic", location: "Mornington, VIC", date: "Sep 28 - Oct 3, 2026" },
+            { title: "Alexander Park Clay Trophy", location: "Menora, WA", date: "Sep 28 - Oct 3, 2026" },
+            { title: "Memorial Drive October Cup", location: "Adelaide, SA", date: "Sep 28 - Oct 3, 2026" },
+            { title: "Sydney Club Showcase", location: "White City, NSW", date: "Sep 28 - Oct 3, 2026" },
+            { title: "Bendigo October Clay Open", location: "Bendigo, VIC", date: "Sep 28 - Oct 2, 2026" },
+            { title: "Grace Park Hawthorn Invitational", location: "Hawthorn, VIC", date: "Sep 28 - Oct 2, 2026" },
+            { title: "Canberra Labor Day Open", location: "Lyneham, ACT", date: "Sep 28 - Oct 2, 2026" },
+            { title: "Traralgon ITF International", location: "Traralgon, VIC", date: "Sep 28 - Oct 2, 2026" },
+            { title: "Ipswich Regional Championships", location: "Ipswich, QLD", date: "Sep 27 - Oct 3, 2026" },
+            { title: "Sunshine Coast Spring Showcase", location: "Sunshine Coast, QLD", date: "Sep 27 - Oct 2, 2026" },
+            { title: "Melbourne Spring Park Classic", location: "Albert Park, VIC", date: "Sep 27 - Oct 2, 2026" },
+            { title: "ACT Spring Grand Championship", location: "Canberra, ACT", date: "Sep 25 - Oct 8, 2026" },
+            { title: "South Australian State Championships", location: "Memorial Drive, SA", date: "Sep 24 - Oct 7, 2026" },
+            { title: "Perth Spring International Fortnight", location: "Dalkeith, WA", date: "Sep 23 - Oct 6, 2026" },
+            { title: "Queensland Coast Masters Fortnight", location: "Surfers Paradise, QLD", date: "Sep 22 - Oct 5, 2026" },
+            { title: "National Veterans & Open", location: "Kooyong, VIC", date: "Sep 22 - Oct 5, 2026" },
+            { title: "Victorian Spring Hardcourt Fortnight", location: "Ballarat, VIC", date: "Sep 21 - Oct 4, 2026" },
+            { title: "RSYLTC Clay Championships", location: "Toorak, VIC", date: "Sep 21 - Oct 4, 2026" },
+            { title: "Brisbane Spring Hardcourt Championships", location: "Brisbane, QLD", date: "Sep 20 - Oct 3, 2026" },
+            { title: "Sunshine Coast Clay Sprint", location: "Caloundra, QLD", date: "Sep 26 - Sep 27, 2026" },
+            { title: "Melbourne Winter Indoor Fortnight", location: "Albert Park, VIC", date: "Sep 7 - Sep 20, 2026" },
+            { title: "Gladstone Harbour Open", location: "Gladstone, QLD", date: "Sep 1 - Sep 5, 2026" },
+            { title: "Devonport Clay Court Sprint", location: "Devonport, TAS", date: "Aug 29 - Aug 30, 2026" },
+            { title: "Toorak Lawn Tennis Classic", location: "Toorak, VIC", date: "Aug 18 - Aug 23, 2026" },
+            { title: "Kalgoorlie Goldfields Sprint", location: "Kalgoorlie, WA", date: "Aug 8 - Aug 9, 2026" },
+            { title: "Karratha Hardcourt Challenge Fortnight", location: "Karratha, WA", date: "Jul 18 - Jul 31, 2026" },
+            { title: "Geraldton Sun Open", location: "Geraldton, WA", date: "Jul 10 - Jul 14, 2026" },
+            { title: "Geelong Regional Weekend Shield", location: "Geelong, VIC", date: "Jul 4 - Jul 5, 2026" },
+            { title: "Port Macquarie Coastal Cup", location: "Port Macquarie, NSW", date: "Jun 20 - Jun 24, 2026" },
+            { title: "Yarra Valley Sprint", location: "Yarra Glen, VIC", date: "Jun 13 - Jun 14, 2026" },
+            { title: "Dubbo Inland Fortnight Masters", location: "Dubbo, NSW", date: "May 25 - Jun 7, 2026" },
+            { title: "Mackay Tropical Challenge", location: "Mackay, QLD", date: "May 18 - May 22, 2026" },
+            { title: "RSYLTC Autumn Club Champs", location: "Toorak, VIC", date: "May 5 - May 11, 2026" },
+            { title: "Canberra Easter Sprint", location: "Canberra, ACT", date: "Apr 18 - Apr 19, 2026" },
+            { title: "Gold Coast Easter Fortnight Open", location: "Gold Coast, QLD", date: "Mar 30 - Apr 12, 2026" },
+            { title: "Tamworth Country Open", location: "Tamworth, NSW", date: "Mar 22 - Mar 26, 2026" },
+            { title: "Bendigo Clay Court Sprint", location: "Bendigo, VIC", date: "Mar 14 - Mar 15, 2026" },
+            { title: "Ballarat Goldfields Trophy", location: "Ballarat, VIC", date: "Feb 25 - Mar 1, 2026" },
+            { title: "Mornington Peninsula Sprint", location: "Mornington, VIC", date: "Feb 14 - Feb 15, 2026" },
+            { title: "Burnie International Fortnight Shield", location: "Burnie, TAS", date: "Jan 26 - Feb 8, 2026" },
+            { title: "Australian Hardcourt Showcase", location: "Sydney, NSW", date: "Jan 18 - Jan 22, 2026" },
+            { title: "Summer Grass Weekend Slam", location: "Kooyong, VIC", date: "Jan 10 - Jan 11, 2026" },
 
-            // =========================================================================
-            // OCT 2026 LIVE EVENTS (Active October 1, 2026)
-            // =========================================================================
-            { title: "Boroondara Tennis Sprint", location: "Balwyn, VIC", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Parramatta City Express", location: "Parramatta, NSW", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Mildura Lawn Express", location: "Mildura, VIC", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Rockhampton Spring Sprint", location: "Rockhampton, QLD", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Fremantle Coastal Sprint", location: "Fremantle, WA", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Albury Border Sprint Cup", location: "Albury, NSW", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Burnie Mid-Week Challenge", location: "Burnie, TAS", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Queanbeyan ACT Border Sprint", location: "Queanbeyan, NSW", date: "Oct 1 - Oct 2, 2026", status: "live" },
-            { title: "Redcliffe Peninsula Trophy", location: "Redcliffe, QLD", date: "Sep 30 - Oct 5, 2026", status: "live" },
-            { title: "Fawkner Park City Trophy", location: "South Yarra, VIC", date: "Sep 30 - Oct 5, 2026", status: "live" },
-            { title: "Geelong Spring Lawn Classic", location: "Geelong, VIC", date: "Sep 30 - Oct 5, 2026", status: "live" },
-            { title: "Shepparton Goulburn Valley Open", location: "Shepparton, VIC", date: "Sep 30 - Oct 4, 2026", status: "live" },
-            { title: "Robertson Park October Cup", location: "Perth, WA", date: "Sep 30 - Oct 4, 2026", status: "live" },
-            { title: "Toowoomba Spring Challenge", location: "Toowoomba, QLD", date: "Sep 30 - Oct 4, 2026", status: "live" },
-            { title: "Hobart Spring Invitational", location: "Hobart, TAS", date: "Sep 30 - Oct 4, 2026", status: "live" },
-            { title: "Newcastle October Invitational", location: "Newcastle, NSW", date: "Sep 29 - Oct 4, 2026", status: "live" },
-            { title: "Wollongong Illawarra Classic", location: "Wollongong, NSW", date: "Sep 29 - Oct 4, 2026", status: "live" },
-            { title: "Queanbeyan ACT Border Open", location: "Queanbeyan, NSW", date: "Sep 29 - Oct 4, 2026", status: "live" },
-            { title: "Manly Beachside Classic", location: "Manly, NSW", date: "Sep 29 - Oct 4, 2026", status: "live" },
-            { title: "Strathfield Spring Open", location: "Strathfield, NSW", date: "Sep 29 - Oct 3, 2026", status: "live" },
-            { title: "Wagga Wagga Spring Cup", location: "Wagga Wagga, NSW", date: "Sep 29 - Oct 3, 2026", status: "live" },
-            { title: "Domain Hobart Spring Open", location: "Hobart, TAS", date: "Sep 29 - Oct 3, 2026", status: "live" },
-            { title: "Darwin Top End Open", location: "Darwin, NT", date: "Sep 29 - Oct 3, 2026", status: "live" },
-            { title: "Gold Coast Spring Trophy", location: "Surfers Paradise, QLD", date: "Sep 28 - Oct 4, 2026", status: "live" },
-            { title: "Boroondara Tennis Showcase", location: "Balwyn, VIC", date: "Sep 28 - Oct 3, 2026", status: "live" },
-            { title: "Tea Tree Gully SA Trophy", location: "Tea Tree Gully, SA", date: "Sep 28 - Oct 3, 2026", status: "live" },
-            { title: "Mornington October Classic", location: "Mornington, VIC", date: "Sep 28 - Oct 3, 2026", status: "live" },
-            { title: "Alexander Park Clay Trophy", location: "Menora, WA", date: "Sep 28 - Oct 3, 2026", status: "live" },
-            { title: "Memorial Drive October Cup", location: "Adelaide, SA", date: "Sep 28 - Oct 3, 2026", status: "live" },
-            { title: "Sydney Club Showcase", location: "White City, NSW", date: "Sep 28 - Oct 3, 2026", status: "live" },
-            { title: "Bendigo October Clay Open", location: "Bendigo, VIC", date: "Sep 28 - Oct 2, 2026", status: "live" },
-            { title: "Grace Park Hawthorn Invitational", location: "Hawthorn, VIC", date: "Sep 28 - Oct 2, 2026", status: "live" },
-            { title: "Canberra Labor Day Open", location: "Lyneham, ACT", date: "Sep 28 - Oct 2, 2026", status: "live" },
-            { title: "Traralgon ITF International", location: "Traralgon, VIC", date: "Sep 28 - Oct 2, 2026", status: "live" },
-            { title: "Ipswich Regional Championships", location: "Ipswich, QLD", date: "Sep 27 - Oct 3, 2026", status: "live" },
-            { title: "Sunshine Coast Spring Showcase", location: "Sunshine Coast, QLD", date: "Sep 27 - Oct 2, 2026", status: "live" },
-            { title: "Melbourne Spring Park Classic", location: "Albert Park, VIC", date: "Sep 27 - Oct 2, 2026", status: "live" },
-            { title: "ACT Spring Grand Championship", location: "Canberra, ACT", date: "Sep 25 - Oct 8, 2026", status: "live" },
-            { title: "South Australian State Championships", location: "Memorial Drive, SA", date: "Sep 24 - Oct 7, 2026", status: "live" },
-            { title: "Perth Spring International Fortnight", location: "Dalkeith, WA", date: "Sep 23 - Oct 6, 2026", status: "live" },
-            { title: "Queensland Coast Masters Fortnight", location: "Surfers Paradise, QLD", date: "Sep 22 - Oct 5, 2026", status: "live" },
-            { title: "National Veterans & Open", location: "Kooyong, VIC", date: "Sep 22 - Oct 5, 2026", status: "live" },
-            { title: "Victorian Spring Hardcourt Fortnight", location: "Ballarat, VIC", date: "Sep 21 - Oct 4, 2026", status: "live" },
-            { title: "RSYLTC Clay Championships", location: "Toorak, VIC", date: "Sep 21 - Oct 4, 2026", status: "live" },
-            { title: "Brisbane Spring Hardcourt Championships", location: "Brisbane, QLD", date: "Sep 20 - Oct 3, 2026", status: "live" },
-
-            // =========================================================================
-            // 2026 COMPLETED EVENTS (Sep 2026 down to Jan 2026)
-            // =========================================================================
-            { title: "Sunshine Coast Clay Sprint", location: "Caloundra, QLD", date: "Sep 26 - Sep 27, 2026", status: "completed" },
-            { title: "Melbourne Winter Indoor Fortnight", location: "Albert Park, VIC", date: "Sep 7 - Sep 20, 2026", status: "completed" },
-            { title: "Gladstone Harbour Open", location: "Gladstone, QLD", date: "Sep 1 - Sep 5, 2026", status: "completed" },
-            { title: "Devonport Clay Court Sprint", location: "Devonport, TAS", date: "Aug 29 - Aug 30, 2026", status: "completed" },
-            { title: "Toorak Lawn Tennis Classic", location: "Toorak, VIC", date: "Aug 18 - Aug 23, 2026", status: "completed" },
-            { title: "Kalgoorlie Goldfields Sprint", location: "Kalgoorlie, WA", date: "Aug 8 - Aug 9, 2026", status: "completed" },
-            { title: "Karratha Hardcourt Challenge Fortnight", location: "Karratha, WA", date: "Jul 18 - Jul 31, 2026", status: "completed" },
-            { title: "Geraldton Sun Open", location: "Geraldton, WA", date: "Jul 10 - Jul 14, 2026", status: "completed" },
-            { title: "Geelong Regional Weekend Shield", location: "Geelong, VIC", date: "Jul 4 - Jul 5, 2026", status: "completed" },
-            { title: "Port Macquarie Coastal Cup", location: "Port Macquarie, NSW", date: "Jun 20 - Jun 24, 2026", status: "completed" },
-            { title: "Yarra Valley Sprint", location: "Yarra Glen, VIC", date: "Jun 13 - Jun 14, 2026", status: "completed" },
-            { title: "Dubbo Inland Fortnight Masters", location: "Dubbo, NSW", date: "May 25 - Jun 7, 2026", status: "completed" },
-            { title: "Mackay Tropical Challenge", location: "Mackay, QLD", date: "May 18 - May 22, 2026", status: "completed" },
-            { title: "RSYLTC Autumn Club Champs", location: "Toorak, VIC", date: "May 5 - May 11, 2026", status: "completed" },
-            { title: "Canberra Easter Sprint", location: "Canberra, ACT", date: "Apr 18 - Apr 19, 2026", status: "completed" },
-            { title: "Gold Coast Easter Fortnight Open", location: "Gold Coast, QLD", date: "Mar 30 - Apr 12, 2026", status: "completed" },
-            { title: "Tamworth Country Open", location: "Tamworth, NSW", date: "Mar 22 - Mar 26, 2026", status: "completed" },
-            { title: "Bendigo Clay Court Sprint", location: "Bendigo, VIC", date: "Mar 14 - Mar 15, 2026", status: "completed" },
-            { title: "Ballarat Goldfields Trophy", location: "Ballarat, VIC", date: "Feb 25 - Mar 1, 2026", status: "completed" },
-            { title: "Mornington Peninsula Sprint", location: "Mornington, VIC", date: "Feb 14 - Feb 15, 2026", status: "completed" },
-            { title: "Burnie International Fortnight Shield", location: "Burnie, TAS", date: "Jan 26 - Feb 8, 2026", status: "completed" },
-            { title: "Australian Hardcourt Showcase", location: "Sydney, NSW", date: "Jan 18 - Jan 22, 2026", status: "completed" },
-            { title: "Summer Grass Weekend Slam", location: "Kooyong, VIC", date: "Jan 10 - Jan 11, 2026", status: "completed" },
-
-            // =========================================================================
-            // 2025 COMPLETED EVENTS (Dec 2025 down to Jan 2025)
-            // =========================================================================
-            { title: "RSYLTC Christmas Invitational", location: "Toorak, VIC", date: "Dec 18 - Dec 22, 2025", status: "completed" },
-            { title: "Coffs Harbour Grass Sprint", location: "Coffs Harbour, NSW", date: "Dec 13 - Dec 14, 2025", status: "completed" },
-            { title: "NSW State Open Fortnight", location: "Sydney, NSW", date: "Nov 24 - Dec 7, 2025", status: "completed" },
-            { title: "South Australian Clay Classic", location: "Adelaide, SA", date: "Nov 15 - Nov 20, 2025", status: "completed" },
-            { title: "ACT Spring Sprint", location: "Canberra, ACT", date: "Nov 8 - Nov 9, 2025", status: "completed" },
-            { title: "Orange Wine Country Open", location: "Orange, NSW", date: "Oct 22 - Oct 26, 2025", status: "completed" },
-            { title: "Melbourne Metro Weekend Open", location: "Melbourne, VIC", date: "Oct 11 - Oct 12, 2025", status: "completed" },
-            { title: "Victorian Spring Hardcourt Fortnight", location: "Ballarat, VIC", date: "Sep 15 - Sep 28, 2025", status: "completed" },
-            { title: "Queensland Coast Trophy", location: "Surfers Paradise, QLD", date: "Sep 1 - Sep 6, 2025", status: "completed" },
-            { title: "Sunbury Winter Sprint", location: "Sunbury, VIC", date: "Aug 16 - Aug 17, 2025", status: "completed" },
-            { title: "Alice Springs Winter Classic", location: "Alice Springs, NT", date: "Jul 25 - Jul 29, 2025", status: "completed" },
-            { title: "Mildura Lawn Sprint", location: "Mildura, VIC", date: "Jul 12 - Jul 13, 2025", status: "completed" },
-            { title: "Shepparton Clay Fortnight Trophy", location: "Shepparton, VIC", date: "Jun 9 - Jun 22, 2025", status: "completed" },
-            { title: "Swan Hill Riverland Cup", location: "Swan Hill, VIC", date: "May 28 - Jun 1, 2025", status: "completed" },
-            { title: "RSYLTC May Sprint", location: "Toorak, VIC", date: "May 17 - May 18, 2025", status: "completed" },
-            { title: "Anzac Day Challenge", location: "Williamstown, VIC", date: "Apr 25 - Apr 29, 2025", status: "completed" },
-            { title: "Frankston Hardcourt Sprint", location: "Frankston, VIC", date: "Apr 12 - Apr 13, 2025", status: "completed" },
-            { title: "Gippsland Fortnight Championships", location: "Traralgon, VIC", date: "Mar 10 - Mar 23, 2025", status: "completed" },
-            { title: "Mornington Autumn Open", location: "Mornington, VIC", date: "Mar 1 - Mar 5, 2025", status: "completed" },
-            { title: "Surf Coast Sprint", location: "Torquay, VIC", date: "Feb 15 - Feb 16, 2025", status: "completed" },
-            { title: "Victorian Summer Masters Fortnight", location: "Melbourne, VIC", date: "Jan 12 - Jan 25, 2025", status: "completed" },
-            { title: "Wollongong Summer Challenge", location: "Wollongong, NSW", date: "Jan 5 - Jan 9, 2025", status: "completed" },
-
-            // =========================================================================
-            // 2024 COMPLETED EVENTS (Dec 2024 down to Jan 2024)
-            // =========================================================================
-            { title: "Wagga Riverina Sprint", location: "Wagga Wagga, NSW", date: "Dec 28 - Dec 29, 2024", status: "completed" },
-            { title: "Perth New Year Fortnight Showcase", location: "Perth, WA", date: "Dec 15 - Dec 28, 2024", status: "completed" },
-            { title: "Hobart Christmas Open", location: "Hobart, TAS", date: "Dec 8 - Dec 12, 2024", status: "completed" },
-            { title: "Adelaide Summer Sprint", location: "Adelaide, SA", date: "Nov 30 - Dec 1, 2024", status: "completed" },
-            { title: "Brisbane Pre-Season Classic", location: "Brisbane, QLD", date: "Nov 18 - Nov 22, 2024", status: "completed" },
-            { title: "Broadbeach Winter Fortnight", location: "Broadbeach, QLD", date: "Aug 12 - Aug 25, 2024", status: "completed" },
-            { title: "Boroondara Autumn Classic", location: "Balwyn, VIC", date: "May 12 - May 16, 2024", status: "completed" },
-            { title: "Newcastle Autumn Sprint", location: "Newcastle, NSW", date: "Apr 20 - Apr 21, 2024", status: "completed" },
-            { title: "Bunbury South West Classic", location: "Bunbury, WA", date: "Apr 5 - Apr 9, 2024", status: "completed" },
-            { title: "Mount Gambier Autumn Lawn Cup", location: "Mount Gambier, SA", date: "Mar 22 - Mar 26, 2024", status: "completed" },
-            { title: "Launceston Autumn Sprint", location: "Launceston, TAS", date: "Mar 9 - Mar 10, 2024", status: "completed" },
-            { title: "Toowoomba Autumn Fortnight Open", location: "Toowoomba, QLD", date: "Feb 19 - Mar 3, 2024", status: "completed" },
-            { title: "Albury Easter Grass Masters", location: "Albury, NSW", date: "Feb 14 - Feb 18, 2024", status: "completed" },
-            { title: "Darwin Dry Season Sprint", location: "Darwin, NT", date: "Feb 3 - Feb 4, 2024", status: "completed" },
-            { title: "Port Pirie Regional Open", location: "Port Pirie, SA", date: "Jan 15 - Jan 19, 2024", status: "completed" },
-
-            // =========================================================================
-            // 2023 & 2022 COMPLETED EVENTS (Dec 2023 down to Dec 2022)
-            // =========================================================================
-            { title: "Rockhampton Tropical Hardcourt Fortnight", location: "Rockhampton, QLD", date: "Dec 4 - Dec 17, 2023", status: "completed" },
-            { title: "Sale Gippsland Indoor Classic", location: "Sale, VIC", date: "Nov 20 - Nov 24, 2023", status: "completed" },
-            { title: "Armidale Autumn Sprint", location: "Armidale, NSW", date: "Nov 4 - Nov 5, 2023", status: "completed" },
-            { title: "Esperance Coastal Autumn Cup", location: "Esperance, WA", date: "Oct 18 - Oct 22, 2023", status: "completed" },
-            { title: "Tweed Heads Winter Sprint", location: "Tweed Heads, NSW", date: "Sep 9 - Sep 10, 2023", status: "completed" },
-            { title: "Warrnambool Winter Lawn Fortnight", location: "Warrnambool, VIC", date: "Aug 14 - Aug 27, 2023", status: "completed" },
-            { title: "Mackay Sugar City Open", location: "Mackay, QLD", date: "Aug 2 - Aug 6, 2023", status: "completed" },
-            { title: "Gympie Winter Sprint", location: "Gympie, QLD", date: "Jul 15 - Jul 16, 2023", status: "completed" },
-            { title: "Horsham Wimmera Autumn Open", location: "Horsham, VIC", date: "Jun 28 - Jul 2, 2023", status: "completed" },
-            { title: "Dubbo Winter Sprint", location: "Dubbo, NSW", date: "Jun 10 - Jun 11, 2023", status: "completed" },
-            { title: "Victor Harbor Winter Grass Fortnight", location: "Victor Harbor, SA", date: "May 15 - May 28, 2023", status: "completed" },
-            { title: "Cairns Tropical Winter Open", location: "Cairns, QLD", date: "May 5 - May 9, 2023", status: "completed" },
-            { title: "Townsville Winter Sprint", location: "Townsville, QLD", date: "Apr 15 - Apr 16, 2023", status: "completed" },
-            { title: "Karratha Mid-Year Trophy", location: "Karratha, WA", date: "Apr 1 - Apr 5, 2023", status: "completed" },
-            { title: "Bairnsdale Winter Sprint", location: "Bairnsdale, VIC", date: "Mar 18 - Mar 19, 2023", status: "completed" },
-            { title: "Tamworth Winter Fortnight Open", location: "Tamworth, NSW", date: "Feb 20 - Mar 5, 2023", status: "completed" },
-            { title: "Geraldton Mid-Year Challenge", location: "Geraldton, WA", date: "Feb 10 - Feb 14, 2023", status: "completed" },
-            { title: "Goulburn Highlands Sprint", location: "Goulburn, NSW", date: "Jan 21 - Jan 22, 2023", status: "completed" },
-            { title: "Devonport Winter Fortnight Cup", location: "Devonport, TAS", date: "Jan 2 - Jan 15, 2023", status: "completed" },
-            { title: "Whyalla Spencer Gulf Open", location: "Whyalla, SA", date: "Dec 18 - Dec 22, 2022", status: "completed" }
+            { title: "RSYLTC Christmas Invitational", location: "Toorak, VIC", date: "Dec 18 - Dec 22, 2025" },
+            { title: "Coffs Harbour Grass Sprint", location: "Coffs Harbour, NSW", date: "Dec 13 - Dec 14, 2025" },
+            { title: "NSW State Open Fortnight", location: "Sydney, NSW", date: "Nov 24 - Dec 7, 2025" },
+            { title: "South Australian Clay Classic", location: "Adelaide, SA", date: "Nov 15 - Nov 20, 2025" },
+            { title: "ACT Spring Sprint", location: "Canberra, ACT", date: "Nov 8 - Nov 9, 2025" },
+            { title: "Orange Wine Country Open", location: "Orange, NSW", date: "Oct 22 - Oct 26, 2025" },
+            { title: "Melbourne Metro Weekend Open", location: "Melbourne, VIC", date: "Oct 11 - Oct 12, 2025" },
+            { title: "Victorian Spring Hardcourt Fortnight", location: "Ballarat, VIC", date: "Sep 15 - Sep 28, 2025" },
+            { title: "Queensland Coast Trophy", location: "Surfers Paradise, QLD", date: "Sep 1 - Sep 6, 2025" },
+            { title: "Sunbury Winter Sprint", location: "Sunbury, VIC", date: "Aug 16 - Aug 17, 2025" },
+            { title: "Alice Springs Winter Classic", location: "Alice Springs, NT", date: "Jul 25 - Jul 29, 2025" },
+            { title: "Mildura Lawn Sprint", location: "Mildura, VIC", date: "Jul 12 - Jul 13, 2025" },
+            { title: "Shepparton Clay Fortnight Trophy", location: "Shepparton, VIC", date: "Jun 9 - Jun 22, 2025" },
+            { title: "Swan Hill Riverland Cup", location: "Swan Hill, VIC", date: "May 28 - Jun 1, 2025" },
+            { title: "RSYLTC May Sprint", location: "Toorak, VIC", date: "May 17 - May 18, 2025" },
+            { title: "Anzac Day Challenge", location: "Williamstown, VIC", date: "Apr 25 - Apr 29, 2025" },
+            { title: "Frankston Hardcourt Sprint", location: "Frankston, VIC", date: "Apr 12 - Apr 13, 2025" },
+            { title: "Gippsland Fortnight Championships", location: "Traralgon, VIC", date: "Mar 10 - Mar 23, 2025" },
+            { title: "Mornington Autumn Open", location: "Mornington, VIC", date: "Mar 1 - Mar 5, 2025" },
+            { title: "Surf Coast Sprint", location: "Torquay, VIC", date: "Feb 15 - Feb 16, 2025" },
+            { title: "Victorian Summer Masters Fortnight", location: "Melbourne, VIC", date: "Jan 12 - Jan 25, 2025" },
+            { title: "Wollongong Summer Challenge", location: "Wollongong, NSW", date: "Jan 5 - Jan 9, 2025" }
         ];
+
+        /**
+         * Calculates tournament status dynamically based on today's local date.
+         * Expects date string format: "MMM DD - MMM DD, YYYY" (e.g. "Sep 28 - Oct 1, 2026")
+         */
+        function getTournamentStatus(dateStr) {
+            const match = dateStr.match(/^([A-Za-z]+)\s+(\d+)\s*-\s*([A-Za-z]+)\s+(\d+),\s*(\d{4})$/);
+            if (!match) return 'upcoming';
+
+            const [, startMonthStr, startDayStr, endMonthStr, endDayStr, yearStr] = match;
+
+            const year = parseInt(yearStr, 10);
+            const startDay = parseInt(startDayStr, 10);
+            const endDay = parseInt(endDayStr, 10);
+
+            const monthMap = {
+                jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+                jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+            };
+
+            const startMonth = monthMap[startMonthStr.slice(0, 3).toLowerCase()];
+            const endMonth = monthMap[endMonthStr.slice(0, 3).toLowerCase()];
+
+            if (startMonth === undefined || endMonth === undefined) return 'upcoming';
+
+            let startYear = year;
+            // Handle cross-year ranges (e.g. Dec 28 - Jan 4, 2027)
+            if (startMonth > endMonth) {
+                startYear = year - 1;
+            }
+
+            // Midnight start of start day and midnight end of end day
+            const startDate = new Date(startYear, startMonth, startDay, 0, 0, 0, 0);
+            const endDate = new Date(year, endMonth, endDay, 23, 59, 59, 999);
+
+            const now = new Date();
+
+            if (now < startDate) {
+                return 'upcoming';
+            } else if (now > endDate) {
+                return 'completed';
+            } else {
+                return 'live';
+            }
+        }
 
         function renderTournamentCards(items) {
             const container = document.getElementById('tournamentGrid');
             if (!container) return;
 
-            container.innerHTML = items.map(item => `
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">${item.title}</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <span>${item.location}</span>
+            container.innerHTML = items.map(item => {
+                const status = getTournamentStatus(item.date);
+
+                return `
+                    <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
+                        <div class="card-header">
+                            <h2 class="card-title">${item.title}</h2>
                         </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <span>${item.date}</span>
+                        <div class="card-body">
+                            <div class="card-info-row card-location">
+                                <span>${item.location}</span>
                             </div>
-                            <span class="status-pill status-${item.status}">
-                                ${item.status === 'live' ? '<span class="live-dot"></span>LIVE' : item.status.toUpperCase()}
-                            </span>
+                            <div class="card-footer-row">
+                                <div class="card-info-row card-date">
+                                    <span>${item.date}</span>
+                                </div>
+                                <span class="status-pill status-${status}">
+                                    ${status === 'live' ? '<span class="live-dot"></span>LIVE' : status.toUpperCase()}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            `).join('');
+                    </a>
+                `;
+            }).join('');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
