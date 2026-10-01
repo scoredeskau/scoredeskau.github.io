@@ -570,14 +570,16 @@
 
         const backBtnWidth = (backBtn && backBtn.offsetWidth > 0) ? backBtn.offsetWidth : (backBtn ? backBtn.getBoundingClientRect().width : 36);
 
-        // Helper to measure exact unclipped pixel text width via DOM Range (immune to CSS truncation/ellipsis)
+        // Measures exact unclipped inline text width regardless of display block or parent layout rules
         function getTextWidth(el) {
             if (!el || !el.textContent || !el.textContent.trim()) return 0;
             try {
-                const range = document.createRange();
-                range.selectNodeContents(el);
-                const rect = range.getBoundingClientRect();
-                return rect.width || 0;
+                const clone = el.cloneNode(true);
+                clone.style.cssText = 'position: absolute !important; visibility: hidden !important; display: inline !important; width: auto !important; max-width: none !important; white-space: nowrap !important; top: -9999px !important; left: -9999px !important;';
+                document.body.appendChild(clone);
+                const width = clone.getBoundingClientRect().width;
+                document.body.removeChild(clone);
+                return Math.ceil(width);
             } catch (e) {
                 return el.scrollWidth || 0;
             }
