@@ -40,7 +40,8 @@
 
     <main class="main-content">
 
-        <section id="tournaments" class="tab-view">
+        <!-- Tournaments Tab -->
+        <section id="tournaments" class="tab-view is-active">
             <div class="section-header">
                 <h1>Tournaments</h1>
                 <div class="section-actions">
@@ -76,636 +77,100 @@
             </div>
 
             <!-- Dynamic Adaptive Tournament Grid -->
-            <div class="portal-grid">
-                
-                <!-- Perth Tennis Challenger (Jan 22 - Jan 28, 2027) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Perth Tennis Challenger</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Perth, WA</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Jan 22 - Jan 28, 2027</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Tasmanian Summer Challenge (Jan 12 - Jan 17, 2027) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Tasmanian Summer Challenge</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Hobart, TAS</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Jan 12 - Jan 17, 2027</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Brisbane Amateur Open (Jan 3 - Jan 8, 2027) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Brisbane Amateur Open</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Brisbane, QLD</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Jan 3 - Jan 8, 2027</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- RSYLTC End of Year Masters (Dec 28 - Dec 30, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">RSYLTC End of Year Masters</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Melbourne, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Dec 28 - Dec 30, 2026</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Sydney Harbour Grass Cup (Dec 15 - Dec 20, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Sydney Harbour Grass Cup</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Manly, NSW</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Dec 15 - Dec 20, 2026</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Royal Sydney Invitational (Dec 1 - Dec 6, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Royal Sydney Invitational</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Sydney, NSW</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Dec 1 - Dec 6, 2026</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Adelaide Grass Court Open (Nov 20 - Nov 26, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Adelaide Grass Court Open</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Memorial Drive, SA</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Nov 20 - Nov 26, 2026</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Australian Clay Masters (Nov 10 - Nov 16, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Australian Clay Masters</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Canberra, ACT</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Nov 10 - Nov 16, 2026</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Victorian Open Championships (Oct 25 - Nov 1, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Victorian Open Championships</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Melbourne, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Oct 25 - Nov 1, 2026</span>
-                            </div>
-                            <span class="status-pill status-upcoming">UPCOMING</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- RSYLTC Clay Championships (Oct 1 - Oct 6, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">RSYLTC Clay Championships</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Melbourne, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Oct 1 - Oct 6, 2026</span>
-                            </div>
-                            <span class="status-pill status-live"><span class="live-dot"></span>LIVE</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- National Veterans & Open (Sep 29 - Oct 4, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">National Veterans &amp; Open</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Kooyong Lawn TC, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Sep 29 - Oct 4, 2026</span>
-                            </div>
-                            <span class="status-pill status-live"><span class="live-dot"></span>LIVE</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Melbourne Winter Indoor (Sep 14 - Sep 20, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Melbourne Winter Indoor</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Albert Park, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Sep 14 - Sep 20, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Toorak Lawn Tennis Classic (Aug 18 - Aug 23, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Toorak Lawn Tennis Classic</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Toorak, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Aug 18 - Aug 23, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Geelong Regional Shield (Jul 10 - Jul 14, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Geelong Regional Shield</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Geelong, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Jul 10 - Jul 14, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Yarra Valley Hardcourt Cup (Jun 19 - Jun 22, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Yarra Valley Hardcourt Cup</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Yarra Glen, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Jun 19 - Jun 22, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- RSYLTC Autumn Club Champs (May 5 - May 11, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">RSYLTC Autumn Club Champs</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Melbourne, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>May 5 - May 11, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Canberra Easter Clay Cup (Apr 18 - Apr 22, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Canberra Easter Clay Cup</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Canberra, ACT</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Apr 18 - Apr 22, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Gold Coast Easter Open (Apr 3 - Apr 7, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Gold Coast Easter Open</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Gold Coast, QLD</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Apr 3 - Apr 7, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Bendigo Clay Court Classic (Mar 10 - Mar 15, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Bendigo Clay Court Classic</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Bendigo, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>Mar 10 - Mar 15, 2026</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Mornington Peninsula Trophy (Feb 14 - Feb 18, 2026) -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Mornington Peninsula Trophy</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>Mornington Mornington, VIC</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span>May 28 - May 30, 2088</span>
-                            </div>
-                            <span class="status-pill status-completed">COMPLETED</span>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
+            <div class="portal-grid" id="tournamentGrid"></div>
         </section>
 
+        <!-- Favourites Tab -->
         <section id="favourites" class="tab-view">
             <div class="section-header">
                 <h1>Favourites</h1>
-                <div class="section-actions">
-                    <button class="action-button" aria-label="Add Favorite">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                        <span>Add Favorite</span>
-                    </button>
-                    <button class="action-button" aria-label="Clear Inactive">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                        <span>Clear Inactive</span>
-                    </button>
-                    <button class="action-button" aria-label="Alert Settings">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span>Alerts</span>
-                    </button>
-                </div>
-                <p class="section-subtitle">Quick access to your bookmarked players, favorite tournament draws, and customized match push notifications.</p>
+                <p class="section-subtitle">Manage your saved tournaments, players, and bookmarked events.</p>
             </div>
         </section>
 
+        <!-- Settings Tab -->
         <section id="settings" class="tab-view">
             <div class="section-header">
                 <h1>Settings</h1>
-                <div class="section-actions">
-                    <button class="action-button" aria-label="Edit Profile">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <span>Edit Profile</span>
-                    </button>
-                    <button class="action-button" aria-label="Change Password">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
-                        </svg>
-                        <span>Password</span>
-                    </button>
-                    <button class="action-button" aria-label="Notification Preferences">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="4" y1="21" x2="4" y2="14"></line>
-                            <line x1="4" y1="10" x2="4" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12" y2="3"></line>
-                            <line x1="20" y1="21" x2="20" y2="16"></line>
-                            <line x1="20" y1="12" x2="20" y2="3"></line>
-                            <line x1="1" y1="14" x2="7" y2="14"></line>
-                            <line x1="9" y1="8" x2="15" y2="8"></line>
-                            <line x1="17" y1="16" x2="23" y2="16"></line>
-                        </svg>
-                        <span>Preferences</span>
-                    </button>
-                </div>
-                <p class="section-subtitle">Update player demographics, linked membership accounts, ranking profile visibility, and contact preferences.</p>
+                <p class="section-subtitle">Adjust your user preferences, notification choices, and display themes.</p>
             </div>
         </section>
+
     </main>
 
+    <!-- Tournament Renderer Script -->
+    <script>
+        const tournamentData = [
+            { title: "Perth Tennis Challenger", location: "Perth, WA", date: "Jan 22 - Jan 28, 2027", status: "upcoming" },
+            { title: "Tasmanian Summer Challenge", location: "Hobart, TAS", date: "Jan 12 - Jan 17, 2027", status: "upcoming" },
+            { title: "Brisbane Amateur Open", location: "Brisbane, QLD", date: "Jan 3 - Jan 8, 2027", status: "upcoming" },
+            { title: "RSYLTC End of Year Masters", location: "Melbourne, VIC", date: "Dec 28 - Dec 30, 2026", status: "upcoming" },
+            { title: "Sydney Harbour Grass Cup", location: "Manly, NSW", date: "Dec 15 - Dec 20, 2026", status: "upcoming" },
+            { title: "Royal Sydney Invitational", location: "Sydney, NSW", date: "Dec 1 - Dec 6, 2026", status: "upcoming" },
+            { title: "Adelaide Grass Court Open", location: "Memorial Drive, SA", date: "Nov 20 - Nov 26, 2026", status: "upcoming" },
+            { title: "Australian Clay Masters", location: "Canberra, ACT", date: "Nov 10 - Nov 16, 2026", status: "upcoming" },
+            { title: "Victorian Open Championships", location: "Melbourne, VIC", date: "Oct 25 - Nov 1, 2026", status: "upcoming" },
+            { title: "RSYLTC Clay Championships", location: "Melbourne, VIC", date: "Oct 1 - Oct 6, 2026", status: "live" },
+            { title: "National Veterans & Open", location: "Kooyong Lawn TC, VIC", date: "Sep 29 - Oct 4, 2026", status: "live" },
+            { title: "Melbourne Winter Indoor", location: "Albert Park, VIC", date: "Sep 14 - Sep 20, 2026", status: "completed" },
+            { title: "Toorak Lawn Tennis Classic", location: "Toorak, VIC", date: "Aug 18 - Aug 23, 2026", status: "completed" },
+            { title: "Geelong Regional Shield", location: "Geelong, VIC", date: "Jul 10 - Jul 14, 2026", status: "completed" },
+            { title: "Yarra Valley Hardcourt Cup", location: "Yarra Glen, VIC", date: "Jun 19 - Jun 22, 2026", status: "completed" },
+            { title: "RSYLTC Autumn Club Champs", location: "Melbourne, VIC", date: "May 5 - May 11, 2026", status: "completed" },
+            { title: "Canberra Easter Clay Cup", location: "Canberra, ACT", date: "Apr 18 - Apr 22, 2026", status: "completed" },
+            { title: "Gold Coast Easter Open", location: "Gold Coast, QLD", date: "Apr 3 - Apr 7, 2026", status: "completed" },
+            { title: "Bendigo Clay Court Classic", location: "Bendigo, VIC", date: "Mar 10 - Mar 15, 2026", status: "completed" },
+            { title: "Mornington Peninsula Trophy", location: "Mornington, VIC", date: "Feb 14 - Feb 18, 2026", status: "completed" },
+            { title: "Australian Hardcourt Showcase", location: "Sydney, NSW", date: "Jan 18 - Jan 24, 2026", status: "completed" },
+            { title: "Summer Grass Slam", location: "Kooyong, VIC", date: "Jan 5 - Jan 10, 2026", status: "completed" },
+            { title: "RSYLTC Christmas Invitational", location: "Melbourne, VIC", date: "Dec 18 - Dec 22, 2025", status: "completed" },
+            { title: "NSW State Open", location: "Sydney, NSW", date: "Dec 2 - Dec 7, 2025", status: "completed" },
+            { title: "South Australian Clay Classic", location: "Adelaide, SA", date: "Nov 15 - Nov 20, 2025", status: "completed" },
+            { title: "ACT Spring Championships", location: "Canberra, ACT", date: "Nov 1 - Nov 6, 2025", status: "completed" },
+            { title: "Melbourne Metro Open", location: "Melbourne, VIC", date: "Oct 12 - Oct 17, 2025", status: "completed" },
+            { title: "Victorian Spring Hardcourt", location: "Ballarat, VIC", date: "Sep 20 - Sep 25, 2025", status: "completed" },
+            { title: "Queensland Coast Trophy", location: "Surfers Paradise, QLD", date: "Sep 1 - Sep 6, 2025", status: "completed" },
+            { title: "Sunbury Winter Invitational", location: "Sunbury, VIC", date: "Aug 10 - Aug 15, 2025", status: "completed" },
+            { title: "Mildura Lawn Classic", location: "Mildura, VIC", date: "Jul 18 - Jul 22, 2025", status: "completed" },
+            { title: "Shepparton Clay Trophy", location: "Shepparton, VIC", date: "Jun 12 - Jun 16, 2025", status: "completed" },
+            { title: "RSYLTC May Open", location: "Melbourne, VIC", date: "May 20 - May 25, 2025", status: "completed" },
+            { title: "Anzac Day Challenge", location: "Williamstown, VIC", date: "Apr 25 - Apr 29, 2025", status: "completed" },
+            { title: "Frankston Hardcourt Masters", location: "Frankston, VIC", date: "Apr 10 - Apr 14, 2025", status: "completed" },
+            { title: "Gippsland Regional Championships", location: "Traralgon, VIC", date: "Mar 18 - Mar 23, 2025", status: "completed" },
+            { title: "Mornington Autumn Open", location: "Mornington, VIC", date: "Mar 1 - Mar 5, 2025", status: "completed" },
+            { title: "Surf Coast Classic", location: "Torquay, VIC", date: "Feb 10 - Feb 15, 2025", status: "completed" },
+            { title: "Victorian Summer Masters", location: "Melbourne, VIC", date: "Jan 20 - Jan 25, 2025", status: "completed" }
+        ];
+
+        function renderTournamentCards(items) {
+            const container = document.getElementById('tournamentGrid');
+            if (!container) return;
+
+            container.innerHTML = items.map(item => `
+                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
+                    <div class="card-header">
+                        <h2 class="card-title">${item.title}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-info-row card-location">
+                            <span>${item.location}</span>
+                        </div>
+                        <div class="card-footer-row">
+                            <div class="card-info-row card-date">
+                                <span>${item.date}</span>
+                            </div>
+                            <span class="status-pill status-${item.status}">
+                                ${item.status === 'live' ? '<span class="live-dot"></span>LIVE' : item.status.toUpperCase()}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTournamentCards(tournamentData);
+        });
+    </script>
 </body>
 </html>
