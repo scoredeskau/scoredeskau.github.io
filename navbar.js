@@ -6,7 +6,6 @@
 
     let isNavigatingBack = false;
     let isCardNavigating = false;
-    let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
     const NAVIGATION_ITEMS = window.PAGE_NAVIGATION_ITEMS || [
         { label: 'Live Scores', target: '#scores' }
@@ -518,31 +517,26 @@
         cardTextElements.forEach(el => {
             if (el.children.length === 0 && el.textContent.trim()) {
                 el.textContent = el.textContent.split(' ').map(word => {
-                    // Separate leading punctuation, core letters/numbers, and trailing punctuation
                     const match = word.match(/^([^a-zA-Z0-9]*)([a-zA-Z0-9]+)([^a-zA-Z0-9]*)$/);
                     if (!match) return word;
 
                     const [, prefix, core, suffix] = match;
 
-                    // Leave short words (4 letters or fewer) alone
                     if (core.length <= 4) return word;
 
                     const chunks = [];
                     let i = 0;
 
-                    // Odd length: start with 3 characters so remaining length is even
                     if (core.length % 2 !== 0) {
                         chunks.push(core.slice(0, 3));
                         i = 3;
                     }
 
-                    // Chunk remaining even letters in pairs of 2
                     while (i < core.length) {
                         chunks.push(core.slice(i, i + 2));
                         i += 2;
                     }
 
-                    // Reattach punctuation around the hyphenated core word
                     return prefix + chunks.join('\u00AD') + suffix;
                 }).join(' ');
             }
@@ -550,20 +544,18 @@
     });
 
     function checkLayoutMode() {
-        const container = document.getElementById('navContainer');
+        const container = document.getElementById('navContainer') || document.querySelector('.navigation-container');
         if (!container) return;
 
         const combinedNavbar = document.getElementById('combinedNavbar');
         if (!combinedNavbar) return;
 
         const brandingGroup = combinedNavbar.querySelector('.branding-group');
-        const viewport = combinedNavbar.querySelector('.tab-scroll-viewport');
-        if (!brandingGroup || !viewport) return;
+        if (!brandingGroup) return;
 
         const availableWidth = combinedNavbar.clientWidth;
         if (availableWidth === 0) return;
 
-        // Calculate intrinsic branding width dynamically from titles & back button
         const backBtn = brandingGroup.querySelector('#backButton');
         const primaryTitle = brandingGroup.querySelector('.primary-title');
         const secondaryTitle = brandingGroup.querySelector('.secondary-title');
@@ -574,8 +566,23 @@
         function getTextWidth(el) {
             if (!el || !el.textContent || !el.textContent.trim()) return 0;
             try {
+                const style = window.getComputedStyle(el);
                 const clone = el.cloneNode(true);
-                clone.style.cssText = 'position: absolute !important; visibility: hidden !important; display: inline !important; width: auto !important; max-width: none !important; white-space: nowrap !important; top: -9999px !important; left: -9999px !important;';
+                clone.style.cssText = `
+                    position: absolute !important;
+                    visibility: hidden !important;
+                    display: inline-block !important;
+                    width: auto !important;
+                    max-width: none !important;
+                    white-space: nowrap !important;
+                    top: -9999px !important;
+                    left: -9999px !important;
+                    font-family: ${style.fontFamily} !important;
+                    font-size: ${style.fontSize} !important;
+                    font-weight: ${style.fontWeight} !important;
+                    font-style: ${style.fontStyle} !important;
+                    letter-spacing: ${style.letterSpacing} !important;
+                `;
                 document.body.appendChild(clone);
                 const width = clone.getBoundingClientRect().width;
                 document.body.removeChild(clone);
@@ -592,30 +599,52 @@
         // 8px branding padding-left + 8px titles padding-left + 8px titles padding-right = 24px
         const brandingWidth = backBtnWidth + titleWidth + 24;
 
-        // Calculate total intrinsic tab list width
-        let tabsScrollWidth = 0;
-        const tabItems = viewport.querySelectorAll('.tab-item');
-        if (tabItems.length > 0) {
-            let itemsSum = 0;
-            tabItems.forEach(item => {
-                const rect = item.getBoundingClientRect();
-                itemsSum += rect.width || 0;
-            });
-            const gap = 4;
-            const padding = 8; // 4px left + 4px right padding on .tab-list
-            tabsScrollWidth = itemsSum + ((tabItems.length - 1) * gap) + padding;
+        // Measures unconstrained total width of the full tab list
+        function getIntrinsicTabsWidth() {
+            const tabList = combinedNavbar.querySelector('.tab-list') || document.querySelector('#lowerTabWrapper .tab-list');
+            if (!tabList) return 0;
+
+            try {
+                const clone = tabList.cloneNode(true);
+                clone.style.cssText = `
+                    position: absolute !important;
+                    visibility: hidden !important;
+                    display: flex !important;
+                    width: auto !important;
+                    max-width: none !important;
+                    top: -9999px !important;
+                    left: -9999px !important;
+                    box-sizing: border-box !important;
+                `;
+                document.body.appendChild(clone);
+                const width = Math.ceil(clone.getBoundingClientRect().width);
+                document.body.removeChild(clone);
+                return width;
+            } catch (e) {
+                return tabList.scrollWidth || 0;
+            }
         }
+
+        const tabsScrollWidth = getIntrinsicTabsWidth();
 
         // Buffer gap between branding group and tabs (16px)
         const requiredWidth = brandingWidth + tabsScrollWidth + 16;
 
-        if (availableWidth < requiredWidth) {
-            container.classList.add('is-collapsed-mode');
-        } else {
-            container.classList.remove('is-collapsed-mode');
+        const shouldCollapse = availableWidth < requiredWidth;
+        const isCurrentlyCollapsed = container.classList.contains('is-collapsed-mode');
+
+        if (shouldCollapse !== isCurrentlyCollapsed) {
+            container.classList.toggle('is-collapsed-mode', shouldCollapse);
         }
 
         syncToggleState();
+    }
+
+    function handleResizeOrLayoutChange() {
+        checkLayoutMode();
+        updateHighlights(true);
+        centerActiveTab('auto');
+        updateSectionHeaderLayout();
     }
 
     function init() {
@@ -640,8 +669,7 @@
         // Re-check layout mode when web fonts finish loading so font metrics are 100% precise
         if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
             document.fonts.ready.then(function () {
-                checkLayoutMode();
-                updateHighlights(true);
+                handleResizeOrLayoutChange();
             });
         }
 
@@ -652,16 +680,26 @@
             });
         });
 
-        window.addEventListener('resize', function () {
-            const currentWidth = window.innerWidth;
-            if (currentWidth !== lastWindowWidth) {
-                lastWindowWidth = currentWidth;
-                checkLayoutMode();
-                updateHighlights(true);
-                centerActiveTab('auto');
-                updateSectionHeaderLayout();
-            }
+        // Event listeners for window resize & mobile orientation changes
+        window.addEventListener('resize', handleResizeOrLayoutChange);
+
+        window.addEventListener('orientationchange', function () {
+            handleResizeOrLayoutChange();
+            requestAnimationFrame(handleResizeOrLayoutChange);
+            setTimeout(handleResizeOrLayoutChange, 50);
+            setTimeout(handleResizeOrLayoutChange, 150);
+            setTimeout(handleResizeOrLayoutChange, 300);
         });
+
+        if (typeof ResizeObserver !== 'undefined') {
+            const combinedNavbar = document.getElementById('combinedNavbar');
+            if (combinedNavbar) {
+                const resizeObserver = new ResizeObserver(() => {
+                    handleResizeOrLayoutChange();
+                });
+                resizeObserver.observe(combinedNavbar);
+            }
+        }
 
         window.addEventListener('hashchange', function () {
             const hash = getActiveTargetFromHash();
