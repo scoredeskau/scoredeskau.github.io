@@ -380,7 +380,7 @@ h1, h2, h3, h4, h5, h6,
     list-style: none;
     height: 100%;
     padding: 0 var(--tab-bubble-offset-v);
-    padding-right: calc(var(--tab-bubble-offset-v) + 0.5px); /*moves the bubble 0.5px to the left*/
+    padding-right: calc(var(--tab-bubble-offset-v) + 0.5px);
     margin-left: 0;
     flex-shrink: 0;
 }
@@ -462,7 +462,6 @@ h1, h2, h3, h4, h5, h6,
     top: var(--tab-bubble-offset-v);
     bottom: var(--tab-bubble-offset-v);
     left: 0;
-    /* left: -1px; moves the bubble 1px to the left*/
     background: rgba(255, 255, 255, 0.20);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 9999px;
@@ -664,7 +663,7 @@ h1, h2, h3, h4, h5, h6,
 
 .portal-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 347px), 1fr)); /* 347px is the max width of a portal card */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 347px), 1fr));
     gap: 1.25rem;
     margin-top: 1.5rem;
 }
@@ -814,7 +813,10 @@ h1, h2, h3, h4, h5, h6,
 .card-location::before,
 .card-date::before,
 .card-utr::before,
-.card-winloss::before {
+.card-winloss::before,
+.card-racket::before,
+.card-ball::before,
+.card-match-info::before {
     content: '';
     display: inline-block;
     width: 16px;
@@ -850,6 +852,22 @@ h1, h2, h3, h4, h5, h6,
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>');
 }
 
+/* Match Card Specific Icon Masks */
+.card-racket::before {
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="15" cy="9" rx="5" ry="7" transform="rotate(-45 15 9)"/><path d="m10 14-6 6"/><path d="m12.5 7.5 4 4"/><path d="m10.5 9.5 4 4"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="15" cy="9" rx="5" ry="7" transform="rotate(-45 15 9)"/><path d="m10 14-6 6"/><path d="m12.5 7.5 4 4"/><path d="m10.5 9.5 4 4"/></svg>');
+}
+
+.card-ball::before {
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12a10 10 0 0 0 10 10"/><path d="M12 2a10 10 0 0 0 10 10"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12a10 10 0 0 0 10 10"/><path d="M12 2a10 10 0 0 0 10 10"/></svg>');
+}
+
+.card-match-info::before {
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>');
+}
+
 .card-footer-row {
     display: flex;
     flex-wrap: wrap;
@@ -861,7 +879,8 @@ h1, h2, h3, h4, h5, h6,
     width: 100%;
 }
 
-.card-date {
+.card-date,
+.card-match-info {
     min-width: 0;
     max-width: 100%;
     flex: 1 1 auto;
@@ -940,11 +959,12 @@ h1, h2, h3, h4, h5, h6,
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Favourite / Tournament / Player = Yellow */
+/* Favourite / Tournament / Player / Match = Yellow */
 .status-pill.status-yellow,
 .status-pill.status-orange,
 .status-pill.status-tournament,
-.status-pill.status-player {
+.status-pill.status-player,
+.status-pill.status-match {
     background: rgba(250, 204, 21, 0.15);
     color: #FACC15;
     border: 1px solid rgba(250, 204, 21, 0.35);
