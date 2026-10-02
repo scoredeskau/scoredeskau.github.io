@@ -938,11 +938,12 @@ h1, h2, h3, h4, h5, h6,
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Favourite / Tournament / Player = Orange */
+/* Favourite / Tournament / Player = Yellow */
+.status-pill.status-yellow,
 .status-pill.status-orange,
 .status-pill.status-tournament,
 .status-pill.status-player {
-    background: rgba(249, 115, 22, 0.15);
-    color: #F97316;
-    border: 1px solid rgba(249, 115, 22, 0.35);
+    background: rgba(250, 204, 21, 0.15);
+    color: #FACC15;
+    border: 1px solid rgba(250, 204, 21, 0.35);
 }

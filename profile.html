@@ -119,43 +119,7 @@
             </div>
 
             <!-- Favourites Adaptive Cards Grid -->
-            <div class="portal-grid" id="favouritesGrid">
-                <!-- Tournament Favourite Card -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">Tamworth Country Weekend Masters</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-location">
-                            <span>Tamworth, NSW</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-date">
-                                <span>Dec 18 - Dec 19, 2027</span>
-                            </div>
-                            <span class="status-pill status-orange">TOURNAMENT</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Player Favourite Card -->
-                <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
-                    <div class="card-header">
-                        <h2 class="card-title">John Smith (AUS)</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-info-row card-utr">
-                            <span>UTR = 7.19</span>
-                        </div>
-                        <div class="card-footer-row">
-                            <div class="card-info-row card-winloss">
-                                <span>Won / Lost = 56 / 14</span>
-                            </div>
-                            <span class="status-pill status-orange">PLAYER</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            <div class="portal-grid" id="favouritesGrid"></div>
         </section>
 
         <!-- Settings Tab -->
@@ -193,7 +157,7 @@
 
     </main>
 
-    <!-- Tournament Renderer Script -->
+    <!-- Tournament & Favourites Renderer Script -->
     <script>
         const tournamentData = [
             { title: "Tamworth Country Weekend Masters", location: "Tamworth, NSW", date: "Dec 18 - Dec 19, 2027" },
@@ -365,6 +329,60 @@
             { title: "Wollongong Summer Challenge", location: "Wollongong, NSW", date: "Jan 5 - Jan 9, 2025" }
         ];
 
+        // 50 Favourites Cards Data System (25 Tournaments & 25 Players Interleaved)
+        const favouritesData = [
+            { type: "tournament", title: "Tamworth Country Weekend Masters", location: "Tamworth, NSW", date: "Dec 18 - Dec 19, 2027" },
+            { type: "player", title: "John Smith (Australia)", utr: "UTR = 7.19", winLoss: "Won / Lost = 56 / 14" },
+            { type: "tournament", title: "Sydney Harbour Masters Fortnight", location: "Sydney, NSW", date: "Aug 1 - Aug 14, 2027" },
+            { type: "player", title: "Carlos Alcaraz (Spain)", utr: "UTR = 13.85", winLoss: "Won / Lost = 182 / 41" },
+            { type: "tournament", title: "Australian Grass Court Championships", location: "Kooyong, VIC", date: "Sep 2 - Sep 15, 2027" },
+            { type: "player", title: "Novak Djokovic (Serbia)", utr: "UTR = 13.92", winLoss: "Won / Lost = 310 / 52" },
+            { type: "tournament", title: "Queensland State Championships", location: "Gold Coast, QLD", date: "Jun 2 - Jun 15, 2027" },
+            { type: "player", title: "Jannik Sinner (Italy)", utr: "UTR = 13.89", winLoss: "Won / Lost = 205 / 45" },
+            { type: "tournament", title: "Adelaide Autumn Classic Fortnight", location: "Adelaide, SA", date: "Apr 2 - Apr 15, 2027" },
+            { type: "player", title: "Alex de Minaur (Australia)", utr: "UTR = 13.45", winLoss: "Won / Lost = 164 / 72" },
+            { type: "tournament", title: "Perth Hardcourt Showcase", location: "Perth, WA", date: "Oct 1 - Oct 14, 2027" },
+            { type: "player", title: "Taylor Fritz (United States)", utr: "UTR = 13.38", winLoss: "Won / Lost = 148 / 68" },
+            { type: "tournament", title: "Hobart International Showcase", location: "Hobart, TAS", date: "Jan 9 - Jan 10, 2027" },
+            { type: "player", title: "Alexander Zverev (Germany)", utr: "UTR = 13.62", winLoss: "Won / Lost = 220 / 85" },
+            { type: "tournament", title: "Darwin Dry Season Classic", location: "Darwin, NT", date: "Jul 1 - Jul 14, 2027" },
+            { type: "player", title: "Nick Kyrgios (Australia)", utr: "UTR = 13.10", winLoss: "Won / Lost = 98 / 42" },
+            { type: "tournament", title: "Canberra Easter Clay Cup", location: "Canberra, ACT", date: "Mar 3 - Mar 16, 2027" },
+            { type: "player", title: "Daniil Medvedev (Kazakhstan)", utr: "UTR = 13.58", winLoss: "Won / Lost = 215 / 78" },
+            { type: "tournament", title: "Melbourne Winter Indoor Classic", location: "Albert Park, VIC", date: "Sep 16 - Sep 20, 2027" },
+            { type: "player", title: "Stefanos Tsitsipas (Greece)", utr: "UTR = 13.32", winLoss: "Won / Lost = 178 / 82" },
+            { type: "tournament", title: "Noosa Heads Weekend Invitational", location: "Noosa, QLD", date: "Aug 28 - Aug 29, 2027" },
+            { type: "player", title: "Casper Ruud (Norway)", utr: "UTR = 13.25", winLoss: "Won / Lost = 162 / 70" },
+            { type: "tournament", title: "Wollongong City Showcase", location: "Wollongong, NSW", date: "Nov 12 - Nov 16, 2027" },
+            { type: "player", title: "Holger Rune (Denmark)", utr: "UTR = 13.18", winLoss: "Won / Lost = 135 / 62" },
+            { type: "tournament", title: "Gold Coast International Masters", location: "Surfers Paradise, QLD", date: "Jan 26 - Feb 8, 2027" },
+            { type: "player", title: "Hubert Hurkacz (Poland)", utr: "UTR = 13.12", winLoss: "Won / Lost = 142 / 75" },
+            { type: "tournament", title: "Toorak Lawn Tennis Classic", location: "Toorak, VIC", date: "Aug 17 - Aug 22, 2027" },
+            { type: "player", title: "Felix Auger-Aliassime (Canada)", utr: "UTR = 13.05", winLoss: "Won / Lost = 138 / 79" },
+            { type: "tournament", title: "Margaret River Clay Sprint", location: "Margaret River, WA", date: "Nov 20 - Nov 21, 2027" },
+            { type: "player", title: "Frances Tiafoe (United States)", utr: "UTR = 12.98", winLoss: "Won / Lost = 125 / 71" },
+            { type: "tournament", title: "Devonport Tennis Challenge", location: "Devonport, TAS", date: "Dec 10 - Dec 14, 2027" },
+            { type: "player", title: "Grigor Dimitrov (Bulgaria)", utr: "UTR = 13.15", winLoss: "Won / Lost = 175 / 95" },
+            { type: "tournament", title: "Sunshine Coast Clay Sprint", location: "Caloundra, QLD", date: "Sep 25 - Sep 26, 2027" },
+            { type: "player", title: "Tommy Paul (United States)", utr: "UTR = 13.02", winLoss: "Won / Lost = 118 / 64" },
+            { type: "tournament", title: "Newcastle City Open", location: "Newcastle, NSW", date: "Oct 15 - Oct 19, 2027" },
+            { type: "player", title: "Sebastian Korda (United States)", utr: "UTR = 12.88", winLoss: "Won / Lost = 95 / 51" },
+            { type: "tournament", title: "Ballarat Goldfields Sprint", location: "Ballarat, VIC", date: "Feb 6 - Feb 7, 2027" },
+            { type: "player", title: "Ben Shelton (United States)", utr: "UTR = 12.95", winLoss: "Won / Lost = 88 / 44" },
+            { type: "tournament", title: "Whitsunday Tropical Cup", location: "Airlie Beach, QLD", date: "Jun 18 - Jun 22, 2027" },
+            { type: "player", title: "Lorenzo Musetti (Italy)", utr: "UTR = 12.82", winLoss: "Won / Lost = 102 / 63" },
+            { type: "tournament", title: "Cairns Tennis Weekend Classic", location: "Cairns, QLD", date: "Oct 23 - Oct 24, 2027" },
+            { type: "player", title: "Jack Draper (Great Britain)", utr: "UTR = 12.90", winLoss: "Won / Lost = 78 / 36" },
+            { type: "tournament", title: "Burnie International Shield", location: "Burnie, TAS", date: "Feb 3 - Feb 7, 2027" },
+            { type: "player", title: "Jordan Thompson (Australia)", utr: "UTR = 12.65", winLoss: "Won / Lost = 112 / 89" },
+            { type: "tournament", title: "RSYLTC Clay Court Championships", location: "Toorak, VIC", date: "Feb 10 - Feb 23, 2027" },
+            { type: "player", title: "Alexei Popyrin (Australia)", utr: "UTR = 12.75", winLoss: "Won / Lost = 94 / 71" },
+            { type: "tournament", title: "Orange Wine Country Sprint", location: "Orange, NSW", date: "Apr 10 - Apr 11, 2027" },
+            { type: "player", title: "Thanasi Kokkinakis (Australia)", utr: "UTR = 12.55", winLoss: "Won / Lost = 82 / 58" },
+            { type: "tournament", title: "Kooyong Classic Invitational", location: "Kooyong, VIC", date: "Jan 2 - Jan 5, 2027" },
+            { type: "player", title: "Ugo Humbert (France)", utr: "UTR = 12.85", winLoss: "Won / Lost = 108 / 67" }
+        ];
+
         function getTournamentStatus(dateStr) {
             const match = dateStr.match(/^([A-Za-z]+)\s+(\d+)\s*-\s*([A-Za-z]+)\s+(\d+),\s*(\d{4})$/);
             if (!match) return 'upcoming';
@@ -431,8 +449,57 @@
             }).join('');
         }
 
+        function renderFavouritesCards(items) {
+            const container = document.getElementById('favouritesGrid');
+            if (!container) return;
+
+            container.innerHTML = items.map(item => {
+                if (item.type === 'tournament') {
+                    return `
+                        <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
+                            <div class="card-header">
+                                <h2 class="card-title">${item.title}</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-info-row card-location">
+                                    <span>${item.location}</span>
+                                </div>
+                                <div class="card-footer-row">
+                                    <div class="card-info-row card-date">
+                                        <span>${item.date}</span>
+                                    </div>
+                                    <span class="status-pill status-tournament">TOURNAMENT</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                } else if (item.type === 'player') {
+                    return `
+                        <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
+                            <div class="card-header">
+                                <h2 class="card-title">${item.title}</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-info-row card-utr">
+                                    <span>${item.utr}</span>
+                                </div>
+                                <div class="card-footer-row">
+                                    <div class="card-info-row card-winloss">
+                                        <span>${item.winLoss}</span>
+                                    </div>
+                                    <span class="status-pill status-player">PLAYER</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                }
+                return '';
+            }).join('');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             renderTournamentCards(tournamentData);
+            renderFavouritesCards(favouritesData);
         });
     </script>
 </body>
