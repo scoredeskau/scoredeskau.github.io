@@ -380,6 +380,7 @@ h1, h2, h3, h4, h5, h6,
     list-style: none;
     height: 100%;
     padding: 0 var(--tab-bubble-offset-v);
+    padding-right: calc(var(--tab-bubble-offset-v) + 0.5px); /*moves the bubble 0.5px to the left*/
     margin-left: 0;
     flex-shrink: 0;
 }
@@ -461,6 +462,7 @@ h1, h2, h3, h4, h5, h6,
     top: var(--tab-bubble-offset-v);
     bottom: var(--tab-bubble-offset-v);
     left: 0;
+    /* left: -1px; moves the bubble 1px to the left*/
     background: rgba(255, 255, 255, 0.20);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 9999px;
