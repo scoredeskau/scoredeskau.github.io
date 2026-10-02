@@ -333,7 +333,25 @@
         const favouritesData = [
             { type: "tournament", title: "Tamworth Country Weekend Masters", location: "Tamworth, NSW", date: "Dec 18 - Dec 19, 2027" },
             { type: "player", title: "John Smith (Australia)", utr: "UTR = 7.19", winLoss: "Won / Lost = 56 / 14" },
-            { type: "match", title: "John Doe vs. Peter Smith", player1: "John Doe (Australia) [7]", player2: "Peter Smith (United States of America)", matchInfo: "Court 3 · 2h32m" }
+            { 
+                type: "match", 
+                title: "John Doe (AUS) vs. Peter Smith (USA)", 
+                player1: "J. Doe [7]", 
+                player2: "P. Smith", 
+                scores1: [
+                    { val: "30", bold: false },
+                    { val: "6", bold: true },
+                    { val: "5", bold: false },
+                    { val: "4", bold: false }
+                ],
+                scores2: [
+                    { val: "40", bold: false },
+                    { val: "0", bold: false },
+                    { val: "7", bold: true },
+                    { val: "5", bold: false }
+                ],
+                matchInfo: "Court 3 · 2h32m" 
+            }
         ];
 
         function getTournamentStatus(dateStr) {
@@ -446,17 +464,36 @@
                         </a>
                     `;
                 } else if (item.type === 'match') {
+                    const scores1 = item.scores1 || [
+                        { val: "30", bold: false },
+                        { val: "6", bold: true },
+                        { val: "5", bold: false },
+                        { val: "4", bold: false }
+                    ];
+                    const scores2 = item.scores2 || [
+                        { val: "40", bold: false },
+                        { val: "0", bold: false },
+                        { val: "7", bold: true },
+                        { val: "5", bold: false }
+                    ];
+
                     return `
                         <a href="javascript:void(0);" class="card portal-card" onclick="event.preventDefault();">
                             <div class="card-header">
                                 <h2 class="card-title">${item.title}</h2>
                             </div>
                             <div class="card-body">
-                                <div class="card-info-row card-racket">
-                                    <span>${item.player1}</span>
+                                <div class="card-info-row card-empty-icon">
+                                    <span class="player-name">${item.player1}</span>
+                                    <div class="match-scores">
+                                        ${scores1.map(s => `<span class="score-col ${s.bold ? 'score-bold' : ''}">${s.val}</span>`).join('')}
+                                    </div>
                                 </div>
                                 <div class="card-info-row card-ball">
-                                    <span>${item.player2}</span>
+                                    <span class="player-name">${item.player2}</span>
+                                    <div class="match-scores">
+                                        ${scores2.map(s => `<span class="score-col ${s.bold ? 'score-bold' : ''}">${s.val}</span>`).join('')}
+                                    </div>
                                 </div>
                                 <div class="card-footer-row">
                                     <div class="card-info-row card-match-info">

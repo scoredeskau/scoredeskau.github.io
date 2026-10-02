@@ -816,7 +816,8 @@ h1, h2, h3, h4, h5, h6,
 .card-winloss::before,
 .card-racket::before,
 .card-ball::before,
-.card-match-info::before {
+.card-match-info::before,
+.card-empty-icon::before {
     content: '';
     display: inline-block;
     width: 16px;
@@ -829,6 +830,10 @@ h1, h2, h3, h4, h5, h6,
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
+}
+
+.card-empty-icon::before {
+    visibility: hidden;
 }
 
 .card-location::before {
@@ -866,6 +871,38 @@ h1, h2, h3, h4, h5, h6,
 .card-match-info::before {
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>');
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>');
+}
+
+/* Match Scoreboard Layout & Column Formatting */
+.card-info-row .player-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.match-scores {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.score-col {
+    display: inline-block;
+    min-width: 20px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.score-col.score-bold {
+    font-weight: 700;
+    opacity: 1;
 }
 
 .card-footer-row {
