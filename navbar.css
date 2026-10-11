@@ -380,7 +380,7 @@ h1, h2, h3, h4, h5, h6,
     list-style: none;
     height: 100%;
     padding: 0 var(--tab-bubble-offset-v);
-    padding-right: calc(var(--tab-bubble-offset-v) + 0.5px);
+    padding-right: calc(var(--tab-bubble-offset-v));
     margin-left: 0;
     flex-shrink: 0;
 }
