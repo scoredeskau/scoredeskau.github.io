@@ -471,6 +471,19 @@
         });
     }
 
+    // Handle Native Dropdown Selection Updates
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('native-dropdown-select')) {
+            const wrapper = e.target.closest('.dropdown-wrapper');
+            if (wrapper) {
+                const textSpan = wrapper.querySelector('.button-text');
+                if (textSpan && e.target.value) {
+                    textSpan.textContent = e.target.options[e.target.selectedIndex].text;
+                }
+            }
+        }
+    });
+
     function switchTab(targetHash, isInitial = false) {
         if (!targetHash) return;
 

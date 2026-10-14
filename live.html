@@ -72,47 +72,109 @@
             <div class="section-header">
                 <h1>Matches</h1>
                 <div class="section-actions">
-                    <button class="action-button" aria-label="Select Date">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        <span>Day 2 · Today</span>
-                    </button>
-                    <button class="action-button" aria-label="Filter Division">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                        </svg>
-                        <span>All Venues</span>
-                    </button>
-                    <button class="action-button" aria-label="Download Order of Play">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        <span>All Courts</span>
-                    </button>
-                    <button class="action-button" aria-label="Filter Division">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                        </svg>
-                        <span>All Matches</span>
-                    </button>
-                    <button class="action-button" aria-label="Filter Division">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                        </svg>
-                        <span>All Events</span>
-                    </button>
-                    <button class="action-button" aria-label="Filter Division">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                        </svg>
-                        <span>All Rounds</span>
-                    </button>
+
+                    <div class="dropdown-wrapper">
+                        <button class="action-button" type="button" aria-label="Filter Days">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            <span class="button-text">Day 2 · Today</span>
+                        </button>
+                        <select class="native-dropdown-select" aria-label="Filter Days">
+                            <option value="Day 1 · Tue Oct 13">Day 1 · Tue Oct 13</option>
+                            <option value="Day 2 · Today" selected>Day 2 · Today</option>
+                            <option value="Day 3 · Thu Oct 15">Day 3 · Thu Oct 15</option>
+                        </select>
+                    </div>
+                    
+                    <div class="dropdown-wrapper">
+                        <button class="action-button" type="button" aria-label="Filter Venues">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            <span class="button-text">All Venues</span>
+                        </button>
+                        <select class="native-dropdown-select" aria-label="Filter Venues">
+                            <option value="All Venues" selected>All Venues</option>
+                            <option value="Mornington Tennis Centre">Mornington Tennis Centre</option>
+                            <option value="Frankston Centenary Tennis Club">Frankston Centenary Tennis Club</option>
+                            <option value="North Ringwood Tennis Club">North Ringwood Tennis Club</option>
+                        </select>
+                    </div>
+
+                    <div class="dropdown-wrapper">
+                        <button class="action-button" type="button" aria-label="Filter Venues">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            <span class="button-text">All Courts</span>
+                        </button>
+                        <select class="native-dropdown-select" aria-label="Filter Venues">
+                            <option value="All Courts" selected>All Courts</option>
+                            <option value="Rod Laver Arena">Rod Laver Arena</option>
+                            <option value="Margaret Court Arena">Margaret Court Arena</option>
+                            <option value="John Cain Arena">John Cain Arena</option>
+                            <option value="1573 Arena">1573 Arena</option>
+                            <option value="ANZ Arena">ANZ Arena</option>
+                            <option value="Court 5">Court 5</option>
+                            <option value="Court 6">Court 6</option>
+                            <option value="Court 7">Court 7</option>
+                            <option value="Court 8">Court 8</option>
+                            <option value="Court 9">Court 9</option>
+                            <option value="Court 10">Court 10</option>
+                        </select>
+                    </div>
+
+                    <div class="dropdown-wrapper">
+                        <button class="action-button" type="button" aria-label="Filter Days">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            <span class="button-text">All Matches</span>
+                        </button>
+                        <select class="native-dropdown-select" aria-label="Filter Days">
+                            <option value="All Matches" selected>All Matches</option>
+                            <option value="Upcoming Matches">Upcoming Matches</option>
+                            <option value="Live Matches">Live Matches</option>
+                            <option value="Completed Matches">Completed Matches</option>
+                        </select>
+                    </div>
+                    
+                    <div class="dropdown-wrapper">
+                        <button class="action-button" type="button" aria-label="Filter Days">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            <span class="button-text">All Events</span>
+                        </button>
+                        <select class="native-dropdown-select" aria-label="Filter Days">
+                            <option value="All Events" selected>All Events</option>
+                            <option value="Mens Open Singles">Mens Open Singles</option>
+                            <option value="Mens Open Doubles">Mens Open Doubles</option>
+                            <option value="Womens Open Singles">Womens Open Singles</option>
+                            <option value="Womens Open Doubles">Womens Open Doubles</option>
+                        </select>
+                    </div>
+
+                    <div class="dropdown-wrapper">
+                        <button class="action-button" type="button" aria-label="Filter Days">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            <span class="button-text">All Rounds</span>
+                        </button>
+                        <select class="native-dropdown-select" aria-label="Filter Days">
+                            <option value="All Rounds" selected>All Rounds</option>
+                            <option value="Round of 128">Round of 128</option>
+                            <option value="Round of 64">Round of 64</option>
+                            <option value="Round of 32">Round of 32</option>
+                            <option value="Round of 16">Round of 16</option>
+                            <option value="Quarter-Final">Quarter-Final</option>
+                            <option value="Semi-Final">Semi-Final</option>
+                            <option value="Grand-Final">Grand-Final</option>
+                        </select>
+                    </div>
+
                 </div>
                 <p class="section-subtitle">View the complete order of play across all clay courts, including estimated start times and assigned players.</p>
             </div>
