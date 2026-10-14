@@ -472,7 +472,7 @@
     }
 
     /**
-     * Restore saved dropdown selections from localStorage on load
+     * Restore saved dropdown selections from localStorage on load & setup precision hover tracking
      */
     function initDropdowns() {
         const selects = document.querySelectorAll('.native-dropdown-select[data-storage-key]');
@@ -503,9 +503,45 @@
                 } catch (e) {}
             }
         });
+
+        // Precision mouse cursor position tracker for dropdown buttons
+        let lastMouseX = -9999;
+        let lastMouseY = -9999;
+
+        document.addEventListener('pointermove', function (e) {
+            if (e.pointerType && e.pointerType !== 'mouse') return;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+
+            const wrappers = document.querySelectorAll('.dropdown-wrapper');
+            wrappers.forEach(wrapper => {
+                const rect = wrapper.getBoundingClientRect();
+                const isInside = lastMouseX >= rect.left && lastMouseX <= rect.right && lastMouseY >= rect.top && lastMouseY <= rect.bottom;
+                if (isInside) {
+                    wrapper.classList.add('is-hovered');
+                } else {
+                    wrapper.classList.remove('is-hovered');
+                }
+            });
+        }, { passive: true });
+
+        document.addEventListener('pointerleave', function () {
+            document.querySelectorAll('.dropdown-wrapper').forEach(w => w.classList.remove('is-hovered'));
+        });
+
+        // Ensure smooth switching between open dropdowns on mobile
+        document.addEventListener('pointerdown', function (e) {
+            if (e.target && e.target.classList.contains('native-dropdown-select')) {
+                document.querySelectorAll('.native-dropdown-select').forEach(sel => {
+                    if (sel !== e.target) {
+                        sel.blur();
+                    }
+                });
+            }
+        }, { passive: true });
     }
 
-    // Handle Native Dropdown Selection Updates, Persistence, & Hover State Clearance
+    // Handle Native Dropdown Selection Updates, Persistence, & Precision State Re-evaluation
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -516,14 +552,22 @@
                 }
                 const btn = wrapper.querySelector('.action-button');
                 if (btn) {
-                    // Temporarily block pointer events to prevent hover state re-triggering during text update DOM reflow
-                    btn.style.pointerEvents = 'none';
                     btn.blur();
                     btn.classList.remove('is-pressed');
-                    setTimeout(() => {
-                        btn.style.pointerEvents = '';
-                    }, 150);
                 }
+
+                // Immediately re-evaluate cursor position against updated button bounds
+                setTimeout(() => {
+                    const rect = wrapper.getBoundingClientRect();
+                    // If we stored mouse coords or if we check current element under point
+                    const elem = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2); // fallback check
+                    if (wrapper.matches(':hover')) {
+                        wrapper.classList.add('is-hovered');
+                    } else {
+                        wrapper.classList.remove('is-hovered');
+                    }
+                }, 10);
+
                 wrapper.classList.add('no-hover-temp');
                 setTimeout(() => wrapper.classList.remove('no-hover-temp'), 60);
             }
@@ -567,6 +611,7 @@
                     if (textSpan) {
                         textSpan.textContent = select.options[defaultIndex].text;
                     }
+                    wrapper.classList.remove('is-hovered');
                 }
             });
             resetBtn.blur();

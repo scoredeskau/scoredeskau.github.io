@@ -1008,7 +1008,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   11. Native Select Dropdown Wrapper (Reliable Native Overlay)
+   11. Native Select Dropdown Wrapper (Precision Cursor Edition)
    ------------------------------------------------------------- */
 .dropdown-wrapper {
     position: relative;
@@ -1040,9 +1040,9 @@ h1, h2, h3, h4, h5, h6,
     color: #FFFFFF;
 }
 
-/* Match exact hover and press motion of standard action-buttons */
+/* Hover and press managed strictly via JS precision tracking & class states */
 @media (hover: hover) and (pointer: fine) {
-    .dropdown-wrapper:hover .action-button {
+    .dropdown-wrapper.is-hovered .action-button {
         transform: translateY(-1px) scale(1.01);
         background: rgba(255, 255, 255, 0.22);
         border-color: rgba(255, 255, 255, 0.35);
