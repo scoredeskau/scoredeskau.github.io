@@ -1008,50 +1008,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   11. Native Select Dropdown Action Button (Font Parity)
-   ------------------------------------------------------------- */
-.action-button.select-action-button {
-    position: relative;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-}
-
-.action-button.select-action-button .button-text {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    color: inherit;
-}
-
-.action-button.select-action-button .native-dropdown-select {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 10;
-    -webkit-appearance: none;
-    appearance: none;
-    border: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-}
-
-.action-button.select-action-button .native-dropdown-select option {
-    background-color: var(--canvas-background-color);
-    color: #FFFFFF;
-    font-family: inherit;
-    font-size: inherit;
-}
-
-/* -------------------------------------------------------------
-   11. Native Select Dropdown Wrapper (Identical Real Button)
+   11. Native Select Dropdown Wrapper (Zero-Size Non-Blocking Element)
    ------------------------------------------------------------- */
 .dropdown-wrapper {
     position: relative;
@@ -1062,23 +1019,15 @@ h1, h2, h3, h4, h5, h6,
 
 .dropdown-wrapper .native-dropdown-select {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
     opacity: 0;
-    cursor: pointer;
-    z-index: 10;
-    -webkit-appearance: none;
-    appearance: none;
+    pointer-events: none;
     border: none;
     background: transparent;
     outline: none;
-}
-
-.dropdown-wrapper .native-dropdown-select:focus,
-.dropdown-wrapper .native-dropdown-select:active {
-    outline: none;
-    background: transparent;
 }
 
 .dropdown-wrapper .native-dropdown-select option {

@@ -505,7 +505,29 @@
         });
     }
 
-    // Handle Native Dropdown Selection Updates, Persistence, & Focus Cleanup
+    /**
+     * Handle Dropdown Click by Programmatically Opening Native Picker Sheet via showPicker()
+     */
+    document.addEventListener('click', function (e) {
+        const wrapper = e.target.closest('.dropdown-wrapper');
+        if (wrapper) {
+            const select = wrapper.querySelector('.native-dropdown-select');
+            if (select) {
+                e.preventDefault();
+                if (typeof select.showPicker === 'function') {
+                    try {
+                        select.showPicker();
+                    } catch (err) {
+                        select.click();
+                    }
+                } else {
+                    select.click();
+                }
+            }
+        }
+    });
+
+    // Handle Native Dropdown Selection Updates, Persistence, & Hover State Clearance
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -530,6 +552,9 @@
                 } catch (err) {}
             }
             e.target.blur();
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
         }
     });
 
