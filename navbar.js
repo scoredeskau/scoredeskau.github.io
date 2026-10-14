@@ -471,7 +471,41 @@
         });
     }
 
-    // Handle Native Dropdown Selection Updates
+    /**
+     * Restore saved dropdown selections from localStorage on load
+     */
+    function initDropdowns() {
+        const selects = document.querySelectorAll('.native-dropdown-select[data-storage-key]');
+        selects.forEach(select => {
+            const storageKey = select.getAttribute('data-storage-key');
+            if (storageKey) {
+                try {
+                    const savedVal = localStorage.getItem(storageKey);
+                    if (savedVal) {
+                        let foundIndex = -1;
+                        for (let i = 0; i < select.options.length; i++) {
+                            if (select.options[i].value === savedVal) {
+                                foundIndex = i;
+                                break;
+                            }
+                        }
+                        if (foundIndex !== -1) {
+                            select.selectedIndex = foundIndex;
+                            const wrapper = select.closest('.dropdown-wrapper');
+                            if (wrapper) {
+                                const textSpan = wrapper.querySelector('.button-text');
+                                if (textSpan) {
+                                    textSpan.textContent = select.options[foundIndex].text;
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }
+        });
+    }
+
+    // Handle Native Dropdown Selection Updates, Persistence, & Sticky Highlight Clearance
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -480,7 +514,23 @@
                 if (textSpan && e.target.value) {
                     textSpan.textContent = e.target.options[e.target.selectedIndex].text;
                 }
+                const btn = wrapper.querySelector('.action-button');
+                if (btn) {
+                    btn.blur();
+                    btn.classList.remove('is-pressed');
+                    // Force desktop/mobile hover highlight reset by applying transient class
+                    wrapper.classList.add('no-hover-temp');
+                    setTimeout(() => wrapper.classList.remove('no-hover-temp'), 60);
+                }
             }
+
+            const storageKey = e.target.getAttribute('data-storage-key');
+            if (storageKey) {
+                try {
+                    localStorage.setItem(storageKey, e.target.value);
+                } catch (err) {}
+            }
+            e.target.blur();
         }
     });
 
@@ -668,6 +718,7 @@
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
+        initDropdowns(); // Restore dropdown selections from localStorage
 
         const activeTarget = getActiveTargetFromHash();
         switchTab(activeTarget, true);
