@@ -505,7 +505,28 @@
         });
     }
 
-    // Handle Native Dropdown Selection Updates, Persistence, & Sticky Highlight Clearance
+    /**
+     * Handle Dropdown Trigger on Release (Click) & Fix Focus/Re-click Bugs
+     */
+    document.addEventListener('click', function (e) {
+        const wrapper = e.target.closest('.dropdown-wrapper');
+        if (wrapper) {
+            const select = wrapper.querySelector('.native-dropdown-select');
+            if (select && e.target !== select) {
+                e.preventDefault();
+                // Temporarily enable pointer-events on release to trigger the native picker sheet cleanly
+                select.style.pointerEvents = 'auto';
+                select.focus();
+                try {
+                    select.click();
+                } catch (err) {}
+                setTimeout(() => {
+                    select.style.pointerEvents = 'none';
+                }, 400);
+            }
+        }
+    });
+
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -518,7 +539,6 @@
                 if (btn) {
                     btn.blur();
                     btn.classList.remove('is-pressed');
-                    // Force desktop/mobile hover highlight reset by applying transient class
                     wrapper.classList.add('no-hover-temp');
                     setTimeout(() => wrapper.classList.remove('no-hover-temp'), 60);
                 }
@@ -531,8 +551,16 @@
                 } catch (err) {}
             }
             e.target.blur();
+            e.target.style.pointerEvents = 'none';
         }
     });
+
+    document.addEventListener('blur', function (e) {
+        if (e.target && e.target.classList.contains('native-dropdown-select')) {
+            e.target.style.pointerEvents = 'none';
+            e.target.blur();
+        }
+    }, true);
 
     // Handle Reset Filters Button Click
     document.addEventListener('click', function (e) {
@@ -548,7 +576,6 @@
                     } catch (err) {}
                 }
                 
-                // Reset select to its original defaultSelected option or first option
                 let defaultIndex = 0;
                 for (let i = 0; i < select.options.length; i++) {
                     if (select.options[i].defaultSelected) {
@@ -755,7 +782,7 @@
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
-        initDropdowns(); // Restore dropdown selections from localStorage[cite: 8]
+        initDropdowns(); // Restore dropdown selections from localStorage
 
         const activeTarget = getActiveTargetFromHash();
         switchTab(activeTarget, true);
