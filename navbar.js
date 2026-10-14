@@ -472,7 +472,7 @@
     }
 
     /**
-     * Restore saved dropdown selections from localStorage on load & setup hover/focus handlers
+     * Restore saved dropdown selections from localStorage on load
      */
     function initDropdowns() {
         const selects = document.querySelectorAll('.native-dropdown-select[data-storage-key]');
@@ -503,32 +503,33 @@
                 } catch (e) {}
             }
         });
-
-        const wrappers = document.querySelectorAll('.dropdown-wrapper');
-        wrappers.forEach(wrapper => {
-            wrapper.addEventListener('pointerenter', function () {
-                if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-                    wrapper.classList.add('is-hovered');
-                }
-            });
-            wrapper.addEventListener('pointerleave', function () {
-                wrapper.classList.remove('is-hovered');
-            });
-
-            const select = wrapper.querySelector('.native-dropdown-select');
-            if (select) {
-                select.addEventListener('blur', function () {
-                    setTimeout(() => {
-                        if (!wrapper.matches(':hover')) {
-                            wrapper.classList.remove('is-hovered');
-                        }
-                    }, 50);
-                });
-            }
-        });
     }
 
-    // Handle Native Dropdown Selection Updates, Persistence, & Hover State Clearance
+    // Handle Dropdown Button Clicks via Programmatic Native Picker
+    document.addEventListener('click', function (e) {
+        const actionBtn = e.target.closest('.dropdown-wrapper .action-button');
+        if (actionBtn && actionBtn.id !== 'resetFiltersBtn') {
+            const wrapper = actionBtn.closest('.dropdown-wrapper');
+            if (wrapper) {
+                const select = wrapper.querySelector('.native-dropdown-select');
+                if (select) {
+                    e.preventDefault();
+                    try {
+                        if (typeof select.showPicker === 'function') {
+                            select.showPicker();
+                        } else {
+                            select.focus();
+                            select.click();
+                        }
+                    } catch (err) {
+                        select.focus();
+                    }
+                }
+            }
+        }
+    });
+
+    // Handle Native Dropdown Selection Updates & Persistence
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -542,11 +543,6 @@
                     btn.blur();
                     btn.classList.remove('is-pressed');
                 }
-                if (!wrapper.matches(':hover')) {
-                    wrapper.classList.remove('is-hovered');
-                }
-                wrapper.classList.add('no-hover-temp');
-                setTimeout(() => wrapper.classList.remove('no-hover-temp'), 60);
             }
 
             const storageKey = e.target.getAttribute('data-storage-key');
@@ -587,9 +583,6 @@
                     const textSpan = wrapper.querySelector('.button-text');
                     if (textSpan) {
                         textSpan.textContent = select.options[defaultIndex].text;
-                    }
-                    if (!wrapper.matches(':hover')) {
-                        wrapper.classList.remove('is-hovered');
                     }
                 }
             });
