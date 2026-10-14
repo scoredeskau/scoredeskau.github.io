@@ -1073,7 +1073,12 @@ h1, h2, h3, h4, h5, h6,
     border: none;
     background: transparent;
     outline: none;
-    pointer-events: none; /* Prevents low-opacity box on press & ensures open-on-release behavior */
+}
+
+.dropdown-wrapper .native-dropdown-select:focus,
+.dropdown-wrapper .native-dropdown-select:active {
+    outline: none;
+    background: transparent;
 }
 
 .dropdown-wrapper .native-dropdown-select option {

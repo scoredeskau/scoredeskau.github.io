@@ -505,28 +505,7 @@
         });
     }
 
-    /**
-     * Handle Dropdown Trigger on Release (Click) & Fix Focus/Re-click Bugs
-     */
-    document.addEventListener('click', function (e) {
-        const wrapper = e.target.closest('.dropdown-wrapper');
-        if (wrapper) {
-            const select = wrapper.querySelector('.native-dropdown-select');
-            if (select && e.target !== select) {
-                e.preventDefault();
-                // Temporarily enable pointer-events on release to trigger the native picker sheet cleanly
-                select.style.pointerEvents = 'auto';
-                select.focus();
-                try {
-                    select.click();
-                } catch (err) {}
-                setTimeout(() => {
-                    select.style.pointerEvents = 'none';
-                }, 400);
-            }
-        }
-    });
-
+    // Handle Native Dropdown Selection Updates, Persistence, & Focus Cleanup
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -551,16 +530,8 @@
                 } catch (err) {}
             }
             e.target.blur();
-            e.target.style.pointerEvents = 'none';
         }
     });
-
-    document.addEventListener('blur', function (e) {
-        if (e.target && e.target.classList.contains('native-dropdown-select')) {
-            e.target.style.pointerEvents = 'none';
-            e.target.blur();
-        }
-    }, true);
 
     // Handle Reset Filters Button Click
     document.addEventListener('click', function (e) {
