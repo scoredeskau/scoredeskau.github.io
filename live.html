@@ -22,15 +22,14 @@
             '<span style="font-weight: 463; font-style: italic;">S</span>',
             '<span style="font-weight: 400; font-style: italic;">K</span>',
             '<span style="font-weight: 1000;">&nbsp;·&nbsp;</span>',
-            '<span style="font-weight: 400;">Live</span>'
+            '<span style="font-weight: 400;">Tournament</span>'
         ].join('');
 
         window.PAGE_NAVIGATION_ITEMS = [
-            { label: 'Live', target: '#live' },
-            { label: 'Scheduled', target: '#scheduled' },
-            { label: 'Completed', target: '#completed' },
+            { label: 'Overview', target: '#overview' },
+            { label: 'Matches', target: '#matches' },
             { label: 'Streams', target: '#streams' },
-            { label: 'Draws', target: '#draws' }
+            { label: 'Search', target: '#search' }
         ];
     </script>
     <script src="anti-flash.js"></script>
@@ -41,9 +40,9 @@
     <div class="navigation-container" id="navContainer"></div>
 
     <main class="main-content">
-        <section id="live" class="tab-view">
+        <section id="overview" class="tab-view">
             <div class="section-header">
-                <h1>Live</h1>
+                <h1>Overview</h1>
                 <div class="section-actions">
                     <button class="action-button" aria-label="Filter Court">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -69,9 +68,9 @@
             </div>
         </section>
 
-        <section id="scheduled" class="tab-view">
+        <section id="matches" class="tab-view">
             <div class="section-header">
-                <h1>Scheduled</h1>
+                <h1>Matches</h1>
                 <div class="section-actions">
                     <button class="action-button" aria-label="Select Date">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -80,13 +79,13 @@
                             <line x1="8" y1="2" x2="8" y2="6"></line>
                             <line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
-                        <span>Select Date</span>
+                        <span>Wed · Oct 14</span>
                     </button>
                     <button class="action-button" aria-label="Filter Division">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                         </svg>
-                        <span>Filter Division</span>
+                        <span>Thu · Oct 15</span>
                     </button>
                     <button class="action-button" aria-label="Download Order of Play">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -94,16 +93,16 @@
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
-                        <span>Download OOP</span>
+                        <span>Fri · Oct 16</span>
                     </button>
                 </div>
                 <p class="section-subtitle">View the complete order of play across all clay courts, including estimated start times and assigned players.</p>
             </div>
         </section>
 
-        <section id="completed" class="tab-view">
+        <section id="streams" class="tab-view">
             <div class="section-header">
-                <h1>Completed</h1>
+                <h1>Streams</h1>
                 <div class="section-actions">
                     <button class="action-button" aria-label="Search Player">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -133,9 +132,9 @@
             </div>
         </section>
 
-        <section id="streams" class="tab-view">
+        <section id="search" class="tab-view">
             <div class="section-header">
-                <h1>Streams</h1>
+                <h1>Search</h1>
                 <div class="section-actions">
                     <button class="action-button" aria-label="Select Court">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,37 +167,6 @@
                     </button>
                 </div>
                 <p class="section-subtitle">Watch HD live camera broadcasts directly from Show Court 1, Center Court, and outer clay courts.</p>
-            </div>
-        </section>
-
-        <section id="draws" class="tab-view">
-            <div class="section-header">
-                <h1>Draws</h1>
-                <div class="section-actions">
-                    <button class="action-button" aria-label="Select Category">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 12 17 22 12"></polyline>
-                        </svg>
-                        <span>Category</span>
-                    </button>
-                    <button class="action-button" aria-label="Full Screen">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                        </svg>
-                        <span>Full Screen</span>
-                    </button>
-                    <button class="action-button" aria-label="Download Draw">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        <span>Download</span>
-                    </button>
-                </div>
-                <p class="section-subtitle">Interactive tournament brackets showing match progression, wildcards, seedings, and knockout pathways.</p>
             </div>
         </section>
     </main>
