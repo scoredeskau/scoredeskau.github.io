@@ -534,6 +534,43 @@
         }
     });
 
+    // Handle Reset Filters Button Click
+    document.addEventListener('click', function (e) {
+        const resetBtn = e.target.closest('#resetFiltersBtn');
+        if (resetBtn) {
+            e.preventDefault();
+            const selects = document.querySelectorAll('.native-dropdown-select[data-storage-key]');
+            selects.forEach(select => {
+                const storageKey = select.getAttribute('data-storage-key');
+                if (storageKey) {
+                    try {
+                        localStorage.removeItem(storageKey);
+                    } catch (err) {}
+                }
+                
+                // Reset select to its original defaultSelected option or first option
+                let defaultIndex = 0;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].defaultSelected) {
+                        defaultIndex = i;
+                        break;
+                    }
+                }
+                select.selectedIndex = defaultIndex;
+
+                const wrapper = select.closest('.dropdown-wrapper');
+                if (wrapper) {
+                    const textSpan = wrapper.querySelector('.button-text');
+                    if (textSpan) {
+                        textSpan.textContent = select.options[defaultIndex].text;
+                    }
+                }
+            });
+            resetBtn.blur();
+            resetBtn.classList.remove('is-pressed');
+        }
+    });
+
     function switchTab(targetHash, isInitial = false) {
         if (!targetHash) return;
 
@@ -718,7 +755,7 @@
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
-        initDropdowns(); // Restore dropdown selections from localStorage
+        initDropdowns(); // Restore dropdown selections from localStorage[cite: 8]
 
         const activeTarget = getActiveTargetFromHash();
         switchTab(activeTarget, true);
