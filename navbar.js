@@ -472,7 +472,7 @@
     }
 
     /**
-     * Restore saved dropdown selections from localStorage on load
+     * Restore saved dropdown selections from localStorage on load & setup hover/focus handlers
      */
     function initDropdowns() {
         const selects = document.querySelectorAll('.native-dropdown-select[data-storage-key]');
@@ -503,6 +503,29 @@
                 } catch (e) {}
             }
         });
+
+        const wrappers = document.querySelectorAll('.dropdown-wrapper');
+        wrappers.forEach(wrapper => {
+            wrapper.addEventListener('pointerenter', function () {
+                if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                    wrapper.classList.add('is-hovered');
+                }
+            });
+            wrapper.addEventListener('pointerleave', function () {
+                wrapper.classList.remove('is-hovered');
+            });
+
+            const select = wrapper.querySelector('.native-dropdown-select');
+            if (select) {
+                select.addEventListener('blur', function () {
+                    setTimeout(() => {
+                        if (!wrapper.matches(':hover')) {
+                            wrapper.classList.remove('is-hovered');
+                        }
+                    }, 50);
+                });
+            }
+        });
     }
 
     // Handle Native Dropdown Selection Updates, Persistence, & Hover State Clearance
@@ -518,9 +541,12 @@
                 if (btn) {
                     btn.blur();
                     btn.classList.remove('is-pressed');
-                    wrapper.classList.add('no-hover-temp');
-                    setTimeout(() => wrapper.classList.remove('no-hover-temp'), 60);
                 }
+                if (!wrapper.matches(':hover')) {
+                    wrapper.classList.remove('is-hovered');
+                }
+                wrapper.classList.add('no-hover-temp');
+                setTimeout(() => wrapper.classList.remove('no-hover-temp'), 60);
             }
 
             const storageKey = e.target.getAttribute('data-storage-key');
@@ -561,6 +587,9 @@
                     const textSpan = wrapper.querySelector('.button-text');
                     if (textSpan) {
                         textSpan.textContent = select.options[defaultIndex].text;
+                    }
+                    if (!wrapper.matches(':hover')) {
+                        wrapper.classList.remove('is-hovered');
                     }
                 }
             });
