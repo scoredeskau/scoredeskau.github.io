@@ -243,34 +243,17 @@
             const itemWidth = activeItem.offsetWidth;
             const viewportWidth = viewport.clientWidth;
 
-            // Compute true max scroll left compatible with WebKit/Safari flexbox padding rendering
-            const paddingVal = tabList ? (parseFloat(window.getComputedStyle(tabList).paddingRight) || 4) : 4;
-            const lastItem = allItems.length > 0 ? allItems[allItems.length - 1] : null;
-            const trueMaxScrollLeft = lastItem 
-                ? (lastItem.offsetLeft + lastItem.offsetWidth + paddingVal - viewportWidth) 
-                : Math.max(0, viewport.scrollWidth - viewportWidth);
-            const maxScrollLeft = Math.max(0, trueMaxScrollLeft);
-
-            let targetScrollLeft;
+            const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewportWidth);
             const rawTargetScrollLeft = leftOffset - (viewportWidth / 2) + (itemWidth / 2);
 
-            if (isFirstItem || rawTargetScrollLeft <= 0) {
-                targetScrollLeft = 0;
-            } else if (isLastItem || rawTargetScrollLeft >= maxScrollLeft) {
-                targetScrollLeft = maxScrollLeft;
-            } else {
-                targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft);
-            }
-
-            // Round to nearest integer pixel to eliminate Safari subpixel snapping jumps
-            targetScrollLeft = Math.round(targetScrollLeft);
+            const isAtBoundary = isFirstItem || isLastItem || rawTargetScrollLeft <= 0 || rawTargetScrollLeft >= maxScrollLeft;
 
             if (behavior === 'auto') {
                 if (viewport._scrollAnim) {
                     cancelAnimationFrame(viewport._scrollAnim);
                     viewport._scrollAnim = null;
                 }
-                viewport.scrollLeft = targetScrollLeft;
+                viewport.scrollLeft = Math.max(0, Math.min(rawTargetScrollLeft, maxScrollLeft));
                 return;
             }
 
@@ -279,6 +262,19 @@
                 viewport._scrollAnim = null;
             }
 
+            // Use native smooth scroll for boundary/edge tabs (rightmost, second/third rightmost)
+            // to completely prevent Safari subpixel clamping and post-animation snapping jumps.
+            if (isAtBoundary) {
+                const targetBoundaryScroll = rawTargetScrollLeft <= 0 ? 0 : maxScrollLeft;
+                viewport.scrollTo({
+                    left: targetBoundaryScroll,
+                    behavior: 'smooth'
+                });
+                return;
+            }
+
+            // Use custom easeBubble animation for tabs that can be perfectly centered
+            const targetScrollLeft = Math.round(Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft));
             const startScrollLeft = viewport.scrollLeft;
             const distance = targetScrollLeft - startScrollLeft;
             
