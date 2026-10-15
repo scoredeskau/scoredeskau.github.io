@@ -556,13 +556,6 @@
                         }
                         if (foundIndex !== -1) {
                             select.selectedIndex = foundIndex;
-                            const wrapper = select.closest('.dropdown-wrapper');
-                            if (wrapper) {
-                                const textSpan = wrapper.querySelector('.button-text');
-                                if (textSpan) {
-                                    textSpan.textContent = select.options[foundIndex].text;
-                                }
-                            }
                         }
                     }
                 } catch (e) {}
@@ -603,23 +596,12 @@
                 });
             }
         }, { passive: true });
-        
     }
 
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
             if (wrapper) {
-                const textSpan = wrapper.querySelector('.button-text');
-                if (textSpan && e.target.value) {
-                    textSpan.textContent = e.target.options[e.target.selectedIndex].text;
-                }
-                const btn = wrapper.querySelector('.action-button');
-                if (btn) {
-                    btn.blur();
-                    btn.classList.remove('is-pressed');
-                }
-
                 setTimeout(() => {
                     if (wrapper.matches(':hover')) {
                         wrapper.classList.add('is-hovered');
@@ -665,10 +647,6 @@
                 select.selectedIndex = defaultIndex;
                 const wrapper = select.closest('.dropdown-wrapper');
                 if (wrapper) {
-                    const textSpan = wrapper.querySelector('.button-text');
-                    if (textSpan) {
-                        textSpan.textContent = select.options[defaultIndex].text;
-                    }
                     wrapper.classList.remove('is-hovered');
                 }
                 adjustSelectWidth(select);
@@ -857,10 +835,6 @@
     }
 
     function init() {
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
