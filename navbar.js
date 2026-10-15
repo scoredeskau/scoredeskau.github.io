@@ -245,6 +245,7 @@
             const itemWidth = activeItem.offsetWidth;
             const viewportWidth = viewport.clientWidth;
 
+            // Compute exact max scroll left compatible with Safari WebKit flexbox padding rendering
             const style = window.getComputedStyle(tabList);
             const paddingRight = parseFloat(style.paddingRight) || 4;
             const lastItem = allItems.length > 0 ? allItems[allItems.length - 1] : activeItem;
@@ -547,19 +548,6 @@
                         }
                     }
                 } catch (e) {}
-            }
-        });
-
-        // Programmatically trigger native picker on click to completely eliminate black box focus artifact
-        document.addEventListener('click', function (e) {
-            const wrapper = e.target.closest('.dropdown-wrapper');
-            if (wrapper) {
-                const select = wrapper.querySelector('.native-dropdown-select');
-                if (select && typeof select.showPicker === 'function') {
-                    try {
-                        select.showPicker();
-                    } catch (err) {}
-                }
             }
         });
 
