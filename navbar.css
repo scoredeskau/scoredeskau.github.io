@@ -1030,10 +1030,12 @@ h1, h2, h3, h4, h5, h6,
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent !important;
     color-scheme: dark;
+    touch-action: manipulation;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>');
     background-repeat: no-repeat;
     background-position: left 12px center;
     background-size: 16px 16px;
+    will-change: transform, background-color, border-color;
     transition: transform 0.3s var(--ease-spring), 
                 background-color 0.25s ease, 
                 border-color 0.25s ease,
