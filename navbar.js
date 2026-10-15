@@ -245,7 +245,6 @@
             const itemWidth = activeItem.offsetWidth;
             const viewportWidth = viewport.clientWidth;
 
-            // Compute exact max scroll left compatible with Safari WebKit flexbox padding rendering
             const style = window.getComputedStyle(tabList);
             const paddingRight = parseFloat(style.paddingRight) || 4;
             const lastItem = allItems.length > 0 ? allItems[allItems.length - 1] : activeItem;
