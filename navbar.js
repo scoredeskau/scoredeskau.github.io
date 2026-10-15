@@ -242,16 +242,21 @@
             const leftOffset = activeItem.offsetLeft;
             const itemWidth = activeItem.offsetWidth;
             const viewportWidth = viewport.clientWidth;
-            const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewportWidth);
+
+            // Fetch exact browser-clamped max scroll left to eliminate subpixel jumps
+            const prevScrollLeft = viewport.scrollLeft;
+            viewport.scrollLeft = 999999;
+            const exactMaxScrollLeft = viewport.scrollLeft;
+            viewport.scrollLeft = prevScrollLeft;
 
             let targetScrollLeft;
             if (isFirstItem) {
                 targetScrollLeft = 0;
             } else if (isLastItem) {
-                targetScrollLeft = maxScrollLeft;
+                targetScrollLeft = exactMaxScrollLeft;
             } else {
                 const rawTargetScrollLeft = leftOffset - (viewportWidth / 2) + (itemWidth / 2);
-                targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft);
+                targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), exactMaxScrollLeft);
             }
 
             if (behavior === 'auto') {
