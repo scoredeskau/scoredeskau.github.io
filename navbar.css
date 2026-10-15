@@ -1019,10 +1019,9 @@ h1, h2, h3, h4, h5, h6,
 
 .dropdown-wrapper .native-dropdown-select {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 12px !important;
-    height: 6px !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
     opacity: 0;
     cursor: pointer;
     z-index: 10;
@@ -1039,6 +1038,13 @@ h1, h2, h3, h4, h5, h6,
 .dropdown-wrapper .native-dropdown-select option {
     background-color: var(--canvas-background-color);
     color: #FFFFFF;
+}
+
+.dropdown-wrapper .native-dropdown-select:focus,
+.dropdown-wrapper .native-dropdown-select:active {
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
