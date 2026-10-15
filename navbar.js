@@ -234,16 +234,25 @@
             if (!activeLink) return;
 
             const activeItem = activeLink.closest('.tab-item') || activeLink;
+            const tabList = viewport.querySelector('.tab-list');
+            const allItems = tabList ? tabList.querySelectorAll('.tab-item') : [];
+            const isFirstItem = allItems.length > 0 && allItems[0] === activeItem;
+            const isLastItem = allItems.length > 0 && allItems[allItems.length - 1] === activeItem;
 
-            const viewportRect = viewport.getBoundingClientRect();
-            const itemRect = activeItem.getBoundingClientRect();
+            const leftOffset = activeItem.offsetLeft;
+            const itemWidth = activeItem.offsetWidth;
+            const viewportWidth = viewport.clientWidth;
+            const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewportWidth);
 
-            const currentScrollLeft = viewport.scrollLeft;
-            const itemRelativeLeft = itemRect.left - viewportRect.left + currentScrollLeft;
-            
-            const rawTargetScrollLeft = itemRelativeLeft - (viewportRect.width / 2) + (itemRect.width / 2);
-            const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-            const targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft);
+            let targetScrollLeft;
+            if (isFirstItem) {
+                targetScrollLeft = 0;
+            } else if (isLastItem) {
+                targetScrollLeft = maxScrollLeft;
+            } else {
+                const rawTargetScrollLeft = leftOffset - (viewportWidth / 2) + (itemWidth / 2);
+                targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft);
+            }
 
             if (behavior === 'auto') {
                 if (viewport._scrollAnim) {
@@ -262,7 +271,10 @@
             const startScrollLeft = viewport.scrollLeft;
             const distance = targetScrollLeft - startScrollLeft;
             
-            if (Math.abs(distance) < 0.5) return;
+            if (Math.abs(distance) < 0.5) {
+                viewport.scrollLeft = targetScrollLeft;
+                return;
+            }
 
             const startTime = performance.now();
             const duration = 750;
@@ -277,6 +289,7 @@
                 if (progress < 1) {
                     viewport._scrollAnim = requestAnimationFrame(step);
                 } else {
+                    viewport.scrollLeft = targetScrollLeft;
                     viewport._scrollAnim = null;
                 }
             }
