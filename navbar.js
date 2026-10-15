@@ -534,8 +534,8 @@
         const textWidth = span.getBoundingClientRect().width;
         document.body.removeChild(span);
 
-        // 36px left icon padding + 36px right chevron padding + text width + safety buffer
-        const totalWidth = Math.ceil(textWidth + 72);
+        // 36px left icon padding + 16px right padding + text width + safety buffer
+        const totalWidth = Math.ceil(textWidth + 48);
         select.style.width = `${totalWidth}px`;
     }
 
