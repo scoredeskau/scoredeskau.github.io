@@ -242,19 +242,27 @@
             const leftOffset = activeItem.offsetLeft;
             const itemWidth = activeItem.offsetWidth;
             const viewportWidth = viewport.clientWidth;
-            const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewportWidth);
+
+            // Compute true max scroll left compatible with WebKit/Safari flexbox padding rendering
+            const paddingVal = tabList ? (parseFloat(window.getComputedStyle(tabList).paddingRight) || 4) : 4;
+            const lastItem = allItems.length > 0 ? allItems[allItems.length - 1] : null;
+            const trueMaxScrollLeft = lastItem 
+                ? (lastItem.offsetLeft + lastItem.offsetWidth + paddingVal - viewportWidth) 
+                : Math.max(0, viewport.scrollWidth - viewportWidth);
+            const maxScrollLeft = Math.max(0, trueMaxScrollLeft);
 
             let targetScrollLeft;
-            if (isFirstItem) {
+            const rawTargetScrollLeft = leftOffset - (viewportWidth / 2) + (itemWidth / 2);
+
+            if (isFirstItem || rawTargetScrollLeft <= 0) {
                 targetScrollLeft = 0;
-            } else if (isLastItem) {
+            } else if (isLastItem || rawTargetScrollLeft >= maxScrollLeft) {
                 targetScrollLeft = maxScrollLeft;
             } else {
-                const rawTargetScrollLeft = leftOffset - (viewportWidth / 2) + (itemWidth / 2);
                 targetScrollLeft = Math.min(Math.max(0, rawTargetScrollLeft), maxScrollLeft);
             }
 
-            // Round to nearest integer pixel to prevent subpixel floating-point snapping jumps
+            // Round to nearest integer pixel to eliminate Safari subpixel snapping jumps
             targetScrollLeft = Math.round(targetScrollLeft);
 
             if (behavior === 'auto') {
