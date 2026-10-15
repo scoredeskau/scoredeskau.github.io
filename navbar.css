@@ -1019,7 +1019,8 @@ h1, h2, h3, h4, h5, h6,
 
 .dropdown-wrapper .native-dropdown-select {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
     width: 12px !important;
     height: 6px !important;
     opacity: 0;
