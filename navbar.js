@@ -287,7 +287,7 @@
             }
 
             const startTime = performance.now();
-            const duration = 1000; // Increased to 1000ms for a smoother, more graceful cinematic glide
+            const duration = 750; // Increased to 1000ms for a smoother, more graceful cinematic glide
 
             function step(currentTime) {
                 const elapsed = currentTime - startTime;
