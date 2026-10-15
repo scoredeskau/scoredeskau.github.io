@@ -221,7 +221,7 @@
         });
     }
 
-    function centerActiveTab(behavior = 'smooth') {
+    function centerActiveTab(behavior = 'smooth', oldItem = null, newItem = null) {
         const container = document.getElementById('navContainer');
         if (!container) return;
 
@@ -235,34 +235,41 @@
 
             const activeItem = activeLink.closest('.tab-item') || activeLink;
             const tabList = viewport.querySelector('.tab-list');
-            const allItems = tabList ? tabList.querySelectorAll('.tab-item') : [];
+            if (!tabList) return;
+
+            const allItems = tabList.querySelectorAll('.tab-item');
             const isFirstItem = allItems.length > 0 && allItems[0] === activeItem;
+            const isLastItem = allItems.length > 0 && allItems[allItems.length - 1] === activeItem;
 
             const leftOffset = activeItem.offsetLeft;
             const itemWidth = activeItem.offsetWidth;
             const viewportWidth = viewport.clientWidth;
 
-            // Compute true max scroll left compatible with WebKit/Safari flexbox padding rendering[cite: 1]
-            const paddingVal = tabList ? (parseFloat(window.getComputedStyle(tabList).paddingRight) || 4) : 4;
-            const lastItem = allItems.length > 0 ? allItems[allItems.length - 1] : null;
-            const trueMaxScrollLeft = lastItem 
-                ? (lastItem.offsetLeft + lastItem.offsetWidth + paddingVal - viewportWidth) 
-                : Math.max(0, viewport.scrollWidth - viewportWidth);
-            const maxScrollLeft = Math.max(0, trueMaxScrollLeft);
+            // Compute exact max scroll left compatible with Safari WebKit flexbox padding rendering
+            const style = window.getComputedStyle(tabList);
+            const paddingRight = parseFloat(style.paddingRight) || 4;
+            const lastItem = allItems.length > 0 ? allItems[allItems.length - 1] : activeItem;
+            const maxScrollLeft = Math.max(0, lastItem.offsetLeft + lastItem.offsetWidth + paddingRight - viewportWidth);
 
             const rawTargetScrollLeft = leftOffset - (viewportWidth / 2) + (itemWidth / 2);
 
             let targetScrollLeft;
             if (isFirstItem || rawTargetScrollLeft <= 0) {
                 targetScrollLeft = 0;
-            } else if (rawTargetScrollLeft >= maxScrollLeft) {
+            } else if (isLastItem || rawTargetScrollLeft >= maxScrollLeft) {
                 targetScrollLeft = maxScrollLeft;
             } else {
-                targetScrollLeft = rawTargetScrollLeft;
+                targetScrollLeft = Math.min(rawTargetScrollLeft, maxScrollLeft);
             }
 
-            // Round to nearest integer pixel to eliminate subpixel snapping jumps across all browsers[cite: 1]
             targetScrollLeft = Math.round(targetScrollLeft);
+
+            let highlight = tabList.querySelector('.active-tab-highlight');
+            if (!highlight) {
+                highlight = document.createElement('div');
+                highlight.className = 'active-tab-highlight';
+                tabList.appendChild(highlight);
+            }
 
             if (behavior === 'auto') {
                 if (viewport._scrollAnim) {
@@ -270,36 +277,61 @@
                     viewport._scrollAnim = null;
                 }
                 viewport.scrollLeft = targetScrollLeft;
+                highlight.style.transform = `translateX(${leftOffset}px)`;
+                highlight.style.width = `${itemWidth}px`;
+                highlight.classList.add('is-visible');
+                highlight.classList.remove('no-transition');
                 return;
             }
+
+            const startHighlightLeft = oldItem ? oldItem.offsetLeft : leftOffset;
+            const startHighlightWidth = oldItem ? oldItem.offsetWidth : itemWidth;
+            const targetHighlightLeft = leftOffset;
+            const targetHighlightWidth = itemWidth;
 
             if (viewport._scrollAnim) {
                 cancelAnimationFrame(viewport._scrollAnim);
                 viewport._scrollAnim = null;
             }
 
+            highlight.classList.add('no-transition');
+            highlight.classList.add('is-visible');
+
             const startScrollLeft = viewport.scrollLeft;
-            const distance = targetScrollLeft - startScrollLeft;
-            
-            if (Math.abs(distance) < 0.5) {
+            const distanceScroll = targetScrollLeft - startScrollLeft;
+            const distanceLeft = targetHighlightLeft - startHighlightLeft;
+            const distanceWidth = targetHighlightWidth - startHighlightWidth;
+
+            if (Math.abs(distanceScroll) < 0.5 && Math.abs(distanceLeft) < 0.5) {
                 viewport.scrollLeft = targetScrollLeft;
+                highlight.style.transform = `translateX(${targetHighlightLeft}px)`;
+                highlight.style.width = `${targetHighlightWidth}px`;
+                highlight.classList.remove('no-transition');
                 return;
             }
 
             const startTime = performance.now();
-            const duration = 750; // Increased to 1000ms for a smoother, more graceful cinematic glide
+            const duration = 750;
 
             function step(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
                 const easedValue = easeBubble(progress);
-                viewport.scrollLeft = startScrollLeft + (distance * easedValue);
+
+                viewport.scrollLeft = startScrollLeft + (distanceScroll * easedValue);
+
+                const currentLeft = startHighlightLeft + (distanceLeft * easedValue);
+                const currentWidth = startHighlightWidth + (distanceWidth * easedValue);
+                highlight.style.transform = `translateX(${currentLeft}px)`;
+                highlight.style.width = `${currentWidth}px`;
 
                 if (progress < 1) {
                     viewport._scrollAnim = requestAnimationFrame(step);
                 } else {
                     viewport.scrollLeft = targetScrollLeft;
+                    highlight.style.transform = `translateX(${targetHighlightLeft}px)`;
+                    highlight.style.width = `${targetHighlightWidth}px`;
+                    highlight.classList.remove('no-transition');
                     viewport._scrollAnim = null;
                 }
             }
@@ -640,14 +672,17 @@
         }
 
         const container = document.getElementById('navContainer');
-        if (container) {
-            const allLinks = container.querySelectorAll('.tab-link');
-            allLinks.forEach(link => {
-                const isActive = link.getAttribute('href') === targetHash;
-                link.classList.toggle('is-active', isActive);
-                link.setAttribute('aria-selected', isActive ? 'true' : 'false');
-            });
-        }
+        if (!container) return;
+
+        const oldActiveLink = container.querySelector('.tab-link.is-active');
+        const oldItem = oldActiveLink ? (oldActiveLink.closest('.tab-item') || oldActiveLink) : null;
+
+        const allLinks = container.querySelectorAll('.tab-link');
+        allLinks.forEach(link => {
+            const isActive = link.getAttribute('href') === targetHash;
+            link.classList.toggle('is-active', isActive);
+            link.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
 
         const tabViews = document.querySelectorAll('.tab-view');
         tabViews.forEach(view => {
@@ -658,8 +693,13 @@
             }
         });
 
-        updateHighlights();
-        centerActiveTab('smooth');
+        if (isInitial) {
+            updateHighlights(true);
+            centerActiveTab('auto');
+        } else {
+            centerActiveTab('smooth', oldItem);
+        }
+
         updateSectionHeaderLayout();
         window.scrollTo(0, 0);
     }
