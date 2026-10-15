@@ -1,5 +1,5 @@
 /**
- * Shared Navbar Component - High-Performance Edition
+ * Shared Navbar Component - Apple Design High-Performance Edition
  */
 (function () {
     'use strict';
@@ -18,13 +18,12 @@
     const BACK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
     const TOGGLE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
-    // Reset navigation flag when page is shown (e.g., via browser Back button BFCache)
     window.addEventListener('pageshow', function () {
         isCardNavigating = false;
     });
 
     /**
-     * Touch & Pointer Press Feedback Manager for Mobile & Desktop
+     * Touch & Pointer Press Feedback Manager (Instant pointer-down response)
      */
     function setupTouchPressFeedback() {
         window.addEventListener('touchstart', function () {}, { passive: true });
@@ -57,7 +56,7 @@
     }
 
     /**
-     * Smooth Tile/Card Navigation with Spring Compression & Bounce Delay
+     * Smooth Tile/Card Navigation with Spring Compression
      */
     function setupCardNavigationFeedback() {
         document.addEventListener('click', function (e) {
@@ -76,7 +75,6 @@
                 if (isCardNavigating) return;
                 isCardNavigating = true;
 
-                // Handle keyboard activation (Enter key) where pointer events didn't fire
                 const isKeyboardClick = e.detail === 0 && e.clientX === 0 && e.clientY === 0;
                 if (isKeyboardClick) {
                     card.classList.add('is-pressed');
@@ -85,7 +83,6 @@
                     }, 70);
                 }
 
-                // Perform page navigation after allowing the release bounce animation to play
                 setTimeout(() => {
                     window.location.href = targetUrl;
                 }, 200);
@@ -295,7 +292,6 @@
         const viewports = container.querySelectorAll('.tab-scroll-viewport');
 
         viewports.forEach(viewport => {
-            // Skip hidden or non-rendered viewports to avoid calculating 0px offsets
             if (viewport.offsetWidth === 0 && viewport.offsetHeight === 0) return;
 
             const tabList = viewport.querySelector('.tab-list');
@@ -362,7 +358,7 @@
         } else if (lowerWrapper && lowerWrapper.scrollHeight > 0) {
             exactHeight = lowerWrapper.scrollHeight;
         } else {
-            exactHeight = 60; // 8px top-padding + 52px navbar pill height
+            exactHeight = 60;
         }
 
         const hVal = showBar3 ? `${exactHeight}px` : '0px';
@@ -379,7 +375,6 @@
         syncToggleState();
 
         if (isCurrentlyHidden) {
-            // When expanding from hidden state, calculate highlights and scroll position
             updateHighlights(true);
             centerActiveTab('auto');
         }
@@ -471,9 +466,6 @@
         });
     }
 
-    /**
-     * Restore saved dropdown selections from localStorage on load & setup precision hover tracking
-     */
     function initDropdowns() {
         const selects = document.querySelectorAll('.native-dropdown-select[data-storage-key]');
         selects.forEach(select => {
@@ -504,7 +496,6 @@
             }
         });
 
-        // Precision mouse cursor position tracker for dropdown buttons
         let lastMouseX = -9999;
         let lastMouseY = -9999;
 
@@ -529,7 +520,6 @@
             document.querySelectorAll('.dropdown-wrapper').forEach(w => w.classList.remove('is-hovered'));
         });
 
-        // Ensure smooth switching between open dropdowns on mobile
         document.addEventListener('pointerdown', function (e) {
             if (e.target && e.target.classList.contains('native-dropdown-select')) {
                 document.querySelectorAll('.native-dropdown-select').forEach(sel => {
@@ -541,7 +531,6 @@
         }, { passive: true });
     }
 
-    // Handle Native Dropdown Selection Updates, Persistence, & Precision State Re-evaluation
     document.addEventListener('change', function (e) {
         if (e.target && e.target.classList.contains('native-dropdown-select')) {
             const wrapper = e.target.closest('.dropdown-wrapper');
@@ -556,11 +545,7 @@
                     btn.classList.remove('is-pressed');
                 }
 
-                // Immediately re-evaluate cursor position against updated button bounds
                 setTimeout(() => {
-                    const rect = wrapper.getBoundingClientRect();
-                    // If we stored mouse coords or if we check current element under point
-                    const elem = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2); // fallback check
                     if (wrapper.matches(':hover')) {
                         wrapper.classList.add('is-hovered');
                     } else {
@@ -582,7 +567,6 @@
         }
     });
 
-    // Handle Reset Filters Button Click
     document.addEventListener('click', function (e) {
         const resetBtn = e.target.closest('#resetFiltersBtn');
         if (resetBtn) {
@@ -654,8 +638,6 @@
         updateHighlights();
         centerActiveTab('smooth');
         updateSectionHeaderLayout();
-        
-        // Ensure screen starts at top Y=0 so section headers aren't pulled under navbar
         window.scrollTo(0, 0);
     }
 
@@ -669,7 +651,6 @@
                     if (!match) return word;
 
                     const [, prefix, core, suffix] = match;
-
                     if (core.length <= 4) return word;
 
                     const chunks = [];
@@ -710,7 +691,6 @@
 
         const backBtnWidth = (backBtn && backBtn.offsetWidth > 0) ? backBtn.offsetWidth : (backBtn ? backBtn.getBoundingClientRect().width : 36);
 
-        // Measures exact unclipped inline text width regardless of display block or parent layout rules
         function getTextWidth(el) {
             if (!el || !el.textContent || !el.textContent.trim()) return 0;
             try {
@@ -743,11 +723,8 @@
         const primaryWidth = getTextWidth(primaryTitle);
         const secondaryWidth = getTextWidth(secondaryTitle);
         const titleWidth = Math.ceil(Math.max(primaryWidth, secondaryWidth));
-
-        // 8px branding padding-left + 8px titles padding-left + 8px titles padding-right = 24px
         const brandingWidth = backBtnWidth + titleWidth + 24;
 
-        // Measures unconstrained total width of the full tab list
         function getIntrinsicTabsWidth() {
             const tabList = combinedNavbar.querySelector('.tab-list') || document.querySelector('#lowerTabWrapper .tab-list');
             if (!tabList) return 0;
@@ -774,10 +751,7 @@
         }
 
         const tabsScrollWidth = getIntrinsicTabsWidth();
-
-        // Buffer gap between branding group and tabs (16px)
         const requiredWidth = brandingWidth + tabsScrollWidth + 16;
-
         const shouldCollapse = availableWidth < requiredWidth;
         const isCurrentlyCollapsed = container.classList.contains('is-collapsed-mode');
 
@@ -803,33 +777,29 @@
         renderNavbar();
         setupTouchPressFeedback();
         setupCardNavigationFeedback();
-        initDropdowns(); // Restore dropdown selections from localStorage
+        initDropdowns();
 
         const activeTarget = getActiveTargetFromHash();
         switchTab(activeTarget, true);
 
-        // Run synchronously to calculate --bar3-h BEFORE initial paint while no-transitions is active
         checkLayoutMode();
         updateHighlights(true);
         centerActiveTab('auto');
         updateSectionHeaderLayout();
         window.scrollTo(0, 0);
 
-        // Re-check layout mode when web fonts finish loading so font metrics are 100% precise
         if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
             document.fonts.ready.then(function () {
                 handleResizeOrLayoutChange();
             });
         }
 
-        // Remove anti-flash class after frame settles
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 document.documentElement.classList.remove('no-transitions');
             });
         });
 
-        // Event listeners for window resize & mobile orientation changes
         window.addEventListener('resize', handleResizeOrLayoutChange);
 
         window.addEventListener('orientationchange', function () {

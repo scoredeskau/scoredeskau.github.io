@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Navigation Component Stylesheet (Safari WebKit Optimized)
+   Navigation Component Stylesheet (Apple Design & Safari WebKit Optimized)
    ========================================================================== */
 
 /* -------------------------------------------------------------
@@ -19,7 +19,7 @@
 }
 
 /* -------------------------------------------------------------
-   1. Design Tokens & Theme Definitions
+   1. Design Tokens & Theme Definitions (Apple Fluid Guidelines)
    ------------------------------------------------------------- */
 :root {
     --canvas-background-color: #0B192C;
@@ -30,11 +30,14 @@
     --back-btn-offset: calc((var(--navbar-height) - var(--back-btn-size)) / 2);
     --tab-bubble-offset-v: calc((var(--navbar-height) - var(--tab-bubble-height)) / 2);
     --page-outer-spacing: 24px;
-    --navbar-pill-background: rgba(15, 23, 42, 0.75);
+    --navbar-background: rgba(255, 255, 255, 0.12);
     --navbar-border-color: rgba(255, 255, 255, 0.2);
+    --navbar-blur: blur(12px);
+    --card-radius: 16px;
+    --circular-border-radius: 9999px;
     
-    /* Spring & Easing Curves */
-    --ease-spring: cubic-bezier(0.34, 1.75, 0.64, 1);
+    /* Spring & Easing Curves (Critically Damped Apple Physics) */
+    --ease-spring: cubic-bezier(0.34, 1.5, 0.64, 1); /* cubic-bezier(0.34, 1.75, 0.64, 1); */
     --ease-cinematic: cubic-bezier(0.32, 0.94, 0.2, 1);
     --ease-bubble: cubic-bezier(0.32, 0.94, 0.2, 1);
     --fade-duration: 0.4s;
@@ -58,7 +61,7 @@
 :root.theme-settings, body.theme-settings     { --canvas-background-color: #2B1B3F; --court-accent-color: #C084FC; }
 
 /* -------------------------------------------------------------
-   2. Base Layout & Typography
+   2. Base Layout & Typography (Apple Optical Sizing & Tracking)
    ------------------------------------------------------------- */
 body {
     background-color: var(--canvas-background-color);
@@ -67,6 +70,7 @@ body {
     overflow-x: hidden;
     padding: var(--page-outer-spacing);
     font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* font-optical-sizing: none; */
     -webkit-font-smoothing: antialiased;
     color: #FFFFFF;
     transition: background-color var(--fade-duration) var(--ease-cinematic);
@@ -110,13 +114,13 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* -------------------------------------------------------------
-   3. Main Navbar Shell (Bar 1 / Bar 2)
+   3. Main Navbar Shell & Translucent Materials
    ------------------------------------------------------------- */
 .navbar {
     width: 100%;
     height: var(--navbar-height);
-    background: var(--navbar-pill-background);
-    border-radius: 9999px;
+    background: var(--navbar-background);
+    border-radius: var(--circular-border-radius);
     border: 1px solid var(--navbar-border-color);
     overflow: hidden;
     display: flex;
@@ -126,11 +130,11 @@ h1, h2, h3, h4, h5, h6,
     isolation: isolate;
 }
 
-@supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+@supports (backdrop-filter: var(--navbar-blur)) or (-webkit-backdrop-filter: var(--navbar-blur)) {
     .navbar {
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: var(--navbar-background);
+        backdrop-filter: var(--navbar-blur);
+        -webkit-backdrop-filter: var(--navbar-blur);
     }
 }
 
@@ -156,14 +160,14 @@ h1, h2, h3, h4, h5, h6,
 .icon-action-button {
     height: var(--back-btn-size);
     min-width: var(--back-btn-size);
-    border-radius: 9999px;
+    border-radius: var(--circular-border-radius);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     padding: 0 14px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: var(--navbar-background);
+    border: 1px solid var(--navbar-border-color);
     color: rgba(255, 255, 255, 0.95);
     font-size: 14px;
     font-weight: 500;
@@ -175,9 +179,9 @@ h1, h2, h3, h4, h5, h6,
     outline: none;
     touch-action: manipulation;
     will-change: transform, background-color, border-color;
-    transition: transform var(--ease-spring) 0.4s, 
-                background-color 0.3s ease, 
-                border-color 0.3s ease;
+    transition: transform 0.3s var(--ease-spring), 
+                background-color 0.25s ease, 
+                border-color 0.25s ease;
 }
 
 .action-button.icon-only,
@@ -399,19 +403,19 @@ h1, h2, h3, h4, h5, h6,
     text-decoration: none;
     font-size: 14px;
     font-weight: 400;
-    letter-spacing: -0.1px;
+    letter-spacing: normal;
     white-space: nowrap;
     height: 100%;
     display: flex;
     align-items: center;
     padding: 0 16px;
-    border-radius: 9999px;
+    border-radius: var(--circular-border-radius);
     opacity: 0.72;
     background: transparent !important;
     will-change: transform, opacity, color;
-    transition: transform 0.4s var(--ease-spring), 
-                color 0.3s var(--ease-cinematic), 
-                opacity 0.3s var(--ease-cinematic);
+    transition: transform 0.3s var(--ease-spring), 
+                color 0.25s var(--ease-cinematic), 
+                opacity 0.25s var(--ease-cinematic);
     user-select: none;
     cursor: pointer;
     touch-action: manipulation;
@@ -453,8 +457,8 @@ h1, h2, h3, h4, h5, h6,
 
 .tab-link:active,
 .tab-link.is-pressed {
-    transform: translateY(0) scale(0.92) !important;
-    transition: transform 0.05s ease !important;
+    transform: translateY(0) scale(0.95) !important;
+    transition: transform 0.08s ease !important;
 }
 
 .active-tab-highlight {
@@ -462,9 +466,9 @@ h1, h2, h3, h4, h5, h6,
     top: var(--tab-bubble-offset-v);
     bottom: var(--tab-bubble-offset-v);
     left: 0;
-    background: rgba(255, 255, 255, 0.20);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--circular-border-radius);
     pointer-events: none;
     opacity: 0;
     transition: transform var(--slide-duration) var(--ease-bubble), 
@@ -509,7 +513,7 @@ h1, h2, h3, h4, h5, h6,
 
 .navigation-container.is-collapsed-mode .toggle-menu-button:active,
 .navigation-container.is-collapsed-mode .toggle-menu-button.is-pressed {
-    transform: translateY(-50%) scale(0.82) !important;
+    transform: translateY(-50%) scale(0.9) !important;
 }
 
 .navigation-container.is-collapsed-mode .branding-group {
@@ -593,7 +597,7 @@ h1, h2, h3, h4, h5, h6,
 .navigation-container.is-collapsed-mode .stacked-tab-navbar {
     display: flex;
     height: var(--navbar-height);
-    border-radius: 9999px;
+    border-radius: var(--circular-border-radius);
     overflow: hidden;
     opacity: 1;
     transform: translateY(0);
@@ -628,7 +632,7 @@ h1, h2, h3, h4, h5, h6,
 .navigation-container.is-collapsed-mode .stacked-tab-navbar .tab-scroll-viewport { 
     width: 100%; 
     height: 100%;
-    border-radius: 9999px;
+    border-radius: var(--circular-border-radius);
     overflow-x: auto;
 }
 
@@ -654,7 +658,7 @@ h1, h2, h3, h4, h5, h6,
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     will-change: transform, opacity, background-color, border-color, box-shadow;
-    transition: transform 0.4s var(--ease-spring),
+    transition: transform 0.3s var(--ease-spring),
                 background-color 0.25s var(--ease-cinematic),
                 border-color 0.25s var(--ease-cinematic),
                 box-shadow 0.25s var(--ease-cinematic),
@@ -685,7 +689,6 @@ h1, h2, h3, h4, h5, h6,
     }
 }
 
-/* Portal Tile Default Layout */
 .card,
 .portal-card,
 .nav-card,
@@ -698,8 +701,8 @@ h1, h2, h3, h4, h5, h6,
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.04);
     padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-radius: var(--card-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     position: relative;
 }
 
@@ -709,7 +712,7 @@ h1, h2, h3, h4, h5, h6,
     .icon-action-button:hover,
     .toggle-menu-button:hover {
         transform: translateY(-1px) scale(1.01);
-        background: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.18);
         border-color: rgba(255, 255, 255, 0.35);
     }
 
@@ -719,10 +722,10 @@ h1, h2, h3, h4, h5, h6,
     .section-card:hover,
     .feature-card:hover,
     [data-href]:hover {
-        transform: translateY(-4px) scale(1.025);
-        background: rgba(255, 255, 255, 0.09) !important;
-        border-color: rgba(255, 255, 255, 0.38) !important;
-        box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.45), 0 0 20px rgba(255, 255, 255, 0.08) !important;
+        transform: translateY(-3px) scale(1.015);
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: rgba(255, 255, 255, 0.35) !important;
+        box-shadow: 0 14px 35px -6px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.06) !important;
     }
 }
 
@@ -733,10 +736,10 @@ h1, h2, h3, h4, h5, h6,
 .icon-action-button.is-pressed,
 .toggle-menu-button:active,
 .toggle-menu-button.is-pressed {
-    transform: scale(0.82) !important;
-    background: rgba(255, 255, 255, 0.38) !important;
-    border-color: rgba(255, 255, 255, 0.55) !important;
-    transition: transform 0.04s ease, background-color 0.04s ease, border-color 0.04s ease !important;
+    transform: scale(0.92) !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transition: transform 0.06s ease, background-color 0.06s ease, border-color 0.06s ease !important;
 }
 
 .card:active,
@@ -751,12 +754,12 @@ h1, h2, h3, h4, h5, h6,
 .feature-card.is-pressed,
 [data-href]:active,
 [data-href].is-pressed {
-    transform: scale(0.95) translateY(0) !important;
-    background: rgba(255, 255, 255, 0.16) !important;
-    border-color: rgba(255, 255, 255, 0.45) !important;
+    transform: scale(0.97) translateY(0) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.38) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
-    opacity: 0.9 !important;
-    transition: transform 0.04s ease, background-color 0.04s ease, border-color 0.04s ease, box-shadow 0.04s ease !important;
+    opacity: 0.95 !important;
+    transition: transform 0.06s ease, background-color 0.06s ease, border-color 0.06s ease, box-shadow 0.06s ease !important;
 }
 
 /* -------------------------------------------------------------
@@ -809,7 +812,7 @@ h1, h2, h3, h4, h5, h6,
     flex-shrink: 0;
 }
 
-/* Template Card Icon Masks (Eliminates repeated inline SVG markup) */
+/* Template Card Icon Masks */
 .card-location::before,
 .card-date::before,
 .card-utr::before,
@@ -846,7 +849,6 @@ h1, h2, h3, h4, h5, h6,
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>');
 }
 
-/* Player Card Specific Icon Masks */
 .card-utr::before {
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>');
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>');
@@ -857,7 +859,6 @@ h1, h2, h3, h4, h5, h6,
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>');
 }
 
-/* Match Card Specific Icon Masks */
 .card-racket::before {
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="15" cy="9" rx="5" ry="7" transform="rotate(-45 15 9)"/><path d="m10 14-6 6"/><path d="m12.5 7.5 4 4"/><path d="m10.5 9.5 4 4"/></svg>');
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="15" cy="9" rx="5" ry="7" transform="rotate(-45 15 9)"/><path d="m10 14-6 6"/><path d="m12.5 7.5 4 4"/><path d="m10.5 9.5 4 4"/></svg>');
@@ -873,7 +874,6 @@ h1, h2, h3, h4, h5, h6,
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>');
 }
 
-/* Match Scoreboard Layout & Column Formatting */
 .card-info-row .player-name {
     flex: 1 1 auto;
     min-width: 0;
@@ -934,7 +934,7 @@ h1, h2, h3, h4, h5, h6,
     font-size: 0.75rem;
     font-weight: 600;
     line-height: 1;
-    border-radius: 9999px;
+    border-radius: var(--circular-border-radius);
     letter-spacing: 0.02em;
     white-space: nowrap;
     z-index: 2;
@@ -996,7 +996,7 @@ h1, h2, h3, h4, h5, h6,
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Favourite / Tournament / Player / Match = Yellow */
+/* Yellow / Highlighted */
 .status-pill.status-yellow,
 .status-pill.status-orange,
 .status-pill.status-tournament,
@@ -1040,25 +1040,43 @@ h1, h2, h3, h4, h5, h6,
     color: #FFFFFF;
 }
 
-/* Hover and press managed strictly via JS precision tracking & class states */
 @media (hover: hover) and (pointer: fine) {
     .dropdown-wrapper.is-hovered .action-button {
         transform: translateY(-1px) scale(1.01);
-        background: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.18);
         border-color: rgba(255, 255, 255, 0.35);
     }
 }
 
 .dropdown-wrapper:active .action-button {
-    transform: scale(0.82) !important;
-    background: rgba(255, 255, 255, 0.38) !important;
-    border-color: rgba(255, 255, 255, 0.55) !important;
-    transition: transform 0.04s ease, background-color 0.04s ease, border-color 0.04s ease !important;
+    transform: scale(0.92) !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transition: transform 0.06s ease, background-color 0.06s ease, border-color 0.06s ease !important;
 }
 
-/* Temporary class to instantly clear sticky hover highlights on desktop */
 .dropdown-wrapper.no-hover-temp .action-button {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border-color: rgba(255, 255, 255, 0.22) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
     transform: none !important;
+}
+
+/* -------------------------------------------------------------
+   12. Reduced Motion & Accessibility Adherence
+   ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .navbar {
+        background: rgb(15, 23, 42) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
 }
