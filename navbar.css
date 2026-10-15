@@ -457,7 +457,7 @@ h1, h2, h3, h4, h5, h6,
 
 .tab-link:active,
 .tab-link.is-pressed {
-    transform: translateY(0) scale(0.95) !important;
+    transform: translateY(0) scale(0.92) !important;
     transition: transform 0.08s ease !important;
 }
 
